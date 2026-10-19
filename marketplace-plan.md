@@ -19,6 +19,7 @@ registry behind it, and the review pipeline.
 | How do people make widgets? | Three ways, one package format: a no-code builder in the desktop app, the AI generator, and an SDK + CLI for developers. See "Making widgets". |
 | How do widgets get PC data (CPU, GPU, media...)? | From **system sources** the app provides. A widget declares the sources it reads and binds them in its view; it never touches the OS itself. |
 | Money? | No payments. Free widgets only. |
+| Hosting? | Frontend on Vercel (Hobby, free). API and Postgres on Heroku, paid by the GitHub Student Developer Pack credit ($13/month for 24 months), so it must stay under $13/month. **Deployment is on hold until the Student Pack is approved**: build and test locally until then. See "Hosting and budget". |
 
 ## Context: ShiftPane and its widgets today
 
@@ -207,7 +208,7 @@ The PC side is where the risk is: a collector is code from a stranger running on
     cannot reach the user's router or LAN services by pointing a public name at them;
   - response size cap (2 MB) and per-widget rate limit.
 - Secrets live encrypted on the PC (Electron `safeStorage`) and go only to the widget that declared them.
-- The same package runs collectors in the desktop app, in `shiftpane-widget dev`, and in this repo's check worker.
+- The same package runs collectors in the desktop app, in `shiftpane-widget dev`, and in this repo's API job runner.
 
 **Install-time permissions.** Installing shows what the widget can do in plain words ("Reads your GPU load. Can reach
 api.github.com. Needs your GITHUB_TOKEN."). An update that adds any permission asks again; one that does not is
@@ -297,13 +298,61 @@ Same tooling as ShiftPane: pnpm workspaces + Turborepo, TypeScript, Biome, Vites
 
 | Piece | Choice | Why |
 | --- | --- | --- |
-| Site, docs and API | One Next.js app (App Router) on Vercel, docs with Fumadocs | Pages, MDX docs and API routes in one deploy; preview deploys per PR |
-| Database | Postgres (Neon) via Drizzle | Relational data, migrations in TS |
-| Package storage | Cloudflare R2 behind a `cdn.` subdomain | S3 API, free egress for downloads |
-| Auth | Auth.js with GitHub | Authors are developers; GitHub gives a stable identity and an abuse signal |
-| Check worker | Small Node service on Render or Fly, pulling jobs from a Postgres table (`FOR UPDATE SKIP LOCKED`) | Heavy checks (sandbox run, previews, AI review) do not fit in serverless functions; no queue service needed |
-| Signing | Ed25519 key as a server secret, used only by the publish step | Built into Node's `crypto` |
-| Email | Resend | Approve and reject notices |
+| Site and docs | Next.js (App Router) on Vercel, docs with Fumadocs | Static and ISR pages on a CDN, MDX docs, preview deploys per PR; no server code here |
+| API | Hono on Node, on one Heroku dyno | Small, typed, zod validation on every route; runs anywhere Node runs |
+| Database | Heroku Postgres via Drizzle | Covered by the student credit; migrations in TS |
+| Background jobs | pg-boss inside the API process | Postgres-backed queue (`SKIP LOCKED`), so no worker dyno and no queue service |
+| Package storage | Cloudflare R2 behind a `cdn.` subdomain | Heroku's disk is wiped on every restart; R2's free tier covers this and egress is free |
+| Auth | GitHub OAuth in the API (arctic), sessions in Postgres, httpOnly cookie | Authors are developers; GitHub gives a stable identity and an abuse signal |
+| Signing | Ed25519 key as a Heroku config var, used only by the publish step | Built into Node's `crypto` |
+| Email | Resend, free tier | Approve and reject notices |
+| Local dev and tests | PGlite (Postgres in WASM) and a filesystem storage adapter | No Docker needed, so cloud sessions can run everything |
+
+### Hosting and budget
+
+**Status: on hold.** Nothing is deployed and no Heroku, Vercel or Cloudflare resources are created until the GitHub
+Student Developer Pack is approved. Until then, everything runs locally.
+
+```text
+ browser ──▶ shiftpane.dev (Vercel) ── /api/* rewrite ──▶ Heroku: API dyno ──▶ Heroku Postgres
+                                                              │
+ desktop app ──▶ cdn.shiftpane.dev (R2) ◀── publishes ────────┘
+                 index.json, revoked.json, packages
+```
+
+- The site calls the API through a Vercel rewrite (`/api/:path*` to the Heroku app), so the browser sees one origin:
+  no CORS, first-party cookies, and the API needs no custom domain.
+- The desktop app reads the signed index and the packages straight from the CDN, never from Heroku. Installing keeps
+  working while the API restarts, deploys or is down.
+
+| Item | Monthly |
+| --- | --- |
+| Heroku Basic dyno: API, auth, uploads and the job runner in one process; never sleeps | $7 |
+| Heroku Postgres Essential-0 | $5 |
+| **Heroku total, paid by the $13 credit** | **$12** |
+| Vercel Hobby (free; non-commercial use, which fits free widgets) | $0 |
+| Cloudflare R2 free tier, Cloudflare DNS | $0 |
+| Resend free tier | $0 |
+| Claude API for AI review (optional, off by default; not covered by the credit) | cents |
+| Domain: free for the first year from the Student Pack, then about $10 to $20 a year | $0 |
+
+Rules that keep it at $12:
+
+- One dyno, one database. No worker dyno, no staging app, no review apps, no extra Heroku add-ons (third-party
+  add-ons are not covered by the credit at all). Heroku charges the card for anything above $13.
+- If more headroom is needed, an Eco dyno ($5, sleeps after 30 idle minutes) brings Heroku to $10. Sleeping is
+  bearable because the app never depends on the API.
+- Keep the Postgres pool small (Essential-0 allows 20 connections in total, shared by the API, pg-boss and the
+  release-phase migration).
+- No headless browser on the dyno (512 MB of memory, and the slug size limit). Widget previews render in the visitor's
+  browser from `sample.json` instead of server-side screenshots.
+- Vercel preview deploys read the production API for public pages only; sign-in is disabled in previews.
+- The credit lasts 24 months. Everything here is plain Node, Postgres and the S3 API, so it can move to another host
+  before then.
+
+Heroku setup (for when it is approved): a `Procfile` with `web` (start the API) and `release` (run Drizzle
+migrations); a root `heroku-postbuild` that builds only `apps/api`; pnpm through the `packageManager` field; the
+database connection with SSL as Heroku Postgres requires.
 
 Shared code comes from the ShiftPane repo as npm packages: `@shiftpane/widget-sdk` (manifest, view and source
 schemas, validators) and `@shiftpane/widget-runtime` (sandbox). Until they are published, vendor the SDK's `src/` into
@@ -315,13 +364,15 @@ outside its own workspace; try it first.)
 
 ```text
 apps/
-  web/          Next.js: landing, docs (/docs), marketplace (/widgets), upload, author dashboard, admin, API routes
+  web/          Next.js on Vercel: landing, docs (/docs), marketplace (/widgets), upload, author dashboard, admin
     content/docs/   MDX
-  worker/       Check worker: sandbox smoke run, previews, AI review, writes reports
+  api/          Hono on Heroku: REST API, GitHub sign-in, uploads, pg-boss jobs (sandbox smoke run, AI review),
+                publishing to R2; Procfile at the repo root
 packages/
   db/           Drizzle schema, migrations, queries
-  checks/       Pure check functions (zip layout, manifest, view bindings, scanners); used by web, worker and tests
+  checks/       Pure check functions (zip layout, manifest, view bindings, scanners); used by the API and tests
   index/        Builds, signs and verifies index.json and revoked.json; the verify half is what the app uses
+  storage/      One interface, two adapters: R2 (production) and the filesystem (local dev, tests)
   ui/           Site components (reuse ShiftPane's graphite tokens)
 ```
 
@@ -329,38 +380,43 @@ packages/
 
 ```text
 users        id, github_id, login, avatar, role (author | reviewer | admin), created_at, banned_at
+sessions     id (hashed), user_id, expires_at, created_at
 widgets      id (the manifest id, unique), owner_id, name, summary, categories, status (live | yanked), created_at
 versions     id, widget_id, version, manifest (jsonb), permissions (jsonb), sha256, size, storage_key, has_collector,
              status (checking | in_review | approved | rejected | yanked), report (jsonb), submitted_at, published_at
 reviews      id, version_id, reviewer_id, decision, note, created_at
 reports      id, widget_id, version_id?, reporter_id?, reason, body, status, created_at
-jobs         id, kind, version_id, state, attempts, run_after, error
-downloads    widget_id, version, day, count          (aggregate only; no per-user data)
 api_tokens   id, user_id, hash, name, last_used_at, revoked_at
+(pg-boss keeps its own job tables in a separate schema)
 ```
 
 ### API
 
-Public, cacheable, what the desktop app uses:
+Static files on the CDN (R2), what the desktop app uses. Rewritten by the API whenever something is approved or
+yanked:
 
 ```text
-GET  /v1/index.json                    every live widget and its versions; plus /v1/index.json.sig
-GET  /v1/revoked.json                  yanked versions; plus .sig
-GET  /v1/widgets/:id                   detail for the site and the app
-GET  /v1/widgets/:id/:version/download counts the download, redirects to cdn.../<sha256>.zip
+GET  cdn/index.json, cdn/index.json.sig       every live widget and its versions
+GET  cdn/revoked.json, cdn/revoked.json.sig   yanked versions
+GET  cdn/packages/<sha256>.zip                immutable packages
 ```
 
-Authenticated:
+The API, at `/api/v1` behind the site's rewrite:
 
 ```text
-POST /v1/uploads                       multipart zip -> version in "checking"; returns the static check report
-POST /v1/device-code                   sign-in from the desktop app and the CLI (OAuth device flow)
-GET  /v1/me/widgets                    author dashboard data
-POST /v1/widgets/:id/versions/:v/yank  owner or admin
-POST /v1/reports                       anyone signed in
-POST /v1/admin/versions/:id/approve    reviewer; signs and republishes the index
-POST /v1/admin/versions/:id/reject     reviewer; note required
+GET  /api/v1/widgets, /api/v1/widgets/:id      listing, search and detail for the site
+GET  /api/v1/auth/github, .../callback         sign-in
+POST /api/v1/device-code                       sign-in from the desktop app and the CLI (OAuth device flow)
+POST /api/v1/uploads                           multipart zip -> version in "checking"; returns the static check report
+GET  /api/v1/me/widgets                        author dashboard data
+POST /api/v1/widgets/:id/versions/:v/yank      owner or admin
+POST /api/v1/reports                           anyone signed in
+POST /api/v1/admin/versions/:id/approve        reviewer; signs, uploads to R2, rewrites the index
+POST /api/v1/admin/versions/:id/reject         reviewer; note required
 ```
+
+Download counts are left for W5: the app downloads straight from the CDN, so counting needs either a redirect through
+the API (which would make installs depend on Heroku) or a small Cloudflare Worker on the CDN route (free tier).
 
 `index.json` entry:
 
@@ -384,7 +440,8 @@ POST /v1/admin/versions/:id/reject     reviewer; note required
 }
 ```
 
-The app never sends anything to the site except the download request. No telemetry.
+Installing and updating only download from the CDN. The app talks to the API only when someone shares a widget from
+it. No telemetry.
 
 ### Site pages
 
@@ -428,7 +485,7 @@ widget from the docs alone.
 **W2: read-only gallery.** Widget pages and search, seeded with 3 to 5 first-party widgets; `packages/index` builds
 and signs the index; packages on R2. *Done when* (with A3) a user installs a widget from the site into the app.
 
-**W3: uploads and review.** GitHub sign-in, upload, static checks in the API, the check worker, review queue,
+**W3: uploads and review.** GitHub sign-in, upload, static checks in the API, the pg-boss job runner, review queue,
 approve and reject, emails, content policy. *Done when* a stranger's upload goes through checks, waits for review,
 and once approved shows in the app.
 
@@ -437,6 +494,12 @@ previews rendered from `sample.json`.
 
 **W5: growth.** API tokens and `shiftpane-widget publish`, download counts, collections, verified authors, the
 fast lane.
+
+**Deploy: blocked until the Student Pack is approved.** W1 to W3 are built and tested locally first (PGlite,
+filesystem storage, `next dev`). Once approved: Heroku app with one Basic dyno and Essential-0 Postgres, config vars
+(GitHub OAuth, signing key, R2 keys, Resend key), Vercel project with the `/api` rewrite, R2 bucket and `cdn.`
+domain, DNS. *Done when* the site is live, the Heroku bill shows $12 or less, and the desktop app installs from the
+real CDN. W1 alone can go live earlier as a static Vercel site, since it needs no backend.
 
 ## Not in scope
 
@@ -448,7 +511,7 @@ macro buttons (later), self-hosted registries (sideloading covers "no lock-in" f
 
 | Question | Recommendation |
 | --- | --- |
-| Name and domain | `shiftpane.dev`, with `/docs` and `/widgets` |
+| Name and domain | `shiftpane.dev` with `/docs` and `/widgets`; claim a free domain from the Student Pack and put its DNS on Cloudflare (R2 custom domains need that) |
 | Allow AI-generated widgets? | Yes, through the same review; label them "made with the generator" |
 | Who reviews? | You, at first. Add reviewers by role when the queue grows |
 | Open-source this repo later? | Possible any time; nothing in the design depends on it being private |
@@ -460,5 +523,6 @@ macro buttons (later), self-hosted registries (sideloading covers "no lock-in" f
 2. Commit this file as `PLAN.md`, plus copies of the ShiftPane README (`reference/shiftpane-README.md`) and of
    `packages/widget-sdk/src/` (`reference/widget-sdk/`), unless the ShiftPane repo is public.
 3. Start a cloud session on that repo: "Read PLAN.md. Set up the monorepo, then do W1 and W2, vendoring the widget SDK
-   from the ShiftPane repo."
+   from `reference/widget-sdk/`. Do not deploy or create any Heroku, Vercel or Cloudflare resources; run everything
+   locally with PGlite and filesystem storage."
 4. Run A0 in the ShiftPane repo at the same time.
