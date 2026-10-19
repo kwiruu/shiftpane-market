@@ -1,0 +1,168 @@
+import type { ActionName, SourceName } from './types'
+
+/**
+ * The system sources and actions in plain words (PLAN, System sources), and the sample PC the
+ * previews read when a view binds `@source/...`. On a real phone those bindings show the PC's
+ * own numbers; here every widget sees this one made-up machine, so previews agree with each other.
+ */
+
+export interface SourceInfo {
+  name: SourceName
+  title: string
+  gives: string
+  /** What an install prompt says about it. */
+  phrase: string
+  /** Reveals what you're doing, so installing asks first. */
+  asks: boolean
+}
+
+export const sources: Record<SourceName, SourceInfo> = {
+  cpu: {
+    name: 'cpu',
+    title: 'CPU',
+    gives: 'Load in percent, per core, and the last minute of it.',
+    phrase: 'Reads your CPU load',
+    asks: false,
+  },
+  memory: {
+    name: 'memory',
+    title: 'Memory',
+    gives: 'Percent in use, used and total bytes, and the last minute.',
+    phrase: 'Reads how much memory is in use',
+    asks: false,
+  },
+  gpu: {
+    name: 'gpu',
+    title: 'GPU',
+    gives: 'Load in percent, video memory used and total, and the last minute.',
+    phrase: 'Reads your GPU load',
+    asks: false,
+  },
+  network: {
+    name: 'network',
+    title: 'Network',
+    gives: 'Bytes received and sent per second, and the last minute.',
+    phrase: 'Reads your network speed',
+    asks: false,
+  },
+  disks: {
+    name: 'disks',
+    title: 'Disks',
+    gives: 'For each drive: space used and total, reads and writes per second.',
+    phrase: "Reads your drives' space and activity",
+    asks: false,
+  },
+  battery: {
+    name: 'battery',
+    title: 'Battery',
+    gives: 'Percent, whether it is charging, and the time left.',
+    phrase: 'Reads your battery level',
+    asks: false,
+  },
+  audio: {
+    name: 'audio',
+    title: 'Audio',
+    gives: 'Output volume, whether it is muted, and the device name.',
+    phrase: 'Reads your volume and output device',
+    asks: false,
+  },
+  system: {
+    name: 'system',
+    title: 'System',
+    gives: 'Uptime, and the OS name and version.',
+    phrase: 'Reads your uptime and OS version',
+    asks: false,
+  },
+  temperatures: {
+    name: 'temperatures',
+    title: 'Temperatures',
+    gives: 'CPU and GPU in °C and fan speeds, where the OS allows it.',
+    phrase: 'Reads CPU and GPU temperatures',
+    asks: false,
+  },
+  media: {
+    name: 'media',
+    title: 'Media',
+    gives: 'What is playing: title, artist, app, and whether it is paused.',
+    phrase: "Sees what's playing",
+    asks: true,
+  },
+  processes: {
+    name: 'processes',
+    title: 'Processes',
+    gives: 'The top programs by CPU or memory: name and percent.',
+    phrase: 'Sees which programs are busiest',
+    asks: true,
+  },
+  'active-window': {
+    name: 'active-window',
+    title: 'Active window',
+    gives: 'The app in front and its window title.',
+    phrase: "Sees which app and window you're in",
+    asks: true,
+  },
+}
+
+export const actions: Record<ActionName, { title: string; phrase: string }> = {
+  'media.play-pause': { title: 'Play or pause', phrase: 'Plays and pauses your media' },
+  'media.next': { title: 'Next track', phrase: 'Skips to the next track' },
+  'media.previous': { title: 'Previous track', phrase: 'Goes back a track' },
+  'audio.set-volume': { title: 'Set the volume', phrase: 'Changes your volume' },
+  'audio.toggle-mute': { title: 'Mute or unmute', phrase: 'Mutes and unmutes your PC' },
+}
+
+/** A minute of made-up samples, one every two seconds: a slow swell with a little noise. */
+function minute(base: number, swing: number, seed: number): number[] {
+  return Array.from({ length: 30 }, (_, i) => {
+    const wave = Math.sin((i + seed) / 4.2) * swing
+    const noise = Math.sin((i + 1) * (seed + 7.3)) * swing * 0.35
+    return Math.round(Math.min(100, Math.max(1, base + wave + noise)))
+  })
+}
+
+const gpuHistory = minute(58, 18, 2)
+const cpuHistory = minute(34, 14, 5)
+const memoryHistory = minute(61, 3, 9)
+
+/** The sample PC. Shaped like the zod schemas the SDK will publish for each source. */
+export const sampleSources: Record<SourceName, Record<string, unknown>> = {
+  cpu: { percent: cpuHistory.at(-1), cores: [41, 22, 37, 18, 55, 12, 29, 44], history: cpuHistory },
+  memory: {
+    percent: memoryHistory.at(-1),
+    used: 19.7 * 1024 ** 3,
+    total: 32 * 1024 ** 3,
+    history: memoryHistory,
+  },
+  gpu: {
+    percent: gpuHistory.at(-1),
+    vramUsed: 6.1 * 1024 ** 3,
+    vramTotal: 12 * 1024 ** 3,
+    history: gpuHistory,
+  },
+  network: {
+    receivedPerSecond: 4.2 * 1024 ** 2,
+    sentPerSecond: 310 * 1024,
+    history: minute(30, 22, 11),
+  },
+  disks: { drives: [{ name: 'C:', used: 612 * 1024 ** 3, total: 1000 * 1024 ** 3 }] },
+  battery: { percent: 82, charging: false, minutesLeft: 214 },
+  audio: { volume: 45, muted: false, device: 'Speakers' },
+  system: { uptimeSeconds: 3 * 86_400 + 4 * 3600, os: 'Windows 11' },
+  temperatures: { cpu: 61, gpu: 67, fans: [1180, 940] },
+  media: {
+    title: 'Low Tide',
+    artist: 'Harbor Lights',
+    app: 'Music',
+    playing: true,
+    position: 248,
+    duration: 488,
+  },
+  processes: {
+    top: [
+      { title: 'Code', value: '12%' },
+      { title: 'Chrome', value: '9%' },
+      { title: 'Discord', value: '3%' },
+    ],
+  },
+  'active-window': { app: 'Code', title: 'widget.ts — shiftpane' },
+}

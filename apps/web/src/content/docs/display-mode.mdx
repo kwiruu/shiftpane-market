@@ -1,0 +1,26 @@
+The phone can be a monitor, a widget board, or both at once. You pick from the phone's own menu, or from the **Phone layout** page of the desktop app.
+
+## Display mode
+
+The phone becomes a real extra monitor. Your OS sees a new display, and you drag windows onto it, the same as with any monitor. The desktop app captures only that monitor and streams it to the phone as video over WebRTC, encrypted, on your network.
+
+ShiftPane doesn't create a monitor for every possible size. It keeps a fixed list of 14 sizes, from 800 × 600 to 3840 × 2160 and a few portrait ones, and uses the one whose shape is closest to the space on the phone. The phone letterboxes any small difference. That way the driver's list is written once, which on Windows means at most one administrator prompt, and switching size is instant.
+
+## Split view
+
+Split view gives part of the phone to the monitor and the rest to your widget board. The presets are:
+
+| Split | What the phone shows |
+| --- | --- |
+| Monitor | Only the monitor |
+| 70 / 30 | Mostly monitor, widgets beside it |
+| 50 / 50 | Half and half |
+| Widgets | Only the widget board, and no monitor at all |
+
+The monitor is sized to its part of the phone, matched to the nearest size in the list. On a 2400 × 1080 phone held sideways, 70 / 30 leaves 1680 × 1080 for the monitor, so the PC adds a 1920 × 1200 one.
+
+A phone that has never picked a split opens on **Widgets**, so pairing alone never adds a monitor to your PC.
+
+## Show a monitor you already have
+
+Instead of a new monitor, the phone can show a copy of one of the PC's real monitors. Pick it from **Show** on the Phone layout page, beside the split.

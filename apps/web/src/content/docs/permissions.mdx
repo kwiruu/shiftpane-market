@@ -1,0 +1,51 @@
+<Planned>
+The marketplace and third-party widgets are being built. This is how permissions and review will work.
+</Planned>
+
+A collector is code from someone else running on your PC, so a widget may touch only what its manifest declares, you see that in plain words before it runs, and the gallery reviews it before it's listed.
+
+## What a widget can declare
+
+| Permission | In the manifest | What installing says |
+| --- | --- | --- |
+| System sources | `"sources": ["gpu"]` | Reads your GPU load |
+| Actions | `"actions": ["media.next"]` | Skips to the next track |
+| Internet hosts | `"network": ["api.github.com"]` | Can reach api.github.com |
+| Secrets | `"secrets": ["GITHUB_TOKEN"]` | Needs your GITHUB_TOKEN |
+| Apps on your PC or network | `"local": ["127.0.0.1:8085"]` | Can reach 127.0.0.1:8085 on your PC |
+
+## When installing asks
+
+Installing shows everything a widget can do, in words like the ones above. Some things ask before the widget runs at all:
+
+- Sources that say what you're doing: what's playing, your busiest programs, the window you're in.
+- Any app on your PC or network.
+
+An update that adds any permission asks again. One that doesn't is applied without a prompt.
+
+## Apps on your PC or network
+
+`permissions.local` names an exact host and port, such as `127.0.0.1:8085` for LibreHardwareMonitor's web server, or `192.168.1.20:8123` for Home Assistant. It's how widgets get data the app doesn't provide, without the app growing a source for every program. It always asks, and it's always flagged for review.
+
+## The flow rule
+
+Data can always flow from sources to your phone. But a widget that reads a source that says what you're doing, and can also reach a host, could send that off your PC. It gets a stronger prompt, and a person always reviews it.
+
+## Secrets go to their issuer
+
+A widget that declares `GITHUB_TOKEN` may only declare hosts that belong to GitHub. A token and an unrelated host is the shape of a widget that sends your token somewhere, so review refuses it.
+
+## How review works
+
+Every upload goes through automated checks at once. A failed check blocks the upload; a flag goes to the reviewer.
+
+<ChecksTable />
+
+Then a person reviews every new widget, and every version that changes its permissions, with the report, the permissions, a diff against the last version, the collector's source, and a preview from `sample.json` in front of them.
+
+Later, a fast lane: widgets with no collector, and authors with a track record, can publish after the automated checks when their permissions didn't change.
+
+## Signed, and revocable
+
+- The gallery signs its index with an Ed25519 key, and each version carries its package's SHA-256. The app refuses a package whose hash or signature doesn't check out.
+- A widget that turns out to be harmful is yanked. It lands on a signed revocation list the app reads at start and every six hours, and the app turns that version off, saying why.

@@ -1,0 +1,19 @@
+The app reads the PC once and shares the result with every widget that asked for it. A widget lists the sources it reads in its manifest, under `permissions.sources`, then binds them in its view (`"bind": "@gpu/percent"`) or reads them in its collector (`ctx.sources.gpu.percent`).
+
+A source is read only while a widget on screen uses it, at the fastest rate any of them asks for.
+
+<SourcesTable />
+
+The CPU, memory, GPU, network and media sources are what the native helper already reads for the built-in widgets. The rest are planned.
+
+## Sources that ask first
+
+Media, processes and the active window say something about what you're doing, so installing a widget that reads them asks you first. A widget that reads one of them and can also reach the network, or an app on your PC, could send what it reads off your PC: it gets a stronger prompt, and always a human review.
+
+## Never offered
+
+To any widget, ever: your files, your clipboard, your keystrokes, what's on your screen, running commands, and other widgets' secrets.
+
+## Temperatures
+
+GPU temperatures come from the vendors' own interfaces. Reading a CPU's temperature on Windows needs a kernel driver, which ShiftPane won't ship; for now that comes from apps that have one, like LibreHardwareMonitor, through a [local permission](/docs/permissions#apps-on-your-pc-or-network). The [Temperatures](/widgets/hardware-temps) widget does exactly that.

@@ -1,0 +1,51 @@
+<Planned />
+
+A widget's `view.json` says how the phone draws it: one tree of ShiftPane's components per size. It's declarative, not code. That makes it safe by construction, keeps every widget in the app's look, and lets the gallery check it against `sample.json` before anything runs.
+
+```json
+{
+  "small": {
+    "type": "stack",
+    "children": [
+      { "type": "label", "text": "GPU" },
+      { "type": "ring", "bind": "@gpu/percent" },
+      { "type": "history-bars", "bind": "@gpu/history" }
+    ]
+  }
+}
+```
+
+## Bindings
+
+| Write | It reads |
+| --- | --- |
+| `"bind": "@gpu/percent"` | A system source: the source's name, then a path into it |
+| `"bind": "/repos/0/name"` | The collector's output, as a JSON Pointer |
+| `"text": "Over {config.threshold}%"` | A config value, inside text |
+
+Every `@` binding has to name a source the manifest declares, and every `/` binding has to resolve in `sample.json`. The gallery checks both.
+
+## Components
+
+| Component | What it draws |
+| --- | --- |
+| `stack`, `row`, `grid` | Layout: a column, a row, or `columns` columns |
+| `label` | A small muted caption |
+| `text` | Text, from `text` or `bind` |
+| `value` | A big number with a small unit. `format`: `percent`, `number`, `compact`, `bytes`, `rate`, `celsius`, `duration` |
+| `ring` | A circular gauge, 0 to 100 |
+| `meter` | A row of blocks filling up, 0 to 100 |
+| `progress` | A thin bar, 0 to 100 |
+| `history-bars` | Recent values as thin bars, newest on the right |
+| `sparkline` | Recent values as a line |
+| `list` | Rows of `title`, `subtitle` and `value` |
+| `icon` | An icon from ShiftPane's set, by name |
+| `button` | Fires one of the manifest's [actions](/docs/actions) |
+
+There are no images from the web: an image URL would make the phone call out and give away its address.
+
+## Sizes
+
+A widget lists its sizes in the manifest, and gives each a tree: `small` is one cell of the board, `medium` two cells wide, `large` two by two. A size without its own tree uses the nearest one that has one.
+
+The previews on this site are drawn from `view.json` and `sample.json` in your browser, the way the phone draws them.

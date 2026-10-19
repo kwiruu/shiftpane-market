@@ -1,0 +1,58 @@
+<Planned>
+The SDK and the CLI aren't published yet. This is the workflow they're being built for.
+</Planned>
+
+From nothing to a widget on your phone, with live data, in a few minutes.
+
+## Create a widget
+
+```bash
+npm create shiftpane-widget@latest
+```
+
+Pick a template:
+
+| Template | What it gives you |
+| --- | --- |
+| PC data | A view bound to system sources. No collector. |
+| Web API | A collector that fetches from a host you name, and a view for its JSON. |
+| Local app | A collector that talks to an app on your PC, such as LibreHardwareMonitor. |
+| Phone only | A view with no PC data at all, like a countdown. |
+
+## Run it on your phone
+
+<Steps>
+<Step title="Turn on Developer mode">
+
+In the desktop app, open **Settings** and turn on **Developer mode**. It shows a one-time token for the CLI.
+
+</Step>
+<Step title="Start the dev server">
+
+```bash
+npx shiftpane-widget dev
+```
+
+It connects to the desktop app on the same PC, loads your folder, and reloads it every time you save. The widget shows on your paired phone, and in a browser preview at every size.
+
+</Step>
+<Step title="Edit">
+
+Change `view.json` or `collector.js` and watch the phone. Sources are your PC's real data; without the desktop app running, the preview uses `sample.json`.
+
+</Step>
+</Steps>
+
+## Types for free
+
+The CLI generates types from your `manifest.json`: `ctx.sources` has exactly the sources you declared, and `ctx.config` your config fields. JSON Schemas for `manifest.json` and `view.json` give your editor autocomplete.
+
+## Check, pack, publish
+
+```bash
+npx shiftpane-widget validate   # the gallery's own checks, locally
+npx shiftpane-widget pack       # the zip
+npx shiftpane-widget publish    # upload it
+```
+
+See [Publishing](/docs/publishing) for what happens next.

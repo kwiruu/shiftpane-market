@@ -1,0 +1,69 @@
+<Planned>
+The app checks `id`, `name`, `description`, `version`, `author`, `refreshSeconds`, `sizes`, `config`, and the `network` and `secrets` permissions today. The other fields are new in the first version of the package format.
+</Planned>
+
+`manifest.json` says what a widget is and what it may touch. The desktop app checks it when it loads a widget, and the gallery checks it on upload.
+
+```json
+{
+  "id": "gpu-ring",
+  "name": "GPU ring",
+  "description": "GPU load as a ring, with the last minute below it",
+  "version": "1.0.0",
+  "author": "your-github-login",
+  "license": "MIT",
+  "repository": "https://github.com/your-github-login/gpu-ring",
+  "categories": ["system"],
+  "minAppVersion": "0.5.0",
+  "sizes": ["small", "medium"],
+  "permissions": {
+    "sources": ["gpu"],
+    "actions": [],
+    "local": [],
+    "network": [],
+    "secrets": []
+  },
+  "config": []
+}
+```
+
+## Fields
+
+| Field | Required | What it is |
+| --- | --- | --- |
+| `id` | Yes | Lowercase-kebab-case, at most 64 characters. Unique in the gallery; some, like `pc-stats` and `clock`, are reserved. |
+| `name` | Yes | At most 48 characters. |
+| `description` | No | At most 280 characters. The gallery's one-line summary. |
+| `version` | Yes | Semver, such as `1.0.0`. Each upload has to be higher than the last. |
+| `author` | Yes | Your GitHub login. |
+| `license` | Yes | An SPDX id of an OSI-approved license. |
+| `repository` | No | Where the source lives. |
+| `categories` | Yes | Any of `system`, `dev`, `productivity`, `media`, `finance`, `weather`, `fun`, `other`. |
+| `minAppVersion` | Yes | The oldest ShiftPane the widget works with. |
+| `refreshSeconds` | No | Seconds between collector runs, 1 to 86,400. Leave it out for widgets with no collector. |
+| `sizes` | Yes | One or more of `small`, `medium`, `large`. |
+| `permissions` | No | What it may touch. See [Permissions](/docs/permissions). |
+| `config` | No | Settings the user fills in. See below. |
+
+## Permissions
+
+| Field | Holds |
+| --- | --- |
+| `sources` | [System sources](/docs/system-sources) it reads |
+| `actions` | [Actions](/docs/actions) its buttons fire |
+| `local` | Apps on this PC or network, as `host:port` |
+| `network` | Internet hosts its collector may fetch: a hostname such as `api.github.com`, or one leading wildcard such as `*.example.com` |
+| `secrets` | Names in `UPPER_SNAKE_CASE`, such as `GITHUB_TOKEN` |
+
+## Config fields
+
+Each has a `key` (camelCase), a `label`, an optional `help` and `required`, and a `type`:
+
+| Type | Extra fields |
+| --- | --- |
+| `string` | `default` |
+| `number` | `default`, `min`, `max` |
+| `boolean` | `default` |
+| `select` | `options` (a list of `value` and `label`), `default` |
+
+Keys have to be unique within a widget.

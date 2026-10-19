@@ -1,0 +1,17 @@
+The **Devices** page lists the phones paired with this PC, and is where new ones pair.
+
+## Paired phones
+
+A paired phone keeps a key for this PC and presents it when it connects. The PC keeps only a fingerprint (a SHA-256) of each key, so the key itself never sits on the PC. It remembers up to 16 phones, and forgets the one it saw longest ago when a seventeenth pairs.
+
+Phones that are away stay on the list, ready to reconnect.
+
+## Disconnect or forget
+
+- **Disconnect** closes the connection now. The phone stays paired and can reconnect.
+- **Forget** revokes the phone's key. To use it again, pair it again.
+- **New code** replaces the six-digit code. It doesn't disconnect anyone.
+
+## Reconnecting
+
+When the phone comes back to the foreground or back online, it reconnects at once. While connected, it keeps its screen on.

@@ -1,0 +1,32 @@
+ShiftPane is three programs. The phone talks only to the desktop app, and only the native helper talks to the OS.
+
+<ArchitectureFlow />
+
+## Who talks to whom
+
+```text
+ phone (web app) ── HTTPS / WebSocket ──▶ desktop app (Electron) ── stdin / stdout JSON ──▶ shiftpane-helper (Rust)
+       ▲                                        │                                               │
+       └──────────── WebRTC video ──────────────┘ captures only the virtual monitor             └─ creates and sizes it
+```
+
+- **Phone and desktop app:** HTTPS and a WebSocket on your network. The desktop app serves the phone app itself, so there's nothing to install from a store.
+- **Video:** WebRTC, encrypted (DTLS-SRTP). The desktop app captures only the virtual monitor, never your other screens, unless you pick one to show.
+- **Desktop app and helper:** JSON over the helper's standard input and output.
+
+Every message that crosses from one process to another is checked against a schema on both sides, and none of them ever carries a command to run.
+
+## What stays on the PC
+
+Secrets and everything that touches the system. The phone only ever receives video, and finished widget data.
+
+## The stack
+
+| Piece | Built with |
+| --- | --- |
+| Desktop app | Electron, React 19, electron-vite |
+| Phone app | React 19, Vite, Tailwind CSS, installable as a web app |
+| Native helper | Rust, one crate per OS behind a shared interface |
+| Messages | zod between the phone and the PC, serde between the app and the helper |
+
+The source is on <RepoLink>GitHub</RepoLink>, MIT licensed.

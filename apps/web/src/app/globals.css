@@ -1,0 +1,579 @@
+/*
+ * ShiftPane Web: DESIGN.md tokens ("ShiftPane Minimal") for Tailwind CSS v4 and shadcn/ui.
+ *
+ * DESIGN.md is the source of truth. Every token maps to one theme variable with the same name:
+ *
+ *   colors.<name> + colors.<name>-dark  →  --color-<name>: light-dark(<light>, <dark>)  → bg-<name>, text-<name>
+ *   typography.<name>                   →  --text-<name> (+ line height, tracking, weight) → text-<name>
+ *   rounded.<name>                      →  --radius-<name>                               → rounded-<name>
+ *   spacing (6, 12, 16, 24, 56, 112)    →  --spacing: 4px                                → 1.5, 3, 4, 6, 14, 28
+ *
+ * Two DESIGN.md names mean something else in shadcn: `secondary` is gray text here (a button fill in
+ * shadcn), and `accent` is orange (a menu hover in shadcn). The DESIGN.md meaning wins; shadcn
+ * components are restyled to use `muted` instead.
+ */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "lenis/dist/lenis.css";
+
+/* next-themes puts .light or .dark on <html>. Tokens switch on their own through light-dark(). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-*: initial;
+  --font-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+
+  /* Colors (DESIGN.md) */
+  --color-primary: light-dark(#111111, #f5f5f5);
+  --color-secondary: light-dark(#6b6b6b, #a1a1a1);
+  --color-tertiary: light-dark(#e5e7eb, #2a2a2a);
+  --color-neutral: light-dark(#f5f5f5, #000000);
+  --color-surface: light-dark(#ffffff, #161616);
+  --color-on-surface: light-dark(#111111, #f5f5f5);
+  --color-error: light-dark(#d92d20, #f97066);
+  --color-success: light-dark(#067647, #47cd89);
+  --color-accent: light-dark(#f59e0b, #f59e0b);
+  --color-border: light-dark(#e5e7eb, #262626);
+  --color-muted: light-dark(#efefef, #1f1f1f);
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* The phone's widget board (DESIGN.md, Widget previews). Pictures of the phone, not page tokens:
+     the same in both appearances, because the phone board is always black. */
+  --color-flame: oklch(0.67 0.22 37);
+  --color-lime: oklch(0.92 0.2 118);
+  --color-mint: oklch(0.75 0.2 148);
+  --color-sky: oklch(0.6 0.21 258);
+
+  /* Fonts. SF Pro on Apple devices; Inter (self-hosted by next/font as --font-inter) elsewhere. */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", var(--font-inter), InterVariable, Inter,
+    system-ui, sans-serif;
+  --font-display:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", var(--font-inter),
+    InterVariable, Inter, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+  /* Type (DESIGN.md), plus the reader's text size step --dt (see the base layer) */
+  --text-headline-display: calc(40px + var(--dt));
+  --text-headline-display--line-height: calc(44px + var(--dt));
+  --text-headline-display--letter-spacing: -1.4px;
+  --text-headline-display--font-weight: 500;
+
+  --text-headline-lg: calc(33px + var(--dt));
+  --text-headline-lg--line-height: calc(40px + var(--dt));
+  --text-headline-lg--letter-spacing: 0.26px;
+  --text-headline-lg--font-weight: 500;
+
+  --text-headline-md: calc(28px + var(--dt));
+  --text-headline-md--line-height: calc(34px + var(--dt));
+  --text-headline-md--letter-spacing: 0px;
+  --text-headline-md--font-weight: 500;
+
+  --text-headline-sm: calc(23px + var(--dt));
+  --text-headline-sm--line-height: calc(28px + var(--dt));
+  --text-headline-sm--letter-spacing: 0px;
+  --text-headline-sm--font-weight: 500;
+
+  --text-body-lg: calc(19px + var(--dt));
+  --text-body-lg--line-height: calc(26.6px + var(--dt));
+  --text-body-lg--letter-spacing: -0.38px;
+  --text-body-lg--font-weight: 500;
+
+  --text-body-md: calc(16px + var(--dt));
+  --text-body-md--line-height: calc(24px + var(--dt));
+  --text-body-md--letter-spacing: -0.02em;
+  --text-body-md--font-weight: 500;
+
+  --text-body-sm: max(12px, calc(13px + var(--dt)));
+  --text-body-sm--line-height: max(16px, calc(18px + var(--dt)));
+  --text-body-sm--letter-spacing: -0.01em;
+  --text-body-sm--font-weight: 500;
+
+  --text-label-lg: max(12px, calc(13px + var(--dt)));
+  --text-label-lg--line-height: max(16px, calc(18px + var(--dt)));
+  --text-label-lg--letter-spacing: -0.01em;
+  --text-label-lg--font-weight: 600;
+
+  --text-label-md: max(11px, calc(12px + var(--dt)));
+  --text-label-md--line-height: max(14px, calc(16px + var(--dt)));
+  --text-label-md--letter-spacing: 0px;
+  --text-label-md--font-weight: 600;
+
+  --text-label-sm: max(10px, calc(11px + var(--dt)));
+  --text-label-sm--line-height: max(12px, calc(14px + var(--dt)));
+  --text-label-sm--letter-spacing: 0.02em;
+  --text-label-sm--font-weight: 600;
+
+  --text-micro: max(10px, calc(10px + var(--dt)));
+  --text-micro--line-height: max(12px, calc(12px + var(--dt)));
+  --text-micro--letter-spacing: 0.02em;
+  --text-micro--font-weight: 500;
+
+  --text-code: calc(13px + var(--dt));
+  --text-code--line-height: calc(20px + var(--dt));
+  --text-code--letter-spacing: 0px;
+  --text-code--font-weight: 400;
+
+  /* Radii (DESIGN.md). --squircle-k is 1.5 where corner-shape: squircle works (base layer). */
+  --radius-none: 0px;
+  --radius-sm: calc(4px * var(--squircle-k));
+  --radius-md: calc(8px * var(--squircle-k));
+  --radius-lg: calc(16px * var(--squircle-k));
+  --radius-xl: calc(24px * var(--squircle-k));
+
+  /* Layout: DESIGN.md spacing is 6, 12, 16, 24, 56, 112 = 1.5, 3, 4, 6, 14, 28 on a 4px base */
+  --spacing: 4px;
+  --spacing-nav: 56px;
+  /* Equal space above and below the navigation bar, and the height of the header with both. */
+  --spacing-nav-gap: 12px;
+  --spacing-header: calc(var(--spacing-nav) + 2 * var(--spacing-nav-gap));
+  --container-column: 720px;
+  --container-showcase: 880px;
+  --container-stage: 960px;
+
+  /* Depth: the system is flat. Only menus and the device mockup get a soft shadow. */
+  --shadow-menu:
+    0 0 0 1px var(--color-border), 0 2px 6px light-dark(rgb(0 0 0 / 0.04), rgb(0 0 0 / 0.4)),
+    0 16px 40px -12px light-dark(rgb(0 0 0 / 0.14), rgb(0 0 0 / 0.6));
+  --shadow-device: 0 48px 80px -48px light-dark(rgb(0 0 0 / 0.45), rgb(0 0 0 / 0.9));
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --default-transition-duration: 200ms;
+  --default-transition-timing-function: var(--ease-out-expo);
+}
+
+/* shadcn names that mean the same thing as a DESIGN.md token */
+@theme inline {
+  --color-background: var(--color-neutral);
+  --color-foreground: var(--color-on-surface);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-on-surface);
+  --color-popover: var(--color-surface);
+  --color-popover-foreground: var(--color-on-surface);
+  --color-primary-foreground: var(--color-surface);
+  --color-secondary-foreground: var(--color-on-surface);
+  --color-muted-foreground: var(--color-secondary);
+  --color-accent-foreground: var(--color-on-surface);
+  --color-destructive: var(--color-error);
+  --color-input: var(--color-border);
+  --color-ring: var(--color-primary);
+  --font-heading: var(--font-display);
+
+  /* The widget preview's card colours, from the nearest .tone-* (DESIGN.md, Widget previews) */
+  --color-card-bg: var(--card);
+  --color-card-ink: var(--card-ink);
+  --color-card-muted: var(--card-muted);
+  --color-card-line: var(--card-line);
+  --color-card-soft: var(--card-soft);
+
+  /* Tailwind's default size names → the nearest DESIGN.md style */
+  --text-xs: var(--text-label-md);
+  --text-xs--line-height: var(--text-label-md--line-height);
+  --text-sm: var(--text-body-sm);
+  --text-sm--line-height: var(--text-body-sm--line-height);
+  --text-base: var(--text-body-md);
+  --text-base--line-height: var(--text-body-md--line-height);
+  --text-lg: var(--text-body-lg);
+  --text-lg--line-height: var(--text-body-lg--line-height);
+  --text-xl: var(--text-headline-sm);
+  --text-xl--line-height: var(--text-headline-sm--line-height);
+  --text-2xl: var(--text-headline-md);
+  --text-2xl--line-height: var(--text-headline-md--line-height);
+  --text-3xl: var(--text-headline-lg);
+  --text-3xl--line-height: var(--text-headline-lg--line-height);
+  --text-4xl: var(--text-headline-display);
+  --text-4xl--line-height: var(--text-headline-display--line-height);
+
+  --radius: var(--radius-md);
+  --radius-xs: var(--radius-sm);
+  --radius-2xl: var(--radius-xl);
+  --radius-3xl: var(--radius-xl);
+  --radius-4xl: var(--radius-xl);
+
+  --shadow-xs: 0 1px 2px light-dark(rgb(0 0 0 / 0.04), rgb(0 0 0 / 0.4));
+  --shadow-sm: var(--shadow-xs);
+  --shadow-md: var(--shadow-menu);
+  --shadow-lg: var(--shadow-menu);
+  --shadow-xl: var(--shadow-menu);
+}
+
+/* The navigation bar once content scrolls under it: the page color, translucent and blurred */
+@utility glass {
+  background-color: color-mix(in srgb, var(--color-neutral) 78%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  @media (prefers-reduced-transparency: reduce) {
+    background-color: var(--color-neutral);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* The story column, with gutters that respect the notch */
+@utility column {
+  width: 100%;
+  max-width: calc(var(--container-column) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-left: max(var(--gutter), env(safe-area-inset-left));
+  padding-right: max(var(--gutter), env(safe-area-inset-right));
+}
+
+/* A wider frame for the navigation, the docs and the marketplace */
+@utility frame {
+  width: 100%;
+  max-width: calc(1216px + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-left: max(var(--gutter), env(safe-area-inset-left));
+  padding-right: max(var(--gutter), env(safe-area-inset-right));
+}
+
+/* ── Widget previews: the phone's board, drawn in the browser (DESIGN.md, Widget previews) ──── */
+
+/* The page behind the widgets: black, like the phone's own standby screen, in both appearances. */
+.board {
+  background-color: #000;
+  color-scheme: dark;
+  font-family: var(--font-sans);
+}
+
+/* Card colours. A widget is a dark card unless it asks for a light one. */
+.tone-dark {
+  --card: oklch(0.19 0.004 286);
+  --card-ink: oklch(0.97 0.002 286);
+  --card-muted: oklch(0.66 0.01 286);
+  --card-line: oklch(0.3 0.005 286);
+  --card-soft: oklch(0.26 0.005 286);
+}
+.tone-light {
+  --card: oklch(1 0 0);
+  --card-ink: oklch(0.18 0.004 286);
+  --card-muted: oklch(0.6 0.008 286);
+  --card-line: oklch(0.92 0.003 286);
+  --card-soft: oklch(0.955 0.002 286);
+}
+
+/* ── Scroll-driven motion (no JavaScript). Browsers without it show the end state. ─────────── */
+
+@keyframes board-in {
+  from {
+    translate: 0 14%;
+    opacity: 0;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+@keyframes desk-dim {
+  to {
+    filter: brightness(0.82) saturate(0.9);
+  }
+}
+@keyframes pair-out {
+  to {
+    opacity: 0;
+    scale: 0.96;
+  }
+}
+@keyframes pair-in {
+  from {
+    opacity: 0;
+    scale: 0.96;
+  }
+}
+@keyframes hint-out {
+  to {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+@keyframes drift {
+  to {
+    translate: 0 var(--drift, -240px);
+  }
+}
+@keyframes copy-out {
+  to {
+    opacity: 0;
+    translate: -64px 0;
+    visibility: hidden;
+  }
+}
+/* From the right column, smaller, to the devices' own place in the center (the "to" state). */
+@keyframes device-center {
+  from {
+    translate: var(--device-from-x) 0;
+    scale: var(--device-from-scale);
+  }
+}
+@keyframes caption-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* The "Scan to pair" state only makes sense when scrolling pairs the phone. Without scroll-driven
+   animation the devices are shown already paired. */
+.board-hint,
+.pair-qr {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .board-hint {
+      display: flex;
+    }
+    .pair-qr {
+      display: grid;
+    }
+
+    /* Phones and tablets: the devices sit under the hero text in a section taller than the screen,
+       and stick while the phone pairs and its board fills in. */
+    .board-stage {
+      height: 190vh;
+      view-timeline: --board block;
+    }
+    .board-sticky {
+      position: sticky;
+      top: max(calc(var(--spacing-header) + 12px), calc(50vh - 320px));
+    }
+    /* The hint shows while the devices settle and fades as the phone pairs; the board is in a
+       little past halfway, leaving time to look at it before the page moves on. */
+    .board-panel {
+      animation: board-in linear both;
+      animation-timeline: --board;
+      animation-range: contain 22% contain 58%;
+    }
+    .board-desk {
+      animation: desk-dim linear forwards;
+      animation-timeline: --board;
+      animation-range: contain 14% contain 58%;
+    }
+    .pair-qr {
+      animation: pair-out linear both;
+      animation-timeline: --board;
+      animation-range: contain 14% contain 30%;
+    }
+    .pair-done {
+      animation: pair-in linear both;
+      animation-timeline: --board;
+      animation-range: contain 26% contain 40%;
+    }
+    .board-hint {
+      animation: hint-out linear both;
+      animation-timeline: --board;
+      animation-range: contain 6% contain 18%;
+    }
+
+    /* Desktops, the hero stage: one tall section with a screen-high frame that stays put. The text
+       starts on the left and the devices, smaller, on the right. Scrolling fades the text out and
+       glides the devices to the center at full size, then pairs the phone:
+         0 to 22%   text fades out to the left
+         0 to 30%   devices move to the center and grow; their caption fades in near the end
+         36 to 44%  the hint fades
+         40 to 52%  the pairing code on the laptop gives way to "Connected"
+         44 to 74%  the board fills the phone, the laptop dims; the rest is time to look at it
+       From 1280px, where the text and a 62% stage fit side by side without touching. */
+    @media (width >= 80rem) {
+      .hero-stage {
+        height: 300svh;
+        view-timeline: --hero block;
+      }
+      .hero-sticky {
+        position: sticky;
+        top: 0;
+        height: 100svh;
+        overflow: clip;
+      }
+      .hero-copy {
+        position: absolute;
+        inset-inline: 0;
+        top: 50%;
+        z-index: 1;
+        max-width: calc(1216px + 2 * var(--gutter));
+        padding-block: 0;
+        transform: translateY(-50%);
+        animation: copy-out linear both;
+        animation-timeline: --hero;
+        animation-range: contain 0% contain 22%;
+      }
+      /* The devices' layer covers the frame but lets clicks through to the text beside it. */
+      .board-stage {
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        display: grid;
+        align-items: center;
+        height: auto;
+        padding-top: var(--spacing-header);
+        view-timeline: none;
+        pointer-events: none;
+      }
+      .board-sticky {
+        position: static;
+      }
+      .hero-device {
+        --device-from-x: calc(min(1216px, 100vw - 2 * var(--gutter)) * 0.26);
+        /* As large as it can be and still clear the text beside it at every width from 1280px up. */
+        --device-from-scale: 0.66;
+        pointer-events: auto;
+        animation: device-center linear both;
+        animation-timeline: --hero;
+        animation-range: contain 0% contain 30%;
+      }
+      .hero-caption {
+        animation: caption-in linear both;
+        animation-timeline: --hero;
+        animation-range: contain 24% contain 32%;
+      }
+      .board-hint {
+        animation-timeline: --hero;
+        animation-range: contain 36% contain 44%;
+      }
+      .pair-qr {
+        animation-timeline: --hero;
+        animation-range: contain 40% contain 48%;
+      }
+      .pair-done {
+        animation-timeline: --hero;
+        animation-range: contain 46% contain 54%;
+      }
+      .board-panel,
+      .board-desk {
+        animation-timeline: --hero;
+        animation-range: contain 44% contain 74%;
+      }
+    }
+
+    /* The rail beside the column drifts at its own pace */
+    .drift {
+      animation: drift linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    /* Light, not `light dark`: the site opens light rather than following the OS, and this is what
+       answers before next-themes puts its class on <html>, and where JavaScript never runs. */
+    color-scheme: light;
+
+    /* Text size: the step added to every style. Follows the browser's text size (16px = no step),
+       so readers who enlarge text get every style one step bigger. */
+    --dt-system: calc(1rem - 16px);
+    --dt: var(--dt-system);
+
+    --squircle-k: 1;
+    --gutter: 20px;
+  }
+  .light {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+
+  /* iOS Safari: 1rem becomes the reader's Dynamic Type body size (17px at the default). */
+  @supports (font: -apple-system-body) and (-webkit-touch-callout: none) {
+    :root {
+      /* biome-ignore lint/a11y/useGenericFontNames: a system font keyword, used only to read the size */
+      font: -apple-system-body;
+      --dt-system: calc(1rem - 17px);
+    }
+  }
+
+  @media (width >= 40rem) {
+    :root {
+      --gutter: 32px;
+    }
+  }
+
+  /* Continuous corners where the browser can draw them; radii scale so they keep their size. */
+  @supports (corner-shape: squircle) {
+    :root {
+      --squircle-k: 1.5;
+    }
+    *,
+    ::before,
+    ::after {
+      corner-shape: squircle;
+    }
+    .rounded-full,
+    [data-slot="badge"],
+    [data-slot="slider"] * {
+      corner-shape: round;
+    }
+  }
+
+  * {
+    @apply border-border outline-primary;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-neutral);
+    color: var(--color-on-surface);
+    font-family: var(--font-sans);
+    font-size: var(--text-body-md);
+    line-height: var(--text-body-md--line-height);
+    letter-spacing: var(--text-body-md--letter-spacing);
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+  p,
+  li {
+    text-wrap: pretty;
+  }
+  code,
+  kbd,
+  pre,
+  samp {
+    font-family: var(--font-mono);
+  }
+
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* Anchors clear the header, with a little room to breathe. Lenis honors this too. */
+  [id] {
+    scroll-margin-top: calc(var(--spacing-header) + 24px);
+  }
+}

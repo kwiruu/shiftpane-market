@@ -1,0 +1,27 @@
+Every widget in the gallery runs on someone's PC, so we hold them to a few rules. They apply to every upload and every update, and we check them in [review](/docs/permissions#how-review-works).
+
+## A listed widget
+
+- **Ships readable source.** No minified or obfuscated code. The CLI bundles dependencies as readable code, so that's never a reason.
+- **Asks only for what it needs.** Every source, action, host and secret has to have a reason the README gives.
+- **Sends secrets only to their issuer.** A GitHub token goes to GitHub and nowhere else.
+- **Has an OSI-approved license,** and includes it.
+
+## Not allowed
+
+- Tracking, analytics or ads.
+- Impersonating a brand, a product, or another author.
+- Adult, hateful or harassing content.
+- Anything that tries to get around the sandbox or the permissions.
+
+## Reporting
+
+Anyone signed in can report a widget from its page. Reports go to the reviewers.
+
+## Takedowns
+
+We can yank a version, or a whole widget, at any time. A yanked version lands on the gallery's signed revocation list, which the app checks at start and every six hours, so every installed copy turns off within a few hours and says why.
+
+## Changes
+
+This policy can change as the gallery grows. The current version is always on this page.

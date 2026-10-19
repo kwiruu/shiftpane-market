@@ -1,0 +1,19 @@
+<Planned />
+
+Actions go the other way: buttons on the phone that do something on the PC. They come from a fixed list the app implements, and a widget lists the ones it uses in `permissions.actions`.
+
+<ActionsTable />
+
+In the view, a `button` names one:
+
+```json
+{ "type": "button", "action": "media.play-pause", "icon": "pause", "label": "Play or pause" }
+```
+
+## Names, never commands
+
+The message from the phone carries the action's name, never a command to run, and the app only knows the names above. A widget can't make your PC do anything else.
+
+## Later: macro buttons
+
+Buttons you bind yourself, Stream Deck style: you decide on the PC what button 3 does (open an app, press a shortcut), and the widget only ever says "button 3 pressed".

@@ -1,0 +1,29 @@
+<Planned />
+
+A widget is a folder, packed into a zip. The CLI packs it deterministically, so the same folder always makes the same zip and the same SHA-256.
+
+## Files
+
+| File | Required | What it is |
+| --- | --- | --- |
+| `manifest.json` | Yes | What the widget is and may touch. See [manifest.json](/docs/manifest). |
+| `view.json` | Yes | How the phone draws it. See [Views](/docs/views). |
+| `sample.json` | Yes | Example data the view binds to. Used for previews, review and the demo. |
+| `collector.js` | No | One ES module that default-exports `defineCollector(...)`. Leave it out for widgets that only bind sources. |
+| `icon.png` | No | 256 × 256 PNG. Not SVG: an SVG can carry script. |
+| `README.md` | Yes | What it does, its settings, and why it needs each permission. |
+| `LICENSE` | Yes | The license text. |
+| `screenshots/*.png` | No | For the gallery page. |
+
+Nothing else goes in the zip.
+
+## Limits
+
+| Limit | |
+| --- | --- |
+| The whole package | 1 MB |
+| `collector.js` | 256 KB, not minified |
+
+## sample.json
+
+It's what the collector would return, so every `/` binding in the view resolves in it. For a widget with no collector it can be `{}`: system sources come from the app, or from a sample PC in previews.

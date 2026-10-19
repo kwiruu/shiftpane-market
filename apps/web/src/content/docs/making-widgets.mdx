@@ -1,0 +1,42 @@
+<Planned>
+Today ShiftPane's widgets are built in. Loading widgets it didn't ship with is the next big piece of work on the app, and this section describes the format they'll use. The [gallery](/widgets) shows the first ones.
+</Planned>
+
+A widget is a small folder: a manifest that says what it is and what it may touch, a view that says how the phone draws it, and, if it needs one, a collector that fetches its data on the PC. Every widget, however it was made, is that same folder, so anything you make can be shared in the gallery.
+
+## Three ways in
+
+| Who | Tool | What you can make |
+| --- | --- | --- |
+| Anyone | [Widget Studio](/docs/widget-studio) in the desktop app | Widgets that show PC data, or phone-only ones like a countdown. No code. |
+| Anyone | The AI generator: describe it in a sentence | The same, plus simple collectors. It opens in Widget Studio to adjust. |
+| Developers | The [SDK and CLI](/docs/quickstart) | Anything the permissions allow: web APIs, apps on your PC, logic. |
+
+Most PC-stats widgets are pure bindings and need no code at all, which also makes them the quickest to review.
+
+## Two halves
+
+1. **A collector** runs on the PC on a timer and returns plain JSON. It's optional: a widget that only shows PC data doesn't need one. See [Collectors](/docs/collectors).
+2. **A view** draws that JSON on the phone. It's JSON too, a tree of ShiftPane's own components, so no code a widget author wrote ever runs on the phone. See [Views](/docs/views).
+
+## Where the data comes from
+
+- **System sources:** the PC's CPU, GPU, memory, network, what's playing and more, read once by the app and shared with every widget that declares them. See [System sources](/docs/system-sources).
+- **The web:** a collector's `fetch` can reach the internet hosts the manifest lists, and no others.
+- **Apps on your PC or network:** LibreHardwareMonitor, OBS, Home Assistant, Ollama and the like, at an exact address and port, after asking you.
+
+## The folder
+
+```text
+gpu-ring/
+  manifest.json      what it is, and what it may touch
+  view.json          how the phone draws it
+  sample.json        example data, for previews and review
+  collector.js       optional: code that runs on the PC
+  icon.png           optional: 256 × 256
+  README.md
+  LICENSE
+  screenshots/*.png  optional
+```
+
+[Package format](/docs/package-format) has the rules and limits, and [manifest.json](/docs/manifest) every field.

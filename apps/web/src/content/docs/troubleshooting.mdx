@@ -1,0 +1,23 @@
+## The phone can't connect
+
+- **Same Wi-Fi.** The phone and the PC have to be on the same network. Guest networks often keep devices apart.
+- **The right adapter.** With a VPN, WSL or VirtualBox, the QR code may name the wrong address. Pick your Wi-Fi or Ethernet adapter from the **Network** menu under the QR code.
+- **Windows Firewall.** If the firewall would block phones from reaching the PC, the Devices page says so. Allow ShiftPane on private networks, and make sure Windows counts your home network as private.
+- **The certificate.** The first time, the browser warns about the PC's certificate. That's expected: accept it once.
+
+## The code is refused
+
+Codes change every ten minutes, and each pairs one phone. After five wrong tries the PC stops taking codes until the next one: press **New code** on the Devices page.
+
+## No monitor appears
+
+- **Windows:** Virtual Display Driver has to be installed, once. See [Install ShiftPane](/docs/install#the-virtual-monitor).
+- **The split.** On the **Widgets** split there's no monitor at all. Pick another split on the phone or on the Phone layout page.
+
+## A widget says "Waiting for the PC"
+
+The widget has no data yet. PC stats come from the native helper; if it isn't running, the board has nothing to show. Restart the desktop app.
+
+## Still stuck
+
+Open an issue on <RepoLink issues>GitHub</RepoLink> with your OS, your phone, and what you see.

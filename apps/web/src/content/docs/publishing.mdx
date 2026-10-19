@@ -1,0 +1,46 @@
+<Planned>
+Uploads open with GitHub sign-in. Until then, the [upload page](/upload) shows what it will look like.
+</Planned>
+
+## Before you upload
+
+- Run `npx shiftpane-widget validate`. It runs the gallery's own checks on your folder, so nothing surprises you after uploading.
+- Pick an OSI-approved license and include its `LICENSE` file. Widgets are open source, so others can read what runs on their PC.
+- Ask only for what the widget needs. Every permission is something a reviewer has to agree with.
+- Read the [content policy](/docs/content-policy).
+
+## Upload
+
+Sign in with GitHub, then either:
+
+- **Share from the app.** The desktop app signs you in with a code and uploads the package for you.
+- **Upload the zip** on the [Publish](/upload) page, made with `npx shiftpane-widget pack`.
+- **Publish from the CLI** with `npx shiftpane-widget publish`, using an API token.
+
+## What happens next
+
+<Steps>
+<Step title="Checks">
+
+The automated checks run at once and you see the report. A failed check blocks the upload, and the report says what to fix.
+
+</Step>
+<Step title="Review">
+
+A person reviews every new widget and every version that changes permissions. You get an email when it's approved or rejected, with the reviewer's note.
+
+</Step>
+<Step title="Listed">
+
+Approved versions are signed and published. The widget shows in the gallery and in the app's Get widgets page.
+
+</Step>
+</Steps>
+
+## Updates
+
+Upload a new version with a higher version number. If its permissions didn't change, people who installed it get it without a prompt; if they did, the app asks them again, showing what was added.
+
+## Your dashboard
+
+[Your widgets](/dashboard) lists everything you've uploaded, each version's status, and the reports from its checks.

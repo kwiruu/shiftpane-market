@@ -1,0 +1,58 @@
+ShiftPane is in early development and hasn't had a release yet, so for now you build it from source. It runs on Windows, macOS and Linux. Once there are releases, each one comes as an installer: an `.exe` for Windows, a `.dmg` for macOS, and an AppImage or `.deb` for Linux.
+
+## What you need
+
+<Requirements />
+
+On Windows, building the native helper also needs Visual Studio (or its Build Tools) with the C++ workload, as any Rust program on Windows does.
+
+## Build and run
+
+<Steps>
+<Step title="Get the code">
+
+Clone the repository and open a terminal in its folder.
+
+<CloneCommand />
+
+</Step>
+<Step title="Install and build the phone app">
+
+The desktop app serves the phone app to your phone, so build it once first:
+
+```bash
+pnpm install
+pnpm --filter @shiftpane/phone build
+```
+
+</Step>
+<Step title="Start the desktop app">
+
+```bash
+pnpm dev:desktop
+```
+
+The window opens on the Devices page, with a QR code to pair your first phone.
+
+</Step>
+</Steps>
+
+## The virtual monitor
+
+Display mode needs a virtual monitor, and each OS makes one differently. Widgets work without it.
+
+<PlatformTable />
+
+On Windows, install Virtual Display Driver once:
+
+```powershell
+winget install --id=VirtualDrivers.Virtual-Display-Driver -e
+```
+
+Then open **VDD Control** from the folder winget installed it to and click **Install**. ShiftPane tells you if the driver is missing when you first ask for a monitor.
+
+## Make an installer
+
+To package the app for the OS you're on, run `pnpm package`. The installer lands in `apps/desktop/release/`.
+
+Next: [pair a phone](/docs/pair-a-phone).

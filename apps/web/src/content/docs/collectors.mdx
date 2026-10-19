@@ -1,0 +1,52 @@
+A collector is the part of a widget that runs on the PC. The app calls it on a timer, and whatever JSON it returns goes to the phone for the view to draw. Widgets that only show PC data don't need one.
+
+```js
+// collector.js: "is my PC busy?", from two sources and one config value
+import { defineCollector } from '@shiftpane/widget-sdk'
+
+export default defineCollector(({ sources, config }) => {
+  const cpu = sources.cpu.percent ?? 0
+  const memory = sources.memory.percent ?? 0
+  return { busy: cpu > config.threshold || memory > config.threshold, cpu, memory }
+})
+```
+
+## What it gets
+
+| Field | What it is |
+| --- | --- |
+| `sources` | A read-only snapshot of the system sources it declared |
+| `config` | The user's settings for this widget |
+| `secrets` | The secrets it declared, such as `GITHUB_TOKEN` |
+| `fetch` | A `fetch` that reaches only the hosts it declared |
+| `signal` | Aborted when the run times out or the widget is removed |
+| `log` | Writes a line to the widget’s log |
+
+It returns plain JSON, which has to match what the view binds and is checked before it goes to the phone.
+
+## The sandbox
+
+<Planned>
+The sandbox is part of the work to load third-party widgets. This is its design.
+</Planned>
+
+Collectors run in QuickJS compiled to WebAssembly, not in Node. There is no `require`, no file system, no processes, and no Electron.
+
+| Limit | Per run |
+| --- | --- |
+| Memory | 32 MB |
+| Time | 10 seconds |
+| Output | 64 KB of JSON |
+| A response it fetches | 2 MB |
+
+`fetch` is the app's, not the browser's:
+
+- A host has to match `permissions.network`, over HTTPS, or exactly match a `permissions.local` address and port.
+- For internet hosts, the app resolves the name first and refuses anything that lands on your own network: loopback, private, link-local and carrier-grade NAT addresses. A widget can't reach your router by pointing a public name at it.
+- Each widget has its own rate limit.
+
+Secrets are kept encrypted on the PC and only given to the widget that declared them.
+
+## One file, readable
+
+`collector.js` is one ES module, at most 256 KB, and not minified. The CLI bundles any npm packages into it as readable code, so a reviewer reads exactly what runs.
