@@ -15,7 +15,7 @@ tokens, type, pills, definition cards and motion, described in
 | W1, docs site | Landing page and 20 docs pages, written from the ShiftPane README and the plan. Pages about features the app doesn't have yet say so. |
 | W2, read-only gallery | Gallery home, search, widget pages with live previews, author pages. The six first-party widgets in `first-party/` are published through the API, which signs `index.json` and stores packages in Vercel Blob. |
 | W3, uploads and review | The API does uploads, the automated checks, the review queue, approving and rejecting, yanking and reports. Sign-in waits for the GitHub OAuth app, so the site's upload, dashboard and review pages still show sample data. |
-| Deploy | API and Postgres on Heroku, site and Blob on Vercel. See [Deploying](#deploying). |
+| Deploy | Live: the site at [shiftpane.vercel.app](https://shiftpane.vercel.app) (Vercel project `shiftpane`, Blob store `shiftpane-registry`), the API on the Heroku app `shiftpane-api` with Postgres. See [Deploying](#deploying). |
 
 ## Run it
 
