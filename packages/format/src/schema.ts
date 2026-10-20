@@ -153,7 +153,7 @@ const Bind = z
     'bind a source as @name/path, or the collector output as /path',
   )
 const Text = z.string().max(120)
-const Accent = z.enum(['flame', 'lime', 'mint', 'sky'])
+const Accent = z.enum(['flame', 'lime', 'mint', 'sky', 'ink'])
 const IconName = z
   .string()
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'use an icon name such as star')
@@ -175,6 +175,7 @@ export const viewNodeSchema: z.ZodType<ViewNode> = z.lazy(() =>
         children: z.array(viewNodeSchema).max(24),
         gap: z.number().min(0).max(12).optional(),
         align: z.enum(['start', 'center', 'end', 'between']).optional(),
+        inset: z.boolean().optional(),
       })
       .strict(),
     z
@@ -191,7 +192,7 @@ export const viewNodeSchema: z.ZodType<ViewNode> = z.lazy(() =>
         type: z.literal('text'),
         text: Text.optional(),
         bind: Bind.optional(),
-        size: z.enum(['sm', 'md', 'lg']).optional(),
+        size: z.enum(['xs', 'sm', 'md', 'lg']).optional(),
         muted: z.boolean().optional(),
       })
       .strict(),
@@ -212,6 +213,8 @@ export const viewNodeSchema: z.ZodType<ViewNode> = z.lazy(() =>
         bind: Bind,
         label: Text.optional(),
         color: Accent.optional(),
+        size: z.enum(['sm', 'fill']).optional(),
+        unit: z.boolean().optional(),
       })
       .strict(),
     z
@@ -227,6 +230,7 @@ export const viewNodeSchema: z.ZodType<ViewNode> = z.lazy(() =>
         type: z.literal('history-bars'),
         bind: Bind,
         max: z.number().positive().optional(),
+        count: z.number().int().min(2).max(120).optional(),
       })
       .strict(),
     z.object({ type: z.literal('sparkline'), bind: Bind, color: Accent.optional() }).strict(),
@@ -244,6 +248,23 @@ export const viewNodeSchema: z.ZodType<ViewNode> = z.lazy(() =>
         action: z.enum(actionNames),
         icon: IconName,
         label: Text,
+      })
+      .strict(),
+    z.object({ type: z.literal('divider') }).strict(),
+    z
+      .object({
+        type: z.literal('cover'),
+        bind: Bind.optional(),
+        icon: IconName,
+        size: z.enum(['sm', 'md']).optional(),
+      })
+      .strict(),
+    z.object({ type: z.literal('equalizer') }).strict(),
+    z
+      .object({
+        type: z.literal('glow'),
+        color: Accent.optional(),
+        corner: z.enum(['top-right', 'bottom-right']).optional(),
       })
       .strict(),
   ]),

@@ -277,6 +277,32 @@
   --card-soft: oklch(0.955 0.002 286);
 }
 
+/* "Playing": three bars bouncing, as on the app's media widget. */
+@keyframes equalize {
+  0%,
+  100% {
+    scale: 1 0.35;
+  }
+  50% {
+    scale: 1 1;
+  }
+}
+.equalizer > span {
+  transform-origin: bottom;
+  animation: equalize 0.9s ease-in-out infinite;
+}
+.equalizer > span:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.equalizer > span:nth-child(3) {
+  animation-delay: -0.6s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .equalizer > span {
+    animation: none;
+  }
+}
+
 /* ── Scroll-driven motion (no JavaScript). Browsers without it show the end state. ─────────── */
 
 @keyframes board-in {

@@ -1,11 +1,11 @@
 {
   "small": {
-    "type": "stack",
-    "align": "between",
+    "type": "grid",
+    "columns": 2,
     "children": [
       {
-        "type": "row",
-        "align": "between",
+        "type": "stack",
+        "gap": 0.5,
         "children": [
           {
             "type": "label",
@@ -15,18 +15,13 @@
             "type": "value",
             "bind": "@cpu/percent",
             "format": "percent",
-            "size": "md"
+            "size": "sm"
           }
         ]
       },
       {
-        "type": "progress",
-        "bind": "@cpu/percent",
-        "color": "flame"
-      },
-      {
-        "type": "row",
-        "align": "between",
+        "type": "stack",
+        "gap": 0.5,
         "children": [
           {
             "type": "label",
@@ -36,90 +31,73 @@
             "type": "value",
             "bind": "@memory/percent",
             "format": "percent",
-            "size": "md"
+            "size": "sm"
           }
         ]
-      },
-      {
-        "type": "progress",
-        "bind": "@memory/percent",
-        "color": "sky"
       }
     ]
   },
   "medium": {
     "type": "stack",
     "align": "between",
+    "gap": 0,
     "children": [
       {
-        "type": "grid",
-        "columns": 3,
-        "children": [
-          {
-            "type": "ring",
-            "bind": "@cpu/percent",
-            "label": "CPU",
-            "color": "flame"
-          },
-          {
-            "type": "ring",
-            "bind": "@memory/percent",
-            "label": "RAM",
-            "color": "sky"
-          },
-          {
-            "type": "ring",
-            "bind": "@gpu/percent",
-            "label": "GPU",
-            "color": "mint"
-          }
-        ]
-      }
-    ]
-  },
-  "large": {
-    "type": "stack",
-    "align": "between",
-    "children": [
-      {
-        "type": "grid",
-        "columns": 3,
-        "children": [
-          {
-            "type": "ring",
-            "bind": "@cpu/percent",
-            "label": "CPU",
-            "color": "flame"
-          },
-          {
-            "type": "ring",
-            "bind": "@memory/percent",
-            "label": "RAM",
-            "color": "sky"
-          },
-          {
-            "type": "ring",
-            "bind": "@gpu/percent",
-            "label": "GPU",
-            "color": "mint"
-          }
-        ]
-      },
-      {
-        "type": "label",
-        "text": "CPU, last minute"
-      },
-      {
-        "type": "sparkline",
-        "bind": "@cpu/history",
-        "color": "flame"
-      },
-      {
-        "type": "grid",
-        "columns": 2,
+        "type": "row",
+        "align": "between",
         "children": [
           {
             "type": "stack",
+            "gap": 0.7,
+            "children": [
+              {
+                "type": "label",
+                "text": "CPU load"
+              },
+              {
+                "type": "value",
+                "bind": "@cpu/percent",
+                "format": "percent",
+                "size": "xl"
+              }
+            ]
+          },
+          {
+            "type": "ring",
+            "bind": "@memory/percent",
+            "label": "RAM",
+            "color": "ink",
+            "size": "sm",
+            "unit": false
+          }
+        ]
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "grid",
+        "columns": 3,
+        "children": [
+          {
+            "type": "stack",
+            "gap": 0.5,
+            "children": [
+              {
+                "type": "label",
+                "text": "GPU"
+              },
+              {
+                "type": "value",
+                "bind": "@gpu/percent",
+                "format": "percent",
+                "size": "sm"
+              }
+            ]
+          },
+          {
+            "type": "stack",
+            "gap": 0.5,
             "children": [
               {
                 "type": "label",
@@ -129,12 +107,13 @@
                 "type": "value",
                 "bind": "@network/receivedPerSecond",
                 "format": "rate",
-                "size": "md"
+                "size": "sm"
               }
             ]
           },
           {
             "type": "stack",
+            "gap": 0.5,
             "children": [
               {
                 "type": "label",
@@ -144,7 +123,107 @@
                 "type": "value",
                 "bind": "@network/sentPerSecond",
                 "format": "rate",
-                "size": "md"
+                "size": "sm"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "large": {
+    "type": "stack",
+    "align": "between",
+    "gap": 3.4,
+    "children": [
+      {
+        "type": "row",
+        "align": "between",
+        "children": [
+          {
+            "type": "stack",
+            "gap": 0.7,
+            "children": [
+              {
+                "type": "label",
+                "text": "CPU load"
+              },
+              {
+                "type": "value",
+                "bind": "@cpu/percent",
+                "format": "percent",
+                "size": "xl"
+              }
+            ]
+          },
+          {
+            "type": "ring",
+            "bind": "@memory/percent",
+            "label": "RAM",
+            "color": "ink",
+            "size": "sm",
+            "unit": false
+          }
+        ]
+      },
+      {
+        "type": "history-bars",
+        "bind": "@cpu/history",
+        "max": 100,
+        "count": 48
+      },
+      {
+        "type": "divider"
+      },
+      {
+        "type": "grid",
+        "columns": 3,
+        "children": [
+          {
+            "type": "stack",
+            "gap": 0.5,
+            "children": [
+              {
+                "type": "label",
+                "text": "GPU"
+              },
+              {
+                "type": "value",
+                "bind": "@gpu/percent",
+                "format": "percent",
+                "size": "sm"
+              }
+            ]
+          },
+          {
+            "type": "stack",
+            "gap": 0.5,
+            "children": [
+              {
+                "type": "label",
+                "text": "Download"
+              },
+              {
+                "type": "value",
+                "bind": "@network/receivedPerSecond",
+                "format": "rate",
+                "size": "sm"
+              }
+            ]
+          },
+          {
+            "type": "stack",
+            "gap": 0.5,
+            "children": [
+              {
+                "type": "label",
+                "text": "Upload"
+              },
+              {
+                "type": "value",
+                "bind": "@network/sentPerSecond",
+                "format": "rate",
+                "size": "sm"
               }
             ]
           }

@@ -1,5 +1,12 @@
 import { sampleSources } from './sources.ts'
-import type { ConfigField, SourceName, ValueFormat, WidgetSize, WidgetView } from './types.ts'
+import type {
+  ConfigField,
+  SourceName,
+  ValueFormat,
+  ViewNode,
+  WidgetSize,
+  WidgetView,
+} from './types.ts'
 
 /**
  * How a preview reads `view.json` (PLAN, "The view: declarative JSON, not code"): `@name/...` reads
@@ -39,12 +46,50 @@ export function resolveBinding(bind: string, context: BindingContext): unknown {
   return pointer(context.sample, bind)
 }
 
-/** Replaces each `{config.key}` with the config value, or the field's default. */
+/** `{config.key}`, `{@source/path}` or `{/pointer}` inside text. */
+const placeholder = /\{(config\.[a-zA-Z][a-zA-Z0-9]*|[@/][^{}\s]*)\}/g
+
+/**
+ * Replaces each `{config.key}` with the config value, and each `{@source/path}` or `{/pointer}`
+ * with the value it binds. Anything that doesn't resolve becomes empty text.
+ */
 export function interpolate(text: string, context: BindingContext): string {
-  return text.replace(/\{config\.([a-zA-Z][a-zA-Z0-9]*)\}/g, (_, key: string) => {
-    const value = context.config?.[key]
-    return value === undefined || value === null ? '' : String(value)
+  return text.replace(placeholder, (_, inner: string) => {
+    const value = inner.startsWith('config.')
+      ? context.config?.[inner.slice('config.'.length)]
+      : resolveBinding(inner, context)
+    return value === undefined || value === null || typeof value === 'object' ? '' : String(value)
   })
+}
+
+/** The bindings a piece of text inserts: `@media/app` for "Playing on {@media/app}". */
+export function placeholderBindings(text: string): string[] {
+  return [...text.matchAll(placeholder)].flatMap(([, inner]) =>
+    inner && !inner.startsWith('config.') ? [inner] : [],
+  )
+}
+
+/** The config keys a piece of text inserts. */
+export function placeholderConfigKeys(text: string): string[] {
+  return [...text.matchAll(placeholder)].flatMap(([, inner]) =>
+    inner?.startsWith('config.') ? [inner.slice('config.'.length)] : [],
+  )
+}
+
+/** The text a node shows that can hold placeholders: its label, caption or words. */
+export function textsOf(node: ViewNode): string[] {
+  switch (node.type) {
+    case 'label':
+      return [node.text]
+    case 'text':
+      return node.text ? [node.text] : []
+    case 'ring':
+      return node.label ? [node.label] : []
+    case 'button':
+      return [node.label]
+    default:
+      return []
+  }
 }
 
 /** Each config field's default, as the app fills them in before the first run. */
@@ -56,14 +101,14 @@ export function configDefaults(fields: ConfigField[]): Record<string, unknown> {
   )
 }
 
-/** Every `bind` and source a view uses, for the review checks and the permission summary. */
+/** Every binding a view uses, in `bind` fields and inserted into text, for the checks and the permission summary. */
 export function bindingsOf(view: WidgetView): string[] {
   const found = new Set<string>()
-  const walk = (node: unknown) => {
-    if (!node || typeof node !== 'object') return
-    const record = node as Record<string, unknown>
-    if (typeof record.bind === 'string') found.add(record.bind)
-    if (Array.isArray(record.children)) record.children.forEach(walk)
+  const walk = (node: ViewNode | undefined) => {
+    if (!node) return
+    if ('bind' in node && typeof node.bind === 'string') found.add(node.bind)
+    for (const text of textsOf(node)) for (const bind of placeholderBindings(text)) found.add(bind)
+    if ('children' in node) node.children.forEach(walk)
   }
   Object.values(view).forEach(walk)
   return [...found]

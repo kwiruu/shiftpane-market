@@ -186,7 +186,11 @@ The CLI bundles npm dependencies into `collector.js` as readable code, so review
 
 v1 components: `stack`, `row`, `grid`, `label`, `text`, `value` (number formats), `ring`, `meter`, `history-bars`,
 `sparkline`, `list` (title, subtitle, value per item), `icon` (a Solar icon name from `@shiftpane/ui`), `progress`,
-`button` (fires a declared action). No remote images in v1: an image URL would make the phone call out and leak its IP.
+`button` (fires a declared action), and the pieces the app's own media and PC widgets need: `divider`, `cover`
+(a gradient tile colored from a title), `equalizer` and `glow`. Text can insert bound values with
+`{@source/path}` and `{/pointer}`. No remote images in v1: an image URL would make the phone call out and leak its IP.
+Sizes follow the app's board (`fluid`: a share of the card, kept between two pixel sizes), so a widget in the
+gallery looks like the same widget on a phone.
 
 Why declarative: safe by construction, every widget matches the app's look, easy for Widget Studio and the AI
 generator to produce, and it validates against `sample.json` before anyone runs it. A sandboxed-iframe "custom view"

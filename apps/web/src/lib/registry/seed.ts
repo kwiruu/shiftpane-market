@@ -1,4 +1,4 @@
-import type { Author, Permissions, Widget } from '@shiftpane/format'
+import type { Author, Permissions, ViewNode, Widget } from '@shiftpane/format'
 
 /**
  * The gallery's first widgets (PLAN, W2: "seeded with 3 to 5 first-party widgets"). They are the
@@ -93,6 +93,43 @@ That also makes it the shortest kind of widget to review, and a good one to copy
 `,
 }
 
+/** One labelled figure in a row of them, like the PC overview's GPU, download and upload. */
+const stat = (label: string, bind: string, format: 'percent' | 'rate'): ViewNode => ({
+  type: 'stack',
+  gap: 0.5,
+  children: [
+    { type: 'label', text: label },
+    { type: 'value', bind, format, size: 'sm' },
+  ],
+})
+
+/** CPU load as the big figure, with memory as a ring beside it. */
+const loadAndMemory: ViewNode = {
+  type: 'row',
+  align: 'between',
+  children: [
+    {
+      type: 'stack',
+      gap: 0.7,
+      children: [
+        { type: 'label', text: 'CPU load' },
+        { type: 'value', bind: '@cpu/percent', format: 'percent', size: 'xl' },
+      ],
+    },
+    { type: 'ring', bind: '@memory/percent', label: 'RAM', color: 'ink', size: 'sm', unit: false },
+  ],
+}
+
+const bottomStats: ViewNode = {
+  type: 'grid',
+  columns: 3,
+  children: [
+    stat('GPU', '@gpu/percent', 'percent'),
+    stat('Download', '@network/receivedPerSecond', 'rate'),
+    stat('Upload', '@network/sentPerSecond', 'rate'),
+  ],
+}
+
 const pcStats: Widget = {
   id: 'pc-stats',
   name: 'PC stats',
@@ -101,7 +138,7 @@ const pcStats: Widget = {
   license: 'MIT',
   categories: ['system'],
   icon: 'activity',
-  tone: 'dark',
+  tone: 'light',
   featured: true,
   minAppVersion: '0.5.0',
   sizes: ['small', 'medium', 'large'],
@@ -109,6 +146,12 @@ const pcStats: Widget = {
   permissions: { ...none, sources: ['cpu', 'memory', 'gpu', 'network'] },
   config: [],
   versions: [
+    {
+      version: '1.1.1',
+      publishedAt: '2026-10-20',
+      permissions: { ...none, sources: ['cpu', 'memory', 'gpu', 'network'] },
+      notes: 'Laid out like the PC overview in the ShiftPane app, with CPU load as the big figure.',
+    },
     {
       version: '1.1.0',
       publishedAt: '2026-09-30',
@@ -124,97 +167,106 @@ const pcStats: Widget = {
   ],
   view: {
     small: {
-      type: 'stack',
-      align: 'between',
+      type: 'grid',
+      columns: 2,
       children: [
         {
-          type: 'row',
-          align: 'between',
+          type: 'stack',
+          gap: 0.5,
           children: [
             { type: 'label', text: 'CPU' },
-            { type: 'value', bind: '@cpu/percent', format: 'percent', size: 'md' },
+            { type: 'value', bind: '@cpu/percent', format: 'percent', size: 'sm' },
           ],
         },
-        { type: 'progress', bind: '@cpu/percent', color: 'flame' },
         {
-          type: 'row',
-          align: 'between',
+          type: 'stack',
+          gap: 0.5,
           children: [
             { type: 'label', text: 'RAM' },
-            { type: 'value', bind: '@memory/percent', format: 'percent', size: 'md' },
+            { type: 'value', bind: '@memory/percent', format: 'percent', size: 'sm' },
           ],
         },
-        { type: 'progress', bind: '@memory/percent', color: 'sky' },
       ],
     },
     medium: {
       type: 'stack',
       align: 'between',
-      children: [
-        {
-          type: 'grid',
-          columns: 3,
-          children: [
-            { type: 'ring', bind: '@cpu/percent', label: 'CPU', color: 'flame' },
-            { type: 'ring', bind: '@memory/percent', label: 'RAM', color: 'sky' },
-            { type: 'ring', bind: '@gpu/percent', label: 'GPU', color: 'mint' },
-          ],
-        },
-      ],
+      gap: 0,
+      children: [loadAndMemory, { type: 'divider' }, bottomStats],
     },
     large: {
       type: 'stack',
       align: 'between',
+      gap: 3.4,
       children: [
-        {
-          type: 'grid',
-          columns: 3,
-          children: [
-            { type: 'ring', bind: '@cpu/percent', label: 'CPU', color: 'flame' },
-            { type: 'ring', bind: '@memory/percent', label: 'RAM', color: 'sky' },
-            { type: 'ring', bind: '@gpu/percent', label: 'GPU', color: 'mint' },
-          ],
-        },
-        { type: 'label', text: 'CPU, last minute' },
-        { type: 'sparkline', bind: '@cpu/history', color: 'flame' },
-        {
-          type: 'grid',
-          columns: 2,
-          children: [
-            {
-              type: 'stack',
-              children: [
-                { type: 'label', text: 'Download' },
-                { type: 'value', bind: '@network/receivedPerSecond', format: 'rate', size: 'md' },
-              ],
-            },
-            {
-              type: 'stack',
-              children: [
-                { type: 'label', text: 'Upload' },
-                { type: 'value', bind: '@network/sentPerSecond', format: 'rate', size: 'md' },
-              ],
-            },
-          ],
-        },
+        loadAndMemory,
+        { type: 'history-bars', bind: '@cpu/history', max: 100, count: 48 },
+        { type: 'divider' },
+        bottomStats,
       ],
     },
   },
   sample: {},
-  readme: `Your PC's load at a glance: CPU, memory and GPU as rings, with the network underneath on the large size.
+  readme: `Your PC's load at a glance, laid out like the PC overview in the ShiftPane app: CPU load as the big figure, memory as a ring beside it, and GPU and network speed along the bottom.
 
 This is ShiftPane's built-in PC stats widget, rebuilt as an ordinary package. If the built-in widgets can be made with the SDK, so can yours.
 
 ## Sizes
 
-- **Small:** CPU and memory as numbers.
-- **Medium:** three rings.
-- **Large:** the rings, a minute of CPU history, and download and upload speed.
+- **Small:** CPU and memory as two figures.
+- **Medium:** CPU load and the memory ring, with GPU, download and upload under a hairline.
+- **Large:** the same, with the last 48 seconds of CPU load between them.
 
 ## Permissions
 
 It reads four system sources and nothing else: \`cpu\`, \`memory\`, \`gpu\` and \`network\`. None of them say what you're doing, so installing it doesn't ask.
 `,
+}
+
+const playPauseNext: ViewNode[] = [
+  { type: 'button', action: 'media.previous', icon: 'skip-back', label: 'Previous' },
+  { type: 'button', action: 'media.play-pause', icon: 'pause', label: 'Play or pause' },
+  { type: 'button', action: 'media.next', icon: 'skip-forward', label: 'Next' },
+]
+
+const titleAndArtist: ViewNode = {
+  type: 'stack',
+  gap: 0,
+  align: 'center',
+  children: [
+    { type: 'text', bind: '@media/title', size: 'md' },
+    { type: 'text', bind: '@media/artist', size: 'sm', muted: true },
+  ],
+}
+
+const playingOn: ViewNode = {
+  type: 'row',
+  align: 'start',
+  gap: 2,
+  children: [
+    { type: 'equalizer' },
+    { type: 'text', text: 'Playing on {@media/app}', size: 'xs', muted: true },
+  ],
+}
+
+/** The tall layout: cover on top, then the track, what's playing it, and the buttons. */
+const nowPlayingTall: ViewNode = {
+  type: 'stack',
+  align: 'between',
+  gap: 0,
+  children: [
+    { type: 'glow', color: 'flame', corner: 'top-right' },
+    {
+      type: 'stack',
+      gap: 1.7,
+      children: [
+        { type: 'cover', bind: '@media/title', icon: 'music', size: 'md' },
+        titleAndArtist,
+      ],
+    },
+    playingOn,
+    { type: 'row', align: 'between', children: playPauseNext },
+  ],
 }
 
 const nowPlaying: Widget = {
@@ -225,10 +277,10 @@ const nowPlaying: Widget = {
   license: 'MIT',
   categories: ['media'],
   icon: 'music',
-  tone: 'light',
+  tone: 'dark',
   featured: true,
   minAppVersion: '0.5.0',
-  sizes: ['small', 'medium'],
+  sizes: ['small', 'medium', 'large'],
   createdAt: '2026-09-10',
   permissions: {
     ...none,
@@ -237,6 +289,17 @@ const nowPlaying: Widget = {
   },
   config: [],
   versions: [
+    {
+      version: '1.0.2',
+      publishedAt: '2026-10-20',
+      permissions: {
+        ...none,
+        sources: ['media'],
+        actions: ['media.previous', 'media.play-pause', 'media.next'],
+      },
+      notes:
+        'Looks like the media widget in the ShiftPane app: a cover colored from the title, the app playing it, and a large size.',
+    },
     {
       version: '1.0.1',
       publishedAt: '2026-09-24',
@@ -259,56 +322,29 @@ const nowPlaying: Widget = {
     },
   ],
   view: {
-    small: {
-      type: 'stack',
-      align: 'between',
-      children: [
-        { type: 'icon', name: 'music', color: 'flame' },
-        {
-          type: 'stack',
-          gap: 0.5,
-          children: [
-            { type: 'text', bind: '@media/title', size: 'md' },
-            { type: 'text', bind: '@media/artist', size: 'sm', muted: true },
-          ],
-        },
-      ],
-    },
+    small: nowPlayingTall,
     medium: {
       type: 'stack',
       align: 'between',
+      gap: 0,
       children: [
+        { type: 'glow', color: 'flame', corner: 'top-right' },
         {
           type: 'row',
-          align: 'between',
+          gap: 1.7,
           children: [
-            { type: 'text', bind: '@media/app', size: 'sm', muted: true },
-            { type: 'icon', name: 'music', color: 'flame' },
+            { type: 'cover', bind: '@media/title', icon: 'music', size: 'sm' },
+            titleAndArtist,
           ],
         },
-        {
-          type: 'stack',
-          gap: 0.5,
-          children: [
-            { type: 'text', bind: '@media/title', size: 'lg' },
-            { type: 'text', bind: '@media/artist', size: 'sm', muted: true },
-          ],
-        },
-        {
-          type: 'row',
-          align: 'center',
-          gap: 3,
-          children: [
-            { type: 'button', action: 'media.previous', icon: 'skip-back', label: 'Previous' },
-            { type: 'button', action: 'media.play-pause', icon: 'pause', label: 'Play or pause' },
-            { type: 'button', action: 'media.next', icon: 'skip-forward', label: 'Next' },
-          ],
-        },
+        playingOn,
+        { type: 'row', align: 'between', inset: true, children: playPauseNext },
       ],
     },
+    large: nowPlayingTall,
   },
   sample: {},
-  readme: `The track playing on your PC, from whichever app is playing it, with buttons to go back, pause and skip.
+  readme: `The track playing on your PC, from whichever app is playing it, laid out like the media widget in the ShiftPane app: a cover colored from the title, the track and artist, which app is playing it, and buttons to go back, pause and skip.
 
 ## Permissions
 
@@ -345,6 +381,12 @@ const githubStars: Widget = {
     { key: 'top', label: 'Repositories to list', type: 'number', default: 3 },
   ],
   versions: [
+    {
+      version: '1.1.1',
+      publishedAt: '2026-10-20',
+      permissions: { ...none, network: ['api.github.com'], secrets: ['GITHUB_TOKEN'] },
+      notes: 'The large size shows four repositories and fits its card.',
+    },
     {
       version: '1.1.0',
       publishedAt: '2026-10-08',
@@ -416,16 +458,15 @@ const githubStars: Widget = {
               type: 'stack',
               gap: 0.5,
               children: [
-                { type: 'value', bind: '/total', format: 'compact', size: 'xl' },
+                { type: 'value', bind: '/total', format: 'compact', size: 'lg' },
                 { type: 'label', text: 'stars' },
               ],
             },
             { type: 'icon', name: 'star', color: 'lime' },
           ],
         },
-        { type: 'label', text: 'Stars per repository' },
         { type: 'history-bars', bind: '/spread' },
-        { type: 'list', bind: '/repos', max: 5 },
+        { type: 'list', bind: '/repos', max: 4 },
       ],
     },
   },
@@ -476,7 +517,7 @@ export default defineCollector(async ({ config, secrets, fetch, signal }) => {
 ## Settings
 
 - **User or organization:** whose repositories to count.
-- **Repositories to list:** how many the list shows. The large size shows up to five.
+- **Repositories to list:** how many the list shows. The large size shows up to four.
 
 ## Permissions
 

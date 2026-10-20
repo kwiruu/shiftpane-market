@@ -23,7 +23,11 @@ export function WidgetTile({ widget, className }: { widget: Widget; className?: 
         className,
       )}
     >
-      <div className="board relative grid aspect-[16/10] place-items-center overflow-hidden rounded-md dark:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)]">
+      {/* A thumbnail: the cards are a fraction of a phone's, so their type scales with them. */}
+      <div
+        className="board relative grid aspect-[16/10] place-items-center overflow-hidden rounded-md dark:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)]"
+        style={{ '--fmin': 0 } as React.CSSProperties}
+      >
         <div
           className={cn(
             'transition-transform duration-300 ease-out-expo group-hover/tile:scale-[1.03] motion-reduce:transition-none',

@@ -2,26 +2,80 @@
   "small": {
     "type": "stack",
     "align": "between",
+    "gap": 0,
     "children": [
       {
-        "type": "icon",
-        "name": "music",
-        "color": "flame"
+        "type": "glow",
+        "color": "flame",
+        "corner": "top-right"
       },
       {
         "type": "stack",
-        "gap": 0.5,
+        "gap": 1.7,
         "children": [
           {
-            "type": "text",
+            "type": "cover",
             "bind": "@media/title",
+            "icon": "music",
             "size": "md"
           },
           {
+            "type": "stack",
+            "gap": 0,
+            "align": "center",
+            "children": [
+              {
+                "type": "text",
+                "bind": "@media/title",
+                "size": "md"
+              },
+              {
+                "type": "text",
+                "bind": "@media/artist",
+                "size": "sm",
+                "muted": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "row",
+        "align": "start",
+        "gap": 2,
+        "children": [
+          {
+            "type": "equalizer"
+          },
+          {
             "type": "text",
-            "bind": "@media/artist",
-            "size": "sm",
+            "text": "Playing on {@media/app}",
+            "size": "xs",
             "muted": true
+          }
+        ]
+      },
+      {
+        "type": "row",
+        "align": "between",
+        "children": [
+          {
+            "type": "button",
+            "action": "media.previous",
+            "icon": "skip-back",
+            "label": "Previous"
+          },
+          {
+            "type": "button",
+            "action": "media.play-pause",
+            "icon": "pause",
+            "label": "Play or pause"
+          },
+          {
+            "type": "button",
+            "action": "media.next",
+            "icon": "skip-forward",
+            "label": "Next"
           }
         ]
       }
@@ -30,45 +84,145 @@
   "medium": {
     "type": "stack",
     "align": "between",
+    "gap": 0,
     "children": [
+      {
+        "type": "glow",
+        "color": "flame",
+        "corner": "top-right"
+      },
+      {
+        "type": "row",
+        "gap": 1.7,
+        "children": [
+          {
+            "type": "cover",
+            "bind": "@media/title",
+            "icon": "music",
+            "size": "sm"
+          },
+          {
+            "type": "stack",
+            "gap": 0,
+            "align": "center",
+            "children": [
+              {
+                "type": "text",
+                "bind": "@media/title",
+                "size": "md"
+              },
+              {
+                "type": "text",
+                "bind": "@media/artist",
+                "size": "sm",
+                "muted": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "row",
+        "align": "start",
+        "gap": 2,
+        "children": [
+          {
+            "type": "equalizer"
+          },
+          {
+            "type": "text",
+            "text": "Playing on {@media/app}",
+            "size": "xs",
+            "muted": true
+          }
+        ]
+      },
       {
         "type": "row",
         "align": "between",
+        "inset": true,
         "children": [
           {
-            "type": "text",
-            "bind": "@media/app",
-            "size": "sm",
-            "muted": true
+            "type": "button",
+            "action": "media.previous",
+            "icon": "skip-back",
+            "label": "Previous"
           },
           {
-            "type": "icon",
-            "name": "music",
-            "color": "flame"
+            "type": "button",
+            "action": "media.play-pause",
+            "icon": "pause",
+            "label": "Play or pause"
+          },
+          {
+            "type": "button",
+            "action": "media.next",
+            "icon": "skip-forward",
+            "label": "Next"
+          }
+        ]
+      }
+    ]
+  },
+  "large": {
+    "type": "stack",
+    "align": "between",
+    "gap": 0,
+    "children": [
+      {
+        "type": "glow",
+        "color": "flame",
+        "corner": "top-right"
+      },
+      {
+        "type": "stack",
+        "gap": 1.7,
+        "children": [
+          {
+            "type": "cover",
+            "bind": "@media/title",
+            "icon": "music",
+            "size": "md"
+          },
+          {
+            "type": "stack",
+            "gap": 0,
+            "align": "center",
+            "children": [
+              {
+                "type": "text",
+                "bind": "@media/title",
+                "size": "md"
+              },
+              {
+                "type": "text",
+                "bind": "@media/artist",
+                "size": "sm",
+                "muted": true
+              }
+            ]
           }
         ]
       },
       {
-        "type": "stack",
-        "gap": 0.5,
+        "type": "row",
+        "align": "start",
+        "gap": 2,
         "children": [
           {
-            "type": "text",
-            "bind": "@media/title",
-            "size": "lg"
+            "type": "equalizer"
           },
           {
             "type": "text",
-            "bind": "@media/artist",
-            "size": "sm",
+            "text": "Playing on {@media/app}",
+            "size": "xs",
             "muted": true
           }
         ]
       },
       {
         "type": "row",
-        "align": "center",
-        "gap": 3,
+        "align": "between",
         "children": [
           {
             "type": "button",

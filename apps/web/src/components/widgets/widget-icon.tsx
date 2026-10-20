@@ -44,17 +44,21 @@ export function WidgetIcon({
   className,
   strokeWidth = 1.75,
   style,
+  filled = false,
 }: {
   name: string
   className?: string
   strokeWidth?: number
   style?: React.CSSProperties
+  /** Solid shapes, as the app draws its transport buttons and the note on a cover. */
+  filled?: boolean
 }) {
   const Icon = icons[name] ?? Circle
   return (
     <Icon
       aria-hidden="true"
-      strokeWidth={strokeWidth}
+      strokeWidth={filled ? 1.5 : strokeWidth}
+      fill={filled ? 'currentColor' : 'none'}
       className={cn('flex-none', className)}
       style={style}
     />

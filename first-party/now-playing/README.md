@@ -1,4 +1,4 @@
-The track playing on your PC, from whichever app is playing it, with buttons to go back, pause and skip.
+The track playing on your PC, from whichever app is playing it, laid out like the media widget in the ShiftPane app: a cover colored from the title, the track and artist, which app is playing it, and buttons to go back, pause and skip.
 
 ## Permissions
 

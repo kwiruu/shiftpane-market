@@ -22,25 +22,32 @@ A widget's `view.json` says how the phone draws it: one tree of ShiftPane's comp
 | `"bind": "@gpu/percent"` | A system source: the source's name, then a path into it |
 | `"bind": "/repos/0/name"` | The collector's output, as a JSON Pointer |
 | `"text": "Over {config.threshold}%"` | A config value, inside text |
+| `"text": "Playing on {@media/app}"` | A bound value, inside text: `{@source/path}` or `{/pointer}` |
 
-Every `@` binding has to name a source the manifest declares, and every `/` binding has to resolve in `sample.json`. The gallery checks both.
+Every `@` binding has to name a source the manifest declares, and every `/` binding has to resolve in `sample.json`, whether it's in a `bind` field or inside text. The gallery checks both.
 
 ## Components
 
 | Component | What it draws |
 | --- | --- |
-| `stack`, `row`, `grid` | Layout: a column, a row, or `columns` columns |
+| `stack`, `row`, `grid` | Layout: a column, a row, or `columns` columns. A row can be `inset` from the card's edges |
 | `label` | A small muted caption |
-| `text` | Text, from `text` or `bind` |
-| `value` | A big number with a small unit. `format`: `percent`, `number`, `compact`, `bytes`, `rate`, `celsius`, `duration` |
-| `ring` | A circular gauge, 0 to 100 |
+| `text` | Text, from `text` or `bind`. `size`: `xs`, `sm`, `md`, `lg`; `muted` for the quiet gray |
+| `value` | A big number with a small unit. `format`: `percent`, `number`, `compact`, `bytes`, `rate`, `celsius`, `duration`. `size`: `sm`, `md`, `lg`, `xl` |
+| `ring` | A circular gauge, 0 to 100. `size: "sm"` is the small gauge beside a figure; `color: "ink"` draws it in the card's own text color; `unit: false` drops the % sign |
 | `meter` | A row of blocks filling up, 0 to 100 |
 | `progress` | A thin bar, 0 to 100 |
-| `history-bars` | Recent values as thin bars, newest on the right |
+| `history-bars` | Recent values as thin bars around a middle line, newest on the right. `max` is what a full bar means; `count` keeps only the newest values |
 | `sparkline` | Recent values as a line |
 | `list` | Rows of `title`, `subtitle` and `value` |
 | `icon` | An icon from ShiftPane's set, by name |
 | `button` | Fires one of the manifest's [actions](/docs/actions) |
+| `divider` | A hairline across the card |
+| `cover` | A gradient tile with an icon on it, colored from the text it's bound to, so each track gets its own |
+| `equalizer` | Three small bars bouncing, for "playing" |
+| `glow` | A soft colored light behind the content, bleeding off a corner (`corner`: `top-right` or `bottom-right`) |
+
+Accent colors (`color`) are `flame`, `lime`, `mint`, `sky` and `ink`. Type, rings, covers and buttons are sized the way the ShiftPane app sizes them: they scale with the card, within limits, so a widget reads the same on a small tile and on a phone held up to the screen.
 
 There are no images from the web: an image URL would make the phone call out and give away its address.
 

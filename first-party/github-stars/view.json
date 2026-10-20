@@ -90,7 +90,7 @@
                 "type": "value",
                 "bind": "/total",
                 "format": "compact",
-                "size": "xl"
+                "size": "lg"
               },
               {
                 "type": "label",
@@ -106,17 +106,13 @@
         ]
       },
       {
-        "type": "label",
-        "text": "Stars per repository"
-      },
-      {
         "type": "history-bars",
         "bind": "/spread"
       },
       {
         "type": "list",
         "bind": "/repos",
-        "max": 5
+        "max": 4
       }
     ]
   }

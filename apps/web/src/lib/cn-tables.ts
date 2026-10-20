@@ -25,7 +25,7 @@ const DZ = (s: string): Int32Array => {
     }
     return out
 }
-const GROUP_COUNT = 156
+const GROUP_COUNT = 157
 const customValidatorNames: string[] = []
 const edgeStart = PS(U("C300040130000212000210020002002120021000120022002100720100200000030010600000022002012005020002000300202020010100"))
 const labelStart = PS(U("1121411151111111911465<131156644111155973321111225111115222631311111171165671111111132451114135544113225255117:"))
@@ -48,7 +48,7 @@ const edgeTarget = (() => {
     }
     return out
 })()
-const nodeGroup = U("0000004005057080:;000000000000000000J00000000000000000T00000000000^00000000000i00l0mn000pq00000000000z0000000", 1)
+const nodeGroup = U("0000004005057080:;000000000000000000J00000000000000000T00000000000^00000000000i00l0mn000pq00000000000z0000000", 1)
 // vlists = op-pattern pool + per-list refs; the engine indexes these directly
 const vlistPat = PS(U("2335363463353351235"))
 const vlistOps = U("32423832F@0326325B:0325B:432553:032532542H<C=132553;843258GA032B:032")
@@ -62,7 +62,7 @@ const nodeVlist = (() => {
     for (let i = 0; i < A.length; i++) out[A[i]!] = V[i]!
     return out
 })()
-const SETS = "container | block contents flow-root hidden inline inline-block inline-flex inline-grid inline-table table table-caption table-cell table-column table-column-group table-footer-group table-header-group table-row table-row-group| not-sr-only sr-only|overflow- auto clip hidden scroll visible|overflow-x- auto clip hidden scroll visible|overflow-y- auto clip hidden scroll visible| absolute fixed relative static sticky|justify- around baseline between center center-safe end end-safe evenly normal start stretch|items- baseline baseline-last center center-safe end end-safe start stretch|self- auto baseline baseline-last center center-safe end end-safe start stretch|place-items- baseline center center-safe end end-safe start stretch| proportional-nums tabular-nums| no-underline overline| capitalize lowercase normal-case uppercase|truncate |whitespace- break-spaces normal nowrap pre pre-line pre-wrap|break- all keep normal words|pointer-events- auto none|resize  -none -x -y|touch- auto manipulation none|select- all auto none text| baseline bottom middle sub super text-bottom text-top top| accordion-down accordion-up bounce caret-blink collapsible-down collapsible-up in none out ping pulse spin| auto square video|none | gradient-to-b gradient-to-bl gradient-to-br gradient-to-l gradient-to-r gradient-to-t gradient-to-tl gradient-to-tr none|to- b bl br l r t tl tr| collapse separate| auto full header nav nav-gap px|auto |full | around baseline between center center-safe end end-safe evenly normal start stretch| auto from-font|initial | in in-out initial linear out out-expo| col col-reverse row row-reverse| nowrap wrap wrap-reverse| auto initial none| black bold extrabold extralight light medium normal semibold thin| header nav nav-gap px| none subgrid| auto dvh dvw fit full header lh lvh lvw max min nav nav-gap px screen svh svw| header loose nav nav-gap none normal px relaxed snug tight|through |item | decimal disc none| auto dvh dvw fit full header lh lvh lvw max min nav nav-gap none px screen svh svw| auto column dvh dvw fit full header lvh lvw max min nav nav-gap none prose px showcase stage svh svw| auto header nav nav-gap px| auto column dvh dvw fit full header lvh lvw max min nav nav-gap none px screen showcase stage svh svw| bottom bottom-left bottom-right center left left-bottom left-top right right-bottom right-top top top-left top-right| dashed dotted double hidden none solid| 2xl 3xl 4xl full lg md none sm xl xs| device inner lg md menu none sm xl xs| auto dvh dvw fit full header lvh lvw max min nav nav-gap px svh svw| 2xl 3xl 4xl base body-lg body-md body-sm code headline-display headline-lg headline-md headline-sm label-lg label-md label-sm lg micro sm xl xs| center end justify left right start| clip ellipsis| normal tight tighter wide wider widest| all colors none opacity shadow transform| full header nav nav-gap px| auto column dvh dvw fit full header lvh lvw max min nav nav-gap px screen showcase stage svh svw| auto contents scroll transform".split('|').map((s) => {
+const SETS = "container | block contents flow-root hidden inline inline-block inline-flex inline-grid inline-table table table-caption table-cell table-column table-column-group table-footer-group table-header-group table-row table-row-group| not-sr-only sr-only|isolat e ion-auto|overflow- auto clip hidden scroll visible|overflow-x- auto clip hidden scroll visible|overflow-y- auto clip hidden scroll visible| absolute fixed relative static sticky|justify- around baseline between center center-safe end end-safe evenly normal start stretch|items- baseline baseline-last center center-safe end end-safe start stretch|self- auto baseline baseline-last center center-safe end end-safe start stretch|place-items- baseline center center-safe end end-safe start stretch| proportional-nums tabular-nums| no-underline overline| capitalize lowercase normal-case uppercase|truncate |whitespace- break-spaces normal nowrap pre pre-line pre-wrap|break- all keep normal words|pointer-events- auto none|resize  -none -x -y|touch- auto manipulation none|select- all auto none text| baseline bottom middle sub super text-bottom text-top top| accordion-down accordion-up bounce caret-blink collapsible-down collapsible-up in none out ping pulse spin| auto square video|none | gradient-to-b gradient-to-bl gradient-to-br gradient-to-l gradient-to-r gradient-to-t gradient-to-tl gradient-to-tr none|to- b bl br l r t tl tr| collapse separate| auto full header nav nav-gap px|auto |full | around baseline between center center-safe end end-safe evenly normal start stretch| auto from-font|initial | in in-out initial linear out out-expo| col col-reverse row row-reverse| nowrap wrap wrap-reverse| auto initial none| black bold extrabold extralight light medium normal semibold thin| header nav nav-gap px| none subgrid| auto dvh dvw fit full header lh lvh lvw max min nav nav-gap px screen svh svw| header loose nav nav-gap none normal px relaxed snug tight|through |item | decimal disc none| auto dvh dvw fit full header lh lvh lvw max min nav nav-gap none px screen svh svw| auto column dvh dvw fit full header lvh lvw max min nav nav-gap none prose px showcase stage svh svw| auto header nav nav-gap px| auto column dvh dvw fit full header lvh lvw max min nav nav-gap none px screen showcase stage svh svw| bottom bottom-left bottom-right center left left-bottom left-top right right-bottom right-top top top-left top-right| dashed dotted double hidden none solid| 2xl 3xl 4xl full lg md none sm xl xs| device inner lg md menu none sm xl xs| auto dvh dvw fit full header lvh lvw max min nav nav-gap px svh svw| 2xl 3xl 4xl base body-lg body-md body-sm code headline-display headline-lg headline-md headline-sm label-lg label-md label-sm lg micro sm xl xs| center end justify left right start| clip ellipsis| normal tight tighter wide wider widest| all colors none opacity shadow transform| full header nav nav-gap px| auto column dvh dvw fit full header lvh lvw max min nav nav-gap px screen showcase stage svh svw| auto contents scroll transform".split('|').map((s) => {
     const tails = s.split(' ')
     const prefix = tails.shift()!
     for (let i = 0; i < tails.length; i++) {
@@ -70,14 +70,14 @@ const SETS = "container | block contents flow-root hidden inline inline-block in
     }
     return tails
 })
-const AA = DZ("000000000000000000000422426448422042240024426424262422062442222262422222266242444422400244424222")
-const AG = DZ("Ð22222222222222222222÷222204îã202âß42Ü2Û24222422222ª§2222222224ª¡222222262222242222zG]22222222")
-const AS = DZ("02222222222222222222222222236222;>222222220022I00LKNUX222236100042G000000E7h00gj2M0Mn22il220mp2q")
-const litAnchor = new Int32Array(571)
-const litGroup = new Int32Array(571)
-const litPool = new Int32Array(571)
+const AA = DZ("0000000000000000000000422426448422042240024426424262422062442222262422222266242444422400244424222")
+const AG = DZ("Ð222222222222222222222ù222204ðå202äá42Þ2Ý24222422222¬©2222222224¬£222222262222242222|G_22222222")
+const AS = DZ("022222222222222222222222222236222;>222222220022I00LKNUX222236100042G000000E7h00gj2M0Mn22il220mp2q")
+const litAnchor = new Int32Array(573)
+const litGroup = new Int32Array(573)
+const litPool = new Int32Array(573)
 let poolText = ''
-const poolOffsets = new Int32Array(518)
+const poolOffsets = new Int32Array(522)
 {
     const tailRef = new Map()
     let nextRef = 0
@@ -100,12 +100,12 @@ const poolOffsets = new Int32Array(518)
     }
 }
 // conflict adjacency (engine builds claim bitmask CSR at init)
-const adjGid = DZ(">2D6<226B2<:2:2288L@@")
+const adjGid = DZ(">2D6<226B2<:2:2288N@@")
 const adjStart = PS(U("::32:44244:44>2221213"))
-const adjTgt = DZ("ļ22222ıĴĵĸ2222222222Û~2:2Ì222}OXÌ2_È2y§¼4r22ÍÐ2Ï7R2¤222­132¬2«1°2­5Â2«®¯²22222222125282xn22")
+const adjTgt = DZ("ľ22222ĳĶķĺ2222222222Ý~2:2Î222OXÎ2_Ê2{§¼6r22ÏÒ2Ñ7R2¦222¯132®2­1²2¯5Ä2­°±´22222222125282xn22")
 const patGid = U("u")
 const patTgt = U("N")
-const postfixLookupGroups = U("Ë")
+const postfixLookupGroups = U("Ì")
 const orderSensitiveModifiers = "* ** after backdrop before details-content file first-letter first-line marker placeholder selection"
 export default {
     GROUP_COUNT, customValidatorNames, edgeStart, labelStart, labelText,
