@@ -303,7 +303,8 @@ choice. Ink becomes near white, the page pure black, surfaces `#161616`.
 Widget previews are pictures of the phone, not page components, so they keep the phone's own
 colors in both appearances: a black board, graphite cards (`.tone-dark`) or white ones
 (`.tone-light`), and four loud accents for rings, bars and lines. This is the one place the page
-uses saturated color, and it's always on black, framed like a screen.
+uses saturated color, and it's on black, framed like a screen. The landing page swaps the black
+for the desktop wallpaper (see the hero devices).
 
 ## Typography
 
@@ -351,13 +352,16 @@ accent colors. On hover they lift one after another. Beside it, "Get started" is
 pill.
 
 **The hero devices** are drawn, not photographed: a laptop showing ShiftPane's Devices page with
-its pairing code, and a phone beside it. Scrolling swaps the code for "Connected", dims the
-laptop a little and fills the phone with its widget board. Everything inside them is sized in
-container units, so they scale as one picture.
+its pairing code, and a phone beside it. The laptop's screen is a Windows 11 desktop: a wallpaper
+and a taskbar, which are the only pictures in it, one pair for each appearance (`.wallpaper` and
+`.taskbar` in `globals.css`, files in `src/assets/desktop`). Scrolling swaps the code for
+"Connected", dims the laptop a little and fills the phone with its widget board. Everything
+inside them is sized in container units, so they scale as one picture.
 
 **Widget previews** draw a widget from its `view.json` and `sample.json`, the way the phone
 does, on a black stage as tall as the widget's largest size, so the size switch under it never
-moves the page. Every length is a share of one board cell, so a preview reads the same as a
+moves the page. The landing page's stages sit on the same desktop wallpaper as the hero laptop;
+the widget pages and review keep the black. Every length is a share of one board cell, so a preview reads the same as a
 thumbnail and as a hero. They render only ShiftPane's own components, so nothing an author wrote
 runs here either.
 

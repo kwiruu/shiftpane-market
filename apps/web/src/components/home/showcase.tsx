@@ -34,6 +34,7 @@ export function Showcase() {
           <div key={entry.id} data-cursor={entry.cursor}>
             <PreviewStage
               widget={widget}
+              wallpaper
               caption={
                 <>
                   {entry.caption}{' '}
