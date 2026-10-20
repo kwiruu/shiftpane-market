@@ -219,6 +219,58 @@ describe('view', () => {
     expect(result.report.view?.note).toContain('no collector.js')
   })
 
+  it('checks bindings inserted into text like any other', () => {
+    const playing = (permissions: Record<string, unknown>) =>
+      check(
+        octocatRing((files, m) => {
+          m.permissions = permissions
+          files['view.json'] = JSON.stringify({
+            small: { type: 'text', text: 'Playing on {@media/app}' },
+            medium: { type: 'label', text: 'x' },
+          })
+        }),
+      )
+    expect(playing({ sources: [] }).report.view?.note).toContain(
+      '@media/app reads the media source',
+    )
+    expect(playing({ sources: ['media'] }).report.view?.result).toBe('pass')
+  })
+
+  it('accepts the app-style parts: a cover, a divider, an equalizer, a glow', () => {
+    const result = check(
+      octocatRing((files, m) => {
+        m.permissions = { sources: ['media', 'gpu'] }
+        files['view.json'] = JSON.stringify({
+          small: {
+            type: 'stack',
+            children: [
+              { type: 'glow', color: 'flame', corner: 'top-right' },
+              { type: 'cover', bind: '@media/title', icon: 'music', size: 'md' },
+              { type: 'divider' },
+              { type: 'ring', bind: '@gpu/percent', color: 'ink', size: 'sm', unit: false },
+              { type: 'history-bars', bind: '@gpu/history', max: 100, count: 48 },
+            ],
+          },
+          medium: { type: 'row', inset: true, children: [{ type: 'equalizer' }] },
+        })
+      }),
+    )
+    expect(result.report.view?.note).toBeUndefined()
+    expect(result.report.view?.result).toBe('pass')
+  })
+
+  it('refuses unknown options on the new parts', () => {
+    const result = check(
+      octocatRing((files) => {
+        files['view.json'] = JSON.stringify({
+          small: { type: 'ring', bind: '@gpu/percent', size: 'huge' },
+          medium: { type: 'label', text: 'x' },
+        })
+      }),
+    )
+    expect(result.report.view?.result).toBe('fail')
+  })
+
   it('fails when a size has no tree', () => {
     const result = check(octocatRing((_, m) => (m.sizes = ['small', 'medium', 'large'])))
     expect(result.report.view?.note).toContain('no tree for it')

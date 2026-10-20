@@ -111,10 +111,10 @@ export const actions: Record<ActionName, { title: string; phrase: string }> = {
   'audio.toggle-mute': { title: 'Mute or unmute', phrase: 'Mutes and unmutes your PC' },
 }
 
-/** A minute of made-up samples, one every two seconds: a slow swell with a little noise. */
+/** A minute of made-up samples, one a second like the app's: a slow swell with a little noise. */
 function minute(base: number, swing: number, seed: number): number[] {
-  return Array.from({ length: 30 }, (_, i) => {
-    const wave = Math.sin((i + seed) / 4.2) * swing
+  return Array.from({ length: 60 }, (_, i) => {
+    const wave = Math.sin((i + seed) / 6.4) * swing
     const noise = Math.sin((i + 1) * (seed + 7.3)) * swing * 0.35
     return Math.round(Math.min(100, Math.max(1, base + wave + noise)))
   })
@@ -150,9 +150,9 @@ export const sampleSources: Record<SourceName, Record<string, unknown>> = {
   system: { uptimeSeconds: 3 * 86_400 + 4 * 3600, os: 'Windows 11' },
   temperatures: { cpu: 61, gpu: 67, fans: [1180, 940] },
   media: {
-    title: 'Low Tide',
-    artist: 'Harbor Lights',
-    app: 'Music',
+    title: 'Late Night Drive',
+    artist: 'Neon Coast',
+    app: 'Spotify',
     playing: true,
     position: 248,
     duration: 488,

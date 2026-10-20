@@ -9,12 +9,15 @@ import {
   manifestSchema,
   osiLicenses,
   type Permissions,
+  placeholderBindings,
+  placeholderConfigKeys,
   pointer,
   type ReviewStatus,
   reservedIds,
   type SourceName,
   sampleSchema,
   sources,
+  textsOf,
   type ViewNode,
   type WidgetView,
   widgetViewSchema,
@@ -222,8 +225,12 @@ function checkView(opened: OpenedPackage, manifest: Manifest, hasCollector: bool
   const visit = (node: ViewNode, depth: number) => {
     nodes++
     deepest = Math.max(deepest, depth)
-    if ('bind' in node && node.bind) {
-      const bind = node.bind
+    const texts = textsOf(node)
+    const binds = [
+      ...('bind' in node && node.bind ? [node.bind] : []),
+      ...texts.flatMap(placeholderBindings),
+    ]
+    for (const bind of binds) {
       if (bind.startsWith('@')) {
         const name = bind.slice(1).split('/')[0] ?? ''
         if (!(name in sources)) problems.push(`${bind}: there's no ${name} source.`)
@@ -239,10 +246,8 @@ function checkView(opened: OpenedPackage, manifest: Manifest, hasCollector: bool
     if (node.type === 'button' && !actions.has(node.action)) {
       problems.push(`A button presses ${node.action}, which permissions.actions doesn't list.`)
     }
-    for (const text of textsOf(node)) {
-      for (const [, key] of text.matchAll(/\{config\.([a-zA-Z][a-zA-Z0-9]*)\}/g)) {
-        if (key && !configKeys.has(key)) problems.push(`{config.${key}} isn't a config field.`)
-      }
+    for (const key of texts.flatMap(placeholderConfigKeys)) {
+      if (!configKeys.has(key)) problems.push(`{config.${key}} isn't a config field.`)
     }
     if ('children' in node) for (const child of node.children) visit(child, depth + 1)
   }
@@ -430,21 +435,6 @@ function checkPermissions(manifest: Manifest, context: CheckContext, set: Set) {
     )
   } else {
     set('added', 'pass')
-  }
-}
-
-function textsOf(node: ViewNode): string[] {
-  switch (node.type) {
-    case 'label':
-      return [node.text]
-    case 'text':
-      return node.text ? [node.text] : []
-    case 'ring':
-      return node.label ? [node.label] : []
-    case 'button':
-      return [node.label]
-    default:
-      return []
   }
 }
 

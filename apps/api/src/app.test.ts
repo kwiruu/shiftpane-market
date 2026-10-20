@@ -392,7 +392,7 @@ describe('first-party widgets', () => {
     ])
     expect(widgets.find((w) => w.id === 'now-playing')).toMatchObject({
       featured: true,
-      tone: 'light',
+      tone: 'dark',
       icon: 'music',
       author: 'shiftpane',
     })

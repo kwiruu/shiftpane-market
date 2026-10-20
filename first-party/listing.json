@@ -7,21 +7,21 @@
   },
   "pc-stats": {
     "icon": "activity",
-    "tone": "dark",
+    "tone": "light",
     "featured": true,
-    "notes": "Shows download and upload speed under the rings."
+    "notes": "Laid out like the PC overview in the ShiftPane app, with CPU load as the big figure."
   },
   "now-playing": {
     "icon": "music",
-    "tone": "light",
+    "tone": "dark",
     "featured": true,
-    "notes": "Long titles fade out instead of wrapping."
+    "notes": "Looks like the media widget in the ShiftPane app: a cover colored from the title, the app playing it, and a large size."
   },
   "github-stars": {
     "icon": "star",
     "tone": "dark",
     "featured": true,
-    "notes": "Uses a token when you give it one, for GitHub’s higher rate limit. Adds the large size."
+    "notes": "The large size shows four repositories and fits its card."
   },
   "pc-busy": {
     "icon": "coffee",

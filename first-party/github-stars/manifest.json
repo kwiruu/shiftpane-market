@@ -2,7 +2,7 @@
   "id": "github-stars",
   "name": "GitHub stars",
   "description": "Stars across your repositories, and the ones with the most.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "shiftpane",
   "license": "MIT",
   "categories": ["dev"],

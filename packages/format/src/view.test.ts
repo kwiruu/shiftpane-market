@@ -6,6 +6,8 @@ import {
   configDefaults,
   formatValue,
   interpolate,
+  placeholderBindings,
+  placeholderConfigKeys,
   pointer,
   resolveBinding,
   viewFor,
@@ -65,6 +67,32 @@ describe('interpolate', () => {
       }),
     ).toBe('Over 80% ')
   })
+
+  it('inserts bound values: a source, or the collector output', () => {
+    const context = {
+      sample: { status: 'All clear', nested: { n: 3 } },
+      sources: { media: { app: 'Spotify' } },
+      config: {},
+    }
+    expect(interpolate('Playing on {@media/app}', context)).toBe('Playing on Spotify')
+    expect(interpolate('{/status}: {/nested/n} left', context)).toBe('All clear: 3 left')
+    // Objects and anything missing become empty text rather than "[object Object]".
+    expect(interpolate('[{/nested}] [{/nope}] [{@media/nope}]', context)).toBe('[] [] []')
+  })
+
+  it('leaves braces that are not placeholders alone', () => {
+    expect(interpolate('{ not a placeholder } {config}', { sample: {} })).toBe(
+      '{ not a placeholder } {config}',
+    )
+  })
+})
+
+describe('placeholders', () => {
+  it('lists the bindings and config keys a text inserts', () => {
+    const text = 'Over {config.threshold} on {@media/app} / {/status}'
+    expect(placeholderBindings(text)).toEqual(['@media/app', '/status'])
+    expect(placeholderConfigKeys(text)).toEqual(['threshold'])
+  })
 })
 
 describe('configDefaults', () => {
@@ -93,6 +121,21 @@ describe('bindingsOf and viewFor', () => {
 
   it('finds every binding, nested ones included', () => {
     expect(bindingsOf(view).sort()).toEqual(['/stars', '@gpu/history', '@gpu/percent'])
+  })
+
+  it('finds the bindings inserted into text too', () => {
+    const playing: WidgetView = {
+      small: {
+        type: 'row',
+        children: [
+          { type: 'equalizer' },
+          { type: 'text', text: 'Playing on {@media/app}', size: 'xs' },
+          { type: 'cover', bind: '@media/title', icon: 'music' },
+          { type: 'button', action: 'media.next', icon: 'skip-forward', label: 'Next {/n}' },
+        ],
+      },
+    }
+    expect(bindingsOf(playing).sort()).toEqual(['/n', '@media/app', '@media/title'])
   })
 
   it('falls back to the nearest size', () => {

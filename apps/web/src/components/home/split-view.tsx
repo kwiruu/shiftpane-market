@@ -73,7 +73,10 @@ export function SplitView({ widgets }: { widgets: Widget[] }) {
             </div>
 
             {/* The widget panel: the rest of the screen */}
-            <div className="board flex min-w-0 flex-1 items-center justify-center overflow-hidden">
+            <div
+              className="board flex min-w-0 flex-1 items-center justify-center overflow-hidden"
+              style={{ '--fmin': 0 } as React.CSSProperties}
+            >
               <div
                 className={cn(
                   'grid w-full gap-[1.6cqw] p-[2.4cqw] transition-opacity duration-300',

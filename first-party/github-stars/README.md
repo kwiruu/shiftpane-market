@@ -3,7 +3,7 @@ Adds up the stars on an account's public repositories every 15 minutes and lists
 ## Settings
 
 - **User or organization:** whose repositories to count.
-- **Repositories to list:** how many the list shows. The large size shows up to five.
+- **Repositories to list:** how many the list shows. The large size shows up to four.
 
 ## Permissions
 

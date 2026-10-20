@@ -89,7 +89,10 @@ export interface Manifest {
 
 /**
  * One node of `view.json`. `bind` is `@source/path` for a system source, `/json/pointer` for the
- * collector's output; `{config.key}` inside text inserts a config value.
+ * collector's output. Inside text, `{config.key}` inserts a config value and `{@source/path}` or
+ * `{/pointer}` inserts a bound one, so "Playing on {@media/app}" reads the app's name.
+ *
+ * Sizes follow the app's own board: type and spacing scale with the card, within limits.
  */
 export type ViewNode =
   | {
@@ -97,10 +100,18 @@ export type ViewNode =
       children: ViewNode[]
       gap?: number
       align?: 'start' | 'center' | 'end' | 'between'
+      /** A row only: keeps its ends in from the card's edges, like the media buttons on a wide card. */
+      inset?: boolean
     }
   | { type: 'grid'; columns: number; children: ViewNode[]; gap?: number }
   | { type: 'label'; text: string }
-  | { type: 'text'; text?: string; bind?: string; size?: 'sm' | 'md' | 'lg'; muted?: boolean }
+  | {
+      type: 'text'
+      text?: string
+      bind?: string
+      size?: 'xs' | 'sm' | 'md' | 'lg'
+      muted?: boolean
+    }
   | {
       type: 'value'
       bind: string
@@ -108,14 +119,38 @@ export type ViewNode =
       unit?: string
       size?: 'sm' | 'md' | 'lg' | 'xl'
     }
-  | { type: 'ring'; bind: string; label?: string; color?: Accent }
+  | {
+      type: 'ring'
+      bind: string
+      label?: string
+      color?: Accent
+      /** `sm` is the small gauge beside a figure; the default fills the room it has. */
+      size?: 'sm' | 'fill'
+      /** Whether the number in the middle carries a % sign. */
+      unit?: boolean
+    }
   | { type: 'meter'; bind: string; segments?: number }
   | { type: 'progress'; bind: string; color?: Accent }
-  | { type: 'history-bars'; bind: string; max?: number }
+  | {
+      type: 'history-bars'
+      bind: string
+      /** What a full-height bar means. Without it, the biggest value in the data. */
+      max?: number
+      /** Only the newest this many values. */
+      count?: number
+    }
   | { type: 'sparkline'; bind: string; color?: Accent }
   | { type: 'list'; bind: string; max?: number }
   | { type: 'icon'; name: string; color?: Accent }
   | { type: 'button'; action: ActionName; icon: string; label: string }
+  /** A hairline across the card. */
+  | { type: 'divider' }
+  /** A gradient tile with an icon on it; its colors come from the bound text, so each title gets its own. */
+  | { type: 'cover'; bind?: string; icon: string; size?: 'sm' | 'md' }
+  /** Three small bars bouncing, for "playing". */
+  | { type: 'equalizer' }
+  /** A soft colored light behind the card's content, bleeding off a corner. */
+  | { type: 'glow'; color?: Accent; corner?: 'top-right' | 'bottom-right' }
 
 export type ValueFormat =
   | 'percent'
@@ -125,7 +160,8 @@ export type ValueFormat =
   | 'rate'
   | 'celsius'
   | 'duration'
-export type Accent = 'flame' | 'lime' | 'mint' | 'sky'
+/** The board's accent colors, and `ink`: the card's own text color, for a white-on-dark gauge. */
+export type Accent = 'flame' | 'lime' | 'mint' | 'sky' | 'ink'
 
 export type WidgetView = Partial<Record<WidgetSize, ViewNode>>
 

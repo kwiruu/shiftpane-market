@@ -10,8 +10,10 @@ const span: Record<WidgetSize, string> = {
 }
 
 /**
- * A piece of the phone's widget board: black, two columns of cells, small tiles taking one cell,
- * medium ones a row, large ones two rows. Decorative, like the cards on it.
+ * A piece of the phone's widget board: black, two columns of cells (override with `grid-cols-*`
+ * for a phone held sideways), small tiles taking one cell, medium ones two across, large ones two
+ * by two. It's a picture of a phone, so its cards are small: their type scales with them instead of
+ * keeping the pixel minimums a real card has. Decorative, like the cards on it.
  */
 export function PhoneBoard({
   items,
@@ -27,6 +29,7 @@ export function PhoneBoard({
         'board grid grid-cols-2 content-start gap-[4cqw] [grid-auto-flow:dense]',
         className,
       )}
+      style={{ '--fmin': 0 } as React.CSSProperties}
     >
       {items.map(({ widget, size }, index) => (
         <WidgetCard

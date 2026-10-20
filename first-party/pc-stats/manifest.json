@@ -2,7 +2,7 @@
   "id": "pc-stats",
   "name": "PC stats",
   "description": "CPU, memory, GPU and network in one card.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "shiftpane",
   "license": "MIT",
   "categories": ["system"],

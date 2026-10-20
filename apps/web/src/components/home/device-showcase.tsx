@@ -91,7 +91,7 @@ function DevicesWindow() {
 
 function Laptop() {
   return (
-    <div className="relative w-[75%] flex-none">
+    <div className="relative w-[60%] flex-none">
       {/* Lid */}
       <div className="rounded-[clamp(10px,2.6cqw,28px)] bg-[#0d0d0d] p-[1.3%] shadow-device dark:bg-[#1c1c1c]">
         <div className="relative aspect-[16/10] overflow-hidden rounded-[clamp(6px,1.7cqw,18px)] [container-type:inline-size]">
@@ -110,41 +110,39 @@ function Laptop() {
   )
 }
 
-// What the phone shows once paired: the board's own mix of tiles.
+// What the phone shows once paired, held sideways like the app's split view: four columns, two
+// rows. A medium tile takes two columns, so each row adds up to four.
 const boardLayout: [id: string, size: WidgetSize][] = [
   ['gpu-ring', 'small'],
   ['pc-busy', 'small'],
   ['now-playing', 'medium'],
-  ['github-stars', 'medium'],
+  ['pc-stats', 'medium'],
   ['hardware-temps', 'small'],
-  ['pc-stats', 'small'],
+  ['github-stars', 'small'],
 ]
 
+/** A phone held sideways, 2400 × 1080 like the one in the split view figure. */
 function Phone() {
   const items = boardLayout.flatMap(([id, size]) => {
     const widget = sampleWidget(id)
     return widget ? [{ widget: widget as Widget, size }] : []
   })
   return (
-    <div className="relative w-[21%] flex-none">
-      <div className="rounded-[15%/7%] bg-[#0d0d0d] p-[3.4%] shadow-device ring-1 ring-black/10 dark:bg-[#1c1c1c] dark:ring-white/10">
-        <div className="relative aspect-[9/19.5] overflow-hidden rounded-[12%/5.6%] bg-black [container-type:inline-size]">
-          {/* Status bar and camera */}
-          <div className="absolute inset-x-0 top-0 flex h-[7%] items-center justify-between px-[9cqw] text-[4.6cqw] font-semibold text-white">
-            <span>9:41</span>
-            <span className="h-[3.4cqw] w-[6cqw] rounded-[1cqw] border border-white/70" />
-          </div>
-          <div className="absolute top-[1.6%] left-1/2 h-[3.6%] w-[30%] -translate-x-1/2 rounded-full bg-[#0d0d0d]" />
+    <div className="relative w-[37%] flex-none">
+      <div className="rounded-[7%/15.5%] bg-[#0d0d0d] p-[1.6%] shadow-device ring-1 ring-black/10 dark:bg-[#1c1c1c] dark:ring-white/10">
+        <div className="relative aspect-[2400/1080] overflow-hidden rounded-[5.6%/12.4%] bg-black [container-type:inline-size]">
+          {/* The camera, on the left edge */}
+          <div className="absolute top-1/2 left-[1.4cqw] h-[10cqw] w-[2cqw] -translate-y-1/2 rounded-full bg-[#0d0d0d]" />
 
-          <div className="board-hint absolute inset-0 flex-col items-center justify-center gap-[3cqw] text-center text-white">
-            <ScanLine strokeWidth={1.75} className="size-[16cqw] text-white/80" />
-            <span className="rounded-full bg-white/15 px-[5cqw] py-[2cqw] text-[5cqw] font-semibold backdrop-blur-md">
+          <div className="board-hint absolute inset-0 flex-col items-center justify-center gap-[2cqw] text-center text-white">
+            <ScanLine strokeWidth={1.75} className="size-[9cqw] text-white/80" />
+            <span className="rounded-full bg-white/15 px-[3.4cqw] py-[1.2cqw] text-[3.2cqw] font-semibold backdrop-blur-md">
               Scan to pair
             </span>
           </div>
 
-          <div className="board-panel absolute inset-x-0 top-[9%] bottom-0 px-[5cqw]">
-            <PhoneBoard items={items} />
+          <div className="board-panel absolute inset-0 flex items-center justify-center">
+            <PhoneBoard items={items} className="w-[78cqw] grid-cols-4 gap-[1.6cqw]" />
           </div>
         </div>
       </div>
