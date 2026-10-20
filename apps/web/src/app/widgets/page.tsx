@@ -1,14 +1,9 @@
-import { categories } from '@shiftpane/format'
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { CategoryChips } from '@/components/market/category-chips'
 import { SearchForm } from '@/components/market/search-form'
 import { WidgetGrid } from '@/components/market/widget-tile'
-import { DefinitionCard, ListRow, RowText } from '@/components/site/list-group'
 import { Badge } from '@/components/ui/badge'
-import { WidgetGlyph } from '@/components/widgets/widget-icon'
-import { formatDate } from '@/lib/format'
-import { categoryInfo, countByCategory, featuredWidgets, newestWidgets } from '@/lib/registry'
+import { countByCategory, featuredWidgets } from '@/lib/registry'
 import { getWidgets } from '@/lib/registry/gallery'
 
 const description =
@@ -47,60 +42,6 @@ export default async function WidgetsHome() {
         </h2>
         <WidgetGrid widgets={featuredWidgets(widgets)} className="mt-3" />
       </section>
-
-      <div className="mt-14 grid gap-3 lg:grid-cols-2">
-        <DefinitionCard label="New" className="self-start">
-          {newestWidgets(widgets, 5).map((widget) => (
-            <ListRow key={widget.id} href={`/widgets/${widget.id}`}>
-              <WidgetGlyph name={widget.icon} className="size-9" />
-              <RowText
-                title={widget.name}
-                detail={`${formatDate(widget.createdAt)} · ${widget.summary}`}
-              />
-            </ListRow>
-          ))}
-        </DefinitionCard>
-
-        <div className="flex flex-col gap-3">
-          <DefinitionCard label="Categories">
-            {categories
-              .filter((category) => counts[category] > 0)
-              .map((category) => (
-                <ListRow key={category} href={`/widgets/search?category=${category}`}>
-                  <span className="flex min-w-0 flex-1 items-center justify-between gap-4">
-                    <RowText
-                      title={categoryInfo[category].label}
-                      detail={categoryInfo[category].description}
-                    />
-                    <span className="text-body-sm text-secondary tabular-nums">
-                      {counts[category]}
-                    </span>
-                  </span>
-                </ListRow>
-              ))}
-          </DefinitionCard>
-
-          <DefinitionCard label="Make your own">
-            <ListRow href="/docs/making-widgets">
-              <RowText title="Making widgets" detail="Three ways in, one package out." />
-            </ListRow>
-            <ListRow href="/upload">
-              <RowText title="Publish a widget" detail="Checks, review, then it's listed here." />
-            </ListRow>
-          </DefinitionCard>
-        </div>
-      </div>
-
-      <p className="mt-6 text-body-sm text-secondary">
-        {widgets.length === 1 ? '1 widget' : `${widgets.length} widgets`}.{' '}
-        <Link
-          href="/widgets/search"
-          className="text-on-surface underline decoration-border underline-offset-4 hover:decoration-current"
-        >
-          See them all
-        </Link>
-        .
-      </p>
     </div>
   )
 }
