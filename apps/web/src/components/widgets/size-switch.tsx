@@ -1,8 +1,7 @@
 'use client'
 
+import type { WidgetSize } from '@shiftpane/format'
 import { useId } from 'react'
-
-import type { WidgetSize } from '@/lib/registry/types'
 import { cn } from '@/lib/utils'
 
 /** A segmented control for a widget's sizes: a muted pill, the chosen size on a white pill. */

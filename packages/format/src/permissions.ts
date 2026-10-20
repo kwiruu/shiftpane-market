@@ -1,5 +1,5 @@
-import { actions, sources } from './sources'
-import type { Permissions } from './types'
+import { actions, sources } from './sources.ts'
+import type { Permissions } from './types.ts'
 
 /**
  * Permissions in plain words, the way the app's install prompt says them (PLAN, "Install-time

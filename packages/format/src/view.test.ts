@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { WidgetView } from './types'
+import type { WidgetView } from './types.ts'
 import {
   bindingsOf,
   configDefaults,
@@ -9,7 +9,7 @@ import {
   pointer,
   resolveBinding,
   viewFor,
-} from './view'
+} from './view.ts'
 
 describe('pointer', () => {
   const doc = { a: { 'b/c': [10, 20], 'm~n': true } }

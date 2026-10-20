@@ -1,7 +1,6 @@
+import type { Category } from '@shiftpane/format'
 import { Search } from 'lucide-react'
-
 import { Input } from '@/components/ui/input'
-import type { Category } from '@/lib/registry/types'
 import { cn } from '@/lib/utils'
 
 /** A plain GET form: searching works without JavaScript, and the results page reads the URL. */

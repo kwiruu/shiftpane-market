@@ -1,12 +1,11 @@
-import type { Accent, ViewNode, Widget, WidgetSize } from '@/lib/registry/types'
-import type { BindingContext } from '@/lib/registry/view'
+import type { Accent, BindingContext, ViewNode, Widget, WidgetSize } from '@shiftpane/format'
 import {
   configDefaults,
   formatValue,
   interpolate,
   resolveBinding,
   viewFor,
-} from '@/lib/registry/view'
+} from '@shiftpane/format'
 import { cn } from '@/lib/utils'
 
 import { WidgetIcon } from './widget-icon'

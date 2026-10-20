@@ -1,5 +1,4 @@
-import type { CheckResult } from './checks'
-import type { Permissions, ReviewStatus } from './types'
+import type { CheckResult, Permissions, ReviewStatus } from '@shiftpane/format'
 
 /**
  * Sample submissions and reports for the author dashboard and the review queue. Uploads need the API

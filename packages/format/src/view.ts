@@ -1,5 +1,5 @@
-import { sampleSources } from './sources'
-import type { ConfigField, SourceName, ValueFormat, WidgetSize, WidgetView } from './types'
+import { sampleSources } from './sources.ts'
+import type { ConfigField, SourceName, ValueFormat, WidgetSize, WidgetView } from './types.ts'
 
 /**
  * How a preview reads `view.json` (PLAN, "The view: declarative JSON, not code"): `@name/...` reads

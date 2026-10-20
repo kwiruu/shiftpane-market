@@ -1,9 +1,9 @@
-import { authors, widgets } from './seed'
-import type { Author, Category, Widget } from './types'
+import type { Category, Widget } from '@shiftpane/format'
+import { widgets as sampleWidgets } from './seed'
 
 /**
- * Everything the site reads about widgets goes through here. Today it reads the seed; once the API
- * exists (PLAN, W3) these become calls to `/api/v1/widgets`, and the pages don't change.
+ * What the site knows about widgets, as pure functions over a list. The list itself comes from
+ * `gallery.ts`: the registry API in production, the seed when no API is configured.
  */
 
 export const categoryInfo: Record<Category, { label: string; description: string }> = {
@@ -17,12 +17,9 @@ export const categoryInfo: Record<Category, { label: string; description: string
   other: { label: 'Other', description: 'Everything else.' },
 }
 
-export function getWidgets(): Widget[] {
-  return widgets
-}
-
-export function getWidget(id: string): Widget | undefined {
-  return widgets.find((widget) => widget.id === id)
+/** A seed widget, for the landing page's pictures of the board. Galleries read `gallery.ts`. */
+export function sampleWidget(id: string): Widget | undefined {
+  return sampleWidgets.find((widget) => widget.id === id)
 }
 
 export function latestVersion(widget: Widget) {
@@ -34,38 +31,26 @@ export function updatedAt(widget: Widget): string {
   return widget.versions[0]?.publishedAt ?? widget.createdAt
 }
 
-export function featuredWidgets(): Widget[] {
-  return widgets.filter((widget) => widget.featured)
+export function featuredWidgets(list: Widget[]): Widget[] {
+  return list.filter((widget) => widget.featured)
 }
 
 /** Most recently listed first. */
-export function newestWidgets(limit = widgets.length): Widget[] {
-  return [...widgets].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, limit)
+export function newestWidgets(list: Widget[], limit = list.length): Widget[] {
+  return [...list].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, limit)
 }
 
 /** Most recently updated first. */
-export function recentlyUpdated(limit = widgets.length): Widget[] {
-  return [...widgets].sort((a, b) => updatedAt(b).localeCompare(updatedAt(a))).slice(0, limit)
+export function recentlyUpdated(list: Widget[], limit = list.length): Widget[] {
+  return [...list].sort((a, b) => updatedAt(b).localeCompare(updatedAt(a))).slice(0, limit)
 }
 
-export function countByCategory(list: Widget[] = widgets): Record<Category, number> {
+export function countByCategory(list: Widget[]): Record<Category, number> {
   const counts = Object.fromEntries(
     Object.keys(categoryInfo).map((category) => [category, 0]),
   ) as Record<Category, number>
   for (const widget of list) for (const category of widget.categories) counts[category]++
   return counts
-}
-
-export function getAuthors(): Author[] {
-  return authors
-}
-
-export function getAuthor(login: string): Author | undefined {
-  return authors.find((author) => author.login === login)
-}
-
-export function widgetsBy(login: string): Widget[] {
-  return widgets.filter((widget) => widget.author === login)
 }
 
 export function isCategory(value: string | null | undefined): value is Category {

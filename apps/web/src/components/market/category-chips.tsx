@@ -1,22 +1,23 @@
+import { type Category, categories } from '@shiftpane/format'
 import Link from 'next/link'
-
 import { Badge } from '@/components/ui/badge'
-import { categoryInfo, countByCategory } from '@/lib/registry'
-import { type Category, categories } from '@/lib/registry/types'
+import { categoryInfo } from '@/lib/registry'
 import { cn } from '@/lib/utils'
 
 /** The categories as chips, each a search link; the current one is the ink chip. */
 export function CategoryChips({
+  counts,
   current,
   query,
   className,
 }: {
+  /** Widgets per category; empty categories aren't shown. */
+  counts: Record<Category, number>
   current?: Category
   /** Keeps the words being searched for when switching category. */
   query?: string
   className?: string
 }) {
-  const counts = countByCategory()
   const href = (category?: Category) => {
     const params = new URLSearchParams()
     if (query) params.set('q', query)

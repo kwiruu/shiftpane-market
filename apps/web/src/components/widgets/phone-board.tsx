@@ -1,4 +1,4 @@
-import type { Widget, WidgetSize } from '@/lib/registry/types'
+import type { Widget, WidgetSize } from '@shiftpane/format'
 import { cn } from '@/lib/utils'
 
 import { WidgetCard } from './widget-view'

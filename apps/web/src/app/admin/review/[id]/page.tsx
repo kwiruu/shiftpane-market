@@ -1,7 +1,7 @@
-import { Check, ChevronLeft, CircleAlert, CircleX, Loader } from 'lucide-react'
+import { addedPermissions, type CheckResult, checks } from '@shiftpane/format'
+import { Check, ChevronLeft, CircleAlert, CircleMinus, CircleX, Loader } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-
 import { PermissionList } from '@/components/market/permission-list'
 import { SourceViewer } from '@/components/market/source-viewer'
 import { StatusBadge } from '@/components/market/status-badge'
@@ -9,10 +9,8 @@ import { DefinitionCard, MetaRow } from '@/components/site/list-group'
 import { Button } from '@/components/ui/button'
 import { PreviewStage } from '@/components/widgets/preview-stage'
 import { formatDate } from '@/lib/format'
-import { getWidget } from '@/lib/registry'
-import { type CheckResult, checks } from '@/lib/registry/checks'
+import { sampleWidget } from '@/lib/registry'
 import { packageFiles } from '@/lib/registry/package'
-import { addedPermissions } from '@/lib/registry/permissions'
 import { getSubmission, submissions } from '@/lib/registry/review'
 
 export const dynamicParams = false
@@ -30,6 +28,7 @@ const resultIcon: Record<CheckResult | 'running', React.ReactNode> = {
   pass: <Check aria-hidden="true" strokeWidth={2} className="size-4 text-success" />,
   flag: <CircleAlert aria-hidden="true" strokeWidth={1.75} className="size-4 text-accent" />,
   fail: <CircleX aria-hidden="true" strokeWidth={1.75} className="size-4 text-error" />,
+  skip: <CircleMinus aria-hidden="true" strokeWidth={1.75} className="size-4 text-secondary" />,
   running: <Loader aria-hidden="true" strokeWidth={1.75} className="size-4 text-secondary" />,
 }
 
@@ -37,6 +36,7 @@ const resultLabel: Record<CheckResult | 'running', string> = {
   pass: 'Passed',
   flag: 'Flagged',
   fail: 'Failed',
+  skip: 'Not run',
   running: 'Running',
 }
 
@@ -47,7 +47,7 @@ const resultLabel: Record<CheckResult | 'running', string> = {
 export default async function ReviewPage({ params }: PageProps<'/admin/review/[id]'>) {
   const { id } = await params
   const submission = getSubmission(id)
-  const widget = submission && getWidget(submission.widgetId)
+  const widget = submission && sampleWidget(submission.widgetId)
   if (!submission || !widget) notFound()
 
   const current = widget.versions[0]
@@ -122,7 +122,7 @@ export default async function ReviewPage({ params }: PageProps<'/admin/review/[i
               rows={4}
               disabled={decided}
               defaultValue={submission.reviewerNote}
-              placeholder="Needed to reject; shown to the author by email."
+              placeholder="Needed to reject; shown to the author on their dashboard."
               className="w-full resize-y rounded-md bg-muted p-3 text-body-sm outline-none placeholder:text-secondary focus-visible:outline-2 focus-visible:outline-primary disabled:opacity-60"
             />
             <div className="grid grid-cols-2 gap-2">

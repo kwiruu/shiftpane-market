@@ -1,0 +1,38 @@
+{
+  "gpu-ring": {
+    "icon": "gauge",
+    "tone": "dark",
+    "featured": true,
+    "notes": "Adds the medium size, with the ring beside a minute of history."
+  },
+  "pc-stats": {
+    "icon": "activity",
+    "tone": "dark",
+    "featured": true,
+    "notes": "Shows download and upload speed under the rings."
+  },
+  "now-playing": {
+    "icon": "music",
+    "tone": "light",
+    "featured": true,
+    "notes": "Long titles fade out instead of wrapping."
+  },
+  "github-stars": {
+    "icon": "star",
+    "tone": "dark",
+    "featured": true,
+    "notes": "Uses a token when you give it one, for GitHub’s higher rate limit. Adds the large size."
+  },
+  "pc-busy": {
+    "icon": "coffee",
+    "tone": "light",
+    "featured": false,
+    "notes": "First release."
+  },
+  "hardware-temps": {
+    "icon": "thermometer",
+    "tone": "dark",
+    "featured": false,
+    "notes": "Reads the GPU hot spot when there is one."
+  }
+}

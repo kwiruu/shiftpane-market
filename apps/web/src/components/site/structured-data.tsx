@@ -1,4 +1,4 @@
-import type { Widget } from '@/lib/registry/types'
+import type { Widget } from '@shiftpane/format'
 import { site } from '@/lib/site'
 
 /**

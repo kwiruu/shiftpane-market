@@ -1,0 +1,23 @@
+{
+  "name": "@shiftpane/checks",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The marketplace's automated checks: opening a widget package and checking what's in it",
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@shiftpane/format": "workspace:*",
+    "acorn": "^8.19.0",
+    "fflate": "^0.8.3",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

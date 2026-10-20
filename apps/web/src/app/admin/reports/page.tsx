@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { formatDate } from '@/lib/format'
-import { getWidget } from '@/lib/registry'
+import { sampleWidget } from '@/lib/registry'
 import { reportReasons, reports } from '@/lib/registry/review'
 
 export const metadata = { title: 'Reports' }
@@ -19,7 +19,7 @@ export default function ReportsPage() {
 
       <ul className="mt-10 flex flex-col gap-3">
         {reports.map((report) => {
-          const widget = getWidget(report.widgetId)
+          const widget = sampleWidget(report.widgetId)
           return (
             <li key={report.id} className="rounded-lg bg-surface p-5 sm:p-6">
               <div className="flex flex-wrap items-center gap-2">

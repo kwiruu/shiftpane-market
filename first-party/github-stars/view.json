@@ -1,0 +1,123 @@
+{
+  "small": {
+    "type": "stack",
+    "align": "between",
+    "children": [
+      {
+        "type": "row",
+        "align": "between",
+        "children": [
+          {
+            "type": "label",
+            "text": "GitHub"
+          },
+          {
+            "type": "icon",
+            "name": "star",
+            "color": "lime"
+          }
+        ]
+      },
+      {
+        "type": "stack",
+        "gap": 0.5,
+        "children": [
+          {
+            "type": "value",
+            "bind": "/total",
+            "format": "compact",
+            "size": "xl"
+          },
+          {
+            "type": "label",
+            "text": "stars"
+          }
+        ]
+      }
+    ]
+  },
+  "medium": {
+    "type": "row",
+    "gap": 5,
+    "children": [
+      {
+        "type": "stack",
+        "align": "between",
+        "children": [
+          {
+            "type": "icon",
+            "name": "star",
+            "color": "lime"
+          },
+          {
+            "type": "stack",
+            "gap": 0.5,
+            "children": [
+              {
+                "type": "value",
+                "bind": "/total",
+                "format": "compact",
+                "size": "xl"
+              },
+              {
+                "type": "label",
+                "text": "stars"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "list",
+        "bind": "/repos",
+        "max": 3
+      }
+    ]
+  },
+  "large": {
+    "type": "stack",
+    "align": "between",
+    "children": [
+      {
+        "type": "row",
+        "align": "between",
+        "children": [
+          {
+            "type": "stack",
+            "gap": 0.5,
+            "children": [
+              {
+                "type": "value",
+                "bind": "/total",
+                "format": "compact",
+                "size": "xl"
+              },
+              {
+                "type": "label",
+                "text": "stars"
+              }
+            ]
+          },
+          {
+            "type": "icon",
+            "name": "star",
+            "color": "lime"
+          }
+        ]
+      },
+      {
+        "type": "label",
+        "text": "Stars per repository"
+      },
+      {
+        "type": "history-bars",
+        "bind": "/spread"
+      },
+      {
+        "type": "list",
+        "bind": "/repos",
+        "max": 5
+      }
+    ]
+  }
+}

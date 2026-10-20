@@ -1,6 +1,6 @@
+import type { ReviewStatus } from '@shiftpane/format'
 import { Badge } from '@/components/ui/badge'
 import { statusLabels } from '@/lib/registry/review'
-import type { ReviewStatus } from '@/lib/registry/types'
 
 const variants: Record<ReviewStatus, 'success' | 'muted' | 'outline' | 'destructive'> = {
   approved: 'success',

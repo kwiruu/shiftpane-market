@@ -1,8 +1,7 @@
+import type { Widget, WidgetSize } from '@shiftpane/format'
 import Link from 'next/link'
-
 import { WidgetCard } from '@/components/widgets/widget-view'
-import { categoryInfo, getAuthor } from '@/lib/registry'
-import type { Widget, WidgetSize } from '@/lib/registry/types'
+import { categoryInfo } from '@/lib/registry'
 import { cn } from '@/lib/utils'
 
 // The tile shows the widget at the size that fills its preview best.
@@ -15,7 +14,6 @@ const previewSize = (widget: Widget): WidgetSize =>
  */
 export function WidgetTile({ widget, className }: { widget: Widget; className?: string }) {
   const size = previewSize(widget)
-  const author = getAuthor(widget.author)
   return (
     <Link
       href={`/widgets/${widget.id}`}
@@ -39,7 +37,7 @@ export function WidgetTile({ widget, className }: { widget: Widget; className?: 
         <h3 className="font-sans text-body-md">{widget.name}</h3>
         <p className="mt-0.5 line-clamp-2 text-body-sm text-secondary">{widget.summary}</p>
         <p className="mt-auto pt-3 text-label-md text-secondary">
-          {author?.name ?? widget.author}
+          {widget.authorName ?? widget.author}
           <span aria-hidden="true"> · </span>
           {widget.categories.map((category) => categoryInfo[category].label).join(', ')}
         </p>

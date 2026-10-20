@@ -1,0 +1,20 @@
+{
+  "id": "hardware-temps",
+  "name": "Temperatures",
+  "description": "CPU and GPU temperatures from LibreHardwareMonitor.",
+  "version": "1.0.0",
+  "author": "shiftpane",
+  "license": "MIT",
+  "categories": ["system"],
+  "minAppVersion": "0.5.0",
+  "sizes": ["small", "medium"],
+  "refreshSeconds": 3,
+  "permissions": {
+    "sources": [],
+    "actions": [],
+    "local": ["127.0.0.1:8085"],
+    "network": [],
+    "secrets": []
+  },
+  "config": []
+}

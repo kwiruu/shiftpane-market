@@ -1,22 +1,26 @@
 import type { MetadataRoute } from 'next'
 
 import { docs } from '@/lib/docs'
-import { getAuthors, getWidgets, updatedAt } from '@/lib/registry'
+import { updatedAt } from '@/lib/registry'
+import { getAuthors, getWidgets } from '@/lib/registry/gallery'
 import { site } from '@/lib/site'
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  // The build is the last time anything here could have changed.
+export const revalidate = 3600
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Pages other than widgets change only when the site is rebuilt.
   const lastModified = new Date()
+  const [widgets, authors] = await Promise.all([getWidgets(), getAuthors()])
   return [
     { url: site.url, lastModified, changeFrequency: 'weekly', priority: 1 },
     { url: `${site.url}/widgets`, lastModified, changeFrequency: 'daily', priority: 0.9 },
-    ...getWidgets().map((widget) => ({
+    ...widgets.map((widget) => ({
       url: `${site.url}/widgets/${widget.id}`,
       lastModified: new Date(`${updatedAt(widget)}T00:00:00Z`),
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     })),
-    ...getAuthors().map((author) => ({
+    ...authors.map((author) => ({
       url: `${site.url}/authors/${author.login}`,
       lastModified,
       changeFrequency: 'weekly' as const,

@@ -1,14 +1,13 @@
+import { checks } from '@shiftpane/format'
 import { FileArchive } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-
 import { Step, Steps } from '@/components/content/blocks'
 import { GitHubIcon } from '@/components/site/brand-icons'
 import { CodeBlock } from '@/components/site/code-block'
 import { DefinitionCard, DefinitionRow, ListRow, RowText } from '@/components/site/list-group'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { checks } from '@/lib/registry/checks'
 
 const description =
   'Upload a widget to the ShiftPane gallery: automated checks, review by a person, then it is listed.'

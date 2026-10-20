@@ -1,14 +1,13 @@
 'use client'
 
+import type { Widget } from '@shiftpane/format'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-
 import { CategoryChips } from '@/components/market/category-chips'
 import { SearchForm } from '@/components/market/search-form'
 import { WidgetGrid } from '@/components/market/widget-tile'
 import { Button } from '@/components/ui/button'
-import { categoryInfo, isCategory, searchWidgets } from '@/lib/registry'
-import type { Widget } from '@/lib/registry/types'
+import { categoryInfo, countByCategory, isCategory, searchWidgets } from '@/lib/registry'
 
 /** The search box, the categories, and what matches, all from the URL. */
 export function SearchResults({ widgets }: { widgets: Widget[] }) {
@@ -40,7 +39,12 @@ export function SearchResults({ widgets }: { widgets: Widget[] }) {
           className="mt-8 max-w-120"
           autoFocus={!query && !category}
         />
-        <CategoryChips current={category} query={query} className="mt-4" />
+        <CategoryChips
+          counts={countByCategory(widgets)}
+          current={category}
+          query={query}
+          className="mt-4"
+        />
       </header>
 
       {results.length > 0 ? (

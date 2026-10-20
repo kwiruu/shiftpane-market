@@ -1,0 +1,19 @@
+{
+  "id": "pc-stats",
+  "name": "PC stats",
+  "description": "CPU, memory, GPU and network in one card.",
+  "version": "1.1.0",
+  "author": "shiftpane",
+  "license": "MIT",
+  "categories": ["system"],
+  "minAppVersion": "0.5.0",
+  "sizes": ["small", "medium", "large"],
+  "permissions": {
+    "sources": ["cpu", "memory", "gpu", "network"],
+    "actions": [],
+    "local": [],
+    "network": [],
+    "secrets": []
+  },
+  "config": []
+}

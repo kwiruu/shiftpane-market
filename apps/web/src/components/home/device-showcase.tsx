@@ -1,9 +1,8 @@
+import type { Widget, WidgetSize } from '@shiftpane/format'
 import { Check, ScanLine, Smartphone } from 'lucide-react'
-
 import { LogoMark } from '@/components/site/logo'
 import { PhoneBoard } from '@/components/widgets/phone-board'
-import { getWidget } from '@/lib/registry'
-import type { Widget, WidgetSize } from '@/lib/registry/types'
+import { sampleWidget } from '@/lib/registry'
 
 /*
  * The hero devices (DESIGN.md, Motion): a laptop showing ShiftPane's pairing code, and a phone
@@ -123,7 +122,7 @@ const boardLayout: [id: string, size: WidgetSize][] = [
 
 function Phone() {
   const items = boardLayout.flatMap(([id, size]) => {
-    const widget = getWidget(id)
+    const widget = sampleWidget(id)
     return widget ? [{ widget: widget as Widget, size }] : []
   })
   return (

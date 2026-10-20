@@ -1,0 +1,26 @@
+{
+  "name": "@shiftpane/db",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The registry's database: Drizzle schema, migrations and the client for Postgres or PGlite",
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc",
+    "test": "vitest run",
+    "generate": "drizzle-kit generate"
+  },
+  "dependencies": {
+    "@electric-sql/pglite": "^0.5.10",
+    "@shiftpane/format": "workspace:*",
+    "drizzle-orm": "^0.45.4",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "@types/pg": "^8.23.1",
+    "drizzle-kit": "^0.31.11",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

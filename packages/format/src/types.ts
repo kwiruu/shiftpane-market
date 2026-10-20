@@ -1,6 +1,6 @@
 /**
  * The marketplace's view of a widget, shaped after PLAN.md ("Widget package format (v1)" and the
- * `index.json` entry). These are the site's own types until the widget SDK publishes its schemas;
+ * `index.json` entry). Shared by the site and the API until the widget SDK publishes its schemas;
  * then the manifest and view types come from `@shiftpane/widget-sdk` and only `Widget` stays here.
  */
 
@@ -43,8 +43,8 @@ export const actionNames = [
 ] as const
 export type ActionName = (typeof actionNames)[number]
 
-export type WidgetSize = 'small' | 'medium' | 'large'
-export const widgetSizes: WidgetSize[] = ['small', 'medium', 'large']
+export const widgetSizes = ['small', 'medium', 'large'] as const
+export type WidgetSize = (typeof widgetSizes)[number]
 
 export interface Permissions {
   sources: SourceName[]
@@ -143,7 +143,10 @@ export interface Widget {
   name: string
   /** One line, for cards and search results. */
   summary: string
+  /** The author's login. */
   author: string
+  /** Their display name, when the gallery knows it. */
+  authorName?: string
   license: string
   repository?: string
   categories: Category[]

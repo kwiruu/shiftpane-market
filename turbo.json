@@ -5,7 +5,13 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
-      "env": ["NEXT_PUBLIC_SITE_URL", "VERCEL_ENV", "VERCEL_PROJECT_PRODUCTION_URL"]
+      "env": [
+        "NEXT_PUBLIC_SITE_URL",
+        "SHIFTPANE_API_ORIGIN",
+        "SHIFTPANE_REGISTRY_ORIGIN",
+        "VERCEL_ENV",
+        "VERCEL_PROJECT_PRODUCTION_URL"
+      ]
     },
     "typecheck": {
       "dependsOn": ["^build"],

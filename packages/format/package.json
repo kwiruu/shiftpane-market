@@ -1,0 +1,19 @@
+{
+  "name": "@shiftpane/format",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The widget package format: types, zod schemas, system sources, permission wording and view bindings",
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

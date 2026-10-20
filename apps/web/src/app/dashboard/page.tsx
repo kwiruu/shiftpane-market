@@ -7,8 +7,8 @@ import { StatusBadge } from '@/components/market/status-badge'
 import { Button } from '@/components/ui/button'
 import { WidgetGlyph } from '@/components/widgets/widget-icon'
 import { formatDate } from '@/lib/format'
-import { getWidgets } from '@/lib/registry'
 import { submissions } from '@/lib/registry/review'
+import { widgets as sampleWidgets } from '@/lib/registry/seed'
 
 export const metadata: Metadata = {
   title: 'Your widgets',
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
  * exists it shows the first-party widgets and the sample submissions, and says so.
  */
 export default function DashboardPage() {
-  const widgets = getWidgets()
+  const widgets = sampleWidgets
   return (
     <div className="frame flex flex-col pt-28 sm:pt-32">
       <header className="flex flex-wrap items-end justify-between gap-4">

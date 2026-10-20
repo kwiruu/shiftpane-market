@@ -1,8 +1,7 @@
 'use client'
 
+import type { Widget, WidgetSize } from '@shiftpane/format'
 import { useState } from 'react'
-
-import type { Widget, WidgetSize } from '@/lib/registry/types'
 import { cn } from '@/lib/utils'
 
 import { SizeSwitch } from './size-switch'

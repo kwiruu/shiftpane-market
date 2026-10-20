@@ -1,3 +1,5 @@
+import type { Permissions } from '@shiftpane/format'
+import { canSendOffPc, describePermissions, type PermissionKind } from '@shiftpane/format'
 import {
   Cpu,
   Globe,
@@ -7,10 +9,7 @@ import {
   MousePointerClick,
   ShieldCheck,
 } from 'lucide-react'
-
 import { DefinitionCard } from '@/components/site/list-group'
-import { canSendOffPc, describePermissions, type PermissionKind } from '@/lib/registry/permissions'
-import type { Permissions } from '@/lib/registry/types'
 
 const kindIcons: Record<PermissionKind, LucideIcon> = {
   source: Cpu,

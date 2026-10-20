@@ -1,10 +1,7 @@
+import { actionNames, actions, checks, sourceNames, sources } from '@shiftpane/format'
 import { ChevronRight } from 'lucide-react'
-
 import { CodeBlock } from '@/components/site/code-block'
 import { DefinitionCard, DefinitionRow } from '@/components/site/list-group'
-import { checks } from '@/lib/registry/checks'
-import { actions, sources } from '@/lib/registry/sources'
-import { actionNames, sourceNames } from '@/lib/registry/types'
 import { repoFile, site } from '@/lib/site'
 import { cn } from '@/lib/utils'
 

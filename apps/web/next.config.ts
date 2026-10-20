@@ -30,8 +30,14 @@ const contentSecurityPolicy = [
 ].join('; ')
 
 // The API (apps/api, PLAN "Hosting and budget") runs elsewhere and is reached through this rewrite,
-// so the browser sees one origin: no CORS, first-party cookies. Unset until the API exists.
+// so the browser sees one origin: no CORS, first-party cookies. Unset, the site shows the seed.
 const apiOrigin = process.env.SHIFTPANE_API_ORIGIN
+
+// The desktop app reads the signed index and the packages from /registry, which forwards to where
+// they're stored: Vercel Blob in production, the local API in dev. The address the app knows stays
+// the same if storage moves.
+const registryOrigin =
+  process.env.SHIFTPANE_REGISTRY_ORIGIN ?? (apiOrigin ? `${apiOrigin}/registry` : undefined)
 
 const nextConfig: NextConfig = {
   // Docs pages live in src/content/docs as .mdx and are imported by src/app/docs/[slug].
@@ -44,7 +50,12 @@ const nextConfig: NextConfig = {
     ]
   },
   async rewrites() {
-    return apiOrigin ? [{ source: '/api/:path*', destination: `${apiOrigin}/api/:path*` }] : []
+    return [
+      ...(apiOrigin ? [{ source: '/api/:path*', destination: `${apiOrigin}/api/:path*` }] : []),
+      ...(registryOrigin
+        ? [{ source: '/registry/:path*', destination: `${registryOrigin}/:path*` }]
+        : []),
+    ]
   },
   // The pages are same-origin throughout, so these cost nothing and close the usual gaps.
   async headers() {

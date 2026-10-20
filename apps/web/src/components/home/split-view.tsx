@@ -1,9 +1,8 @@
 'use client'
 
+import type { Widget } from '@shiftpane/format'
 import { useState } from 'react'
-
 import { WidgetCard } from '@/components/widgets/widget-view'
-import type { Widget } from '@/lib/registry/types'
 import { monitorArea, pickMonitorSize } from '@/lib/split'
 import { cn } from '@/lib/utils'
 
