@@ -1,17 +1,25 @@
-import { Hono } from 'hono'
+import { Hono, type MiddlewareHandler } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 
 import type { AppEnv, Deps } from '../context.ts'
 import { listAuthors, listWidgets } from '../registry.ts'
 
-/** What the site's gallery reads. Short caching: the site revalidates its pages from these. */
+/**
+ * What the site's gallery reads. Short caching: the site revalidates its pages from these. Only
+ * these paths are cacheable; everything else under /api is per person (see `noStore` in app.ts).
+ */
 export function publicRoutes(deps: Deps) {
   const app = new Hono<AppEnv>()
 
-  app.use(async (c, next) => {
+  const cacheable: MiddlewareHandler<AppEnv> = async (c, next) => {
     await next()
-    if (c.res.status === 200) c.header('Cache-Control', 'public, max-age=30')
-  })
+    if (c.req.method === 'GET' && c.res.status === 200) {
+      c.header('Cache-Control', 'public, max-age=30')
+    }
+  }
+  for (const path of ['/widgets', '/widgets/:id', '/authors', '/authors/:login']) {
+    app.use(path, cacheable)
+  }
 
   app.get('/widgets', async (c) => c.json({ widgets: await listWidgets(deps) }))
 

@@ -19,6 +19,9 @@ export interface Gallery {
 
 const apiOrigin = process.env.SHIFTPANE_API_ORIGIN?.replace(/\/$/, '')
 
+/** Whether there's an API behind `/api`: sign-in, uploads and review need one. Server only. */
+export const hasApi = apiOrigin !== undefined
+
 async function fromApi<T>(path: string): Promise<T> {
   const response = await fetch(`${apiOrigin}/api/v1${path}`, {
     next: { revalidate: REVALIDATE_SECONDS },

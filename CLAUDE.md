@@ -10,7 +10,9 @@ is the plan; README.md says where each milestone is and how to deploy.
 - `pnpm typecheck`, `pnpm test`, `pnpm build` (Turborepo)
 - One Vitest file: `pnpm --filter @shiftpane/format exec vitest run src/view.test.ts`
 - Dev servers: `pnpm dev` (site on 3000, API on 8787). The site shows the seed unless
-  `SHIFTPANE_API_ORIGIN` is set.
+  `SHIFTPANE_API_ORIGIN` is set; with it, `next dev` offers local test accounts (any login, any
+  role) next to GitHub sign-in. The API allows them only outside production with a localhost
+  `SITE_ORIGIN` (`devSignIn` in `apps/api/src/config.ts`).
 - After changing `packages/db/src/schema.ts`: `pnpm --filter @shiftpane/db generate`, and commit the migration.
 - Deploy the API: `pnpm --filter @shiftpane/api deploy:heroku` (needs `HEROKU_API_KEY`, `HEROKU_APP`).
 
@@ -28,8 +30,10 @@ is the plan; README.md says where each milestone is and how to deploy.
   lives in `packages/format`, shared by the site and the API. Permission wording comes from its
   `permissions.ts` and `sources.ts` only: it has to match what the app's install prompt says.
 - Pages read the gallery through `apps/web/src/lib/registry/gallery.ts` (the API, or the seed) and
-  export `revalidate = 60`. The landing page's pictures and the sample upload, dashboard and review
-  pages read the seed directly.
+  export `revalidate = 60`. The landing page's pictures read the seed directly.
+- The account pages (upload, dashboard, `/admin`) are static shells: their client components in
+  `src/components/account` call `/api/v1` from the browser through `src/lib/api.ts`, and the server
+  passes them `hasApi` (from gallery.ts) so they say so when there's no API.
 - `first-party/` holds the first-party widgets as packages; `seed.ts` mirrors them and a test keeps
   the two in step. Raise a widget's version to publish a change.
 - Internal packages export source (`"exports": "./src/index.ts"`) with `.ts` on relative imports, so
@@ -38,14 +42,16 @@ is the plan; README.md says where each milestone is and how to deploy.
 - Previews render `view.json` with ShiftPane's own components only (`src/components/widgets`). Never
   render author-supplied HTML or run author code in the browser; READMEs go through react-markdown
   with `skipHtml`.
-- Say when something is planned or sample data (`<Planned />` in docs, `SampleNotice` on pages).
-  Don't present planned app features as shipped.
+- Say when something is planned (`<Planned />` in docs). Don't present planned app features, or
+  the `shiftpane-widget` CLI, as shipped.
 - `src/lib/split.ts` is a port of ShiftPane's `packages/layout`; keep it in step with the app.
 - Shared dependency versions live in the `catalog:` in `pnpm-workspace.yaml`.
 - Index keys are allowed in `src/components/widgets` (fixed, decorative lists); Biome flags them elsewhere.
 
 ## Gotchas
 
+- API answers are `private, no-store` unless a route opts in; only the gallery's public reads
+  (`routes/public.ts`) are cacheable. Never let a per-person answer (`/me`, uploads, the queue) be.
 - Next.js 16 differs from older versions: read `apps/web/node_modules/next/dist/docs/` first
   (`apps/web/AGENTS.md`). `next build` type-checks with the project's TypeScript 7 `tsc`.
 - Pages that read the query string (`/widgets/search`) do it in a client component under `<Suspense>`,

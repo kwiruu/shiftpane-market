@@ -7,7 +7,7 @@ import {
   type ReviewStatus,
   type Widget,
 } from '@shiftpane/format'
-import { and, desc, eq, inArray } from 'drizzle-orm'
+import { and, desc, eq, getTableColumns, inArray } from 'drizzle-orm'
 import { HTTPException } from 'hono/http-exception'
 
 import type { Deps, User } from './context.ts'
@@ -233,6 +233,10 @@ const defaultIcons: Partial<Record<Category, string>> = {
   productivity: 'coffee',
 }
 
+/** The icon the gallery shows: the one an admin set, or one for the widget's first category. */
+export const widgetIcon = (widget: { icon: string | null; categories: string[] }) =>
+  widget.icon ?? defaultIcons[widget.categories[0] as Category] ?? 'activity'
+
 const day = (date: Date) => date.toISOString().slice(0, 10)
 
 /** Every live widget with an approved version, newest version's content first, as the site shows it. */
@@ -282,7 +286,7 @@ export async function listWidgets(deps: Deps, ids?: string[]): Promise<Widget[]>
         license: manifest.license,
         ...(manifest.repository ? { repository: manifest.repository } : {}),
         categories: widget.categories as Category[],
-        icon: widget.icon ?? defaultIcons[widget.categories[0] as Category] ?? 'activity',
+        icon: widgetIcon(widget),
         tone: widget.tone ?? 'dark',
         ...(widget.featured ? { featured: true } : {}),
         minAppVersion: manifest.minAppVersion,
@@ -335,16 +339,24 @@ export async function listAuthors(deps: Deps, logins?: string[]): Promise<Author
 
 /** An author's uploads, newest first, for their dashboard. */
 export async function submissionsOf(deps: Deps, userId: string) {
+  const { package: _package, ...columns } = getTableColumns(versions)
   const rows = await deps.db
-    .select({ version: versions, note: reviews.note, decision: reviews.decision })
+    .select({
+      version: columns,
+      widget: { icon: widgets.icon, categories: widgets.categories },
+      note: reviews.note,
+      decision: reviews.decision,
+    })
     .from(versions)
     .innerJoin(widgets, eq(versions.widgetId, widgets.id))
     .leftJoin(reviews, eq(reviews.versionId, versions.id))
     .where(eq(widgets.ownerId, userId))
     .orderBy(desc(versions.submittedAt))
-  return rows.map(({ version, note, decision }) => ({
+  return rows.map(({ version, widget, note, decision }) => ({
     id: version.id,
     widgetId: version.widgetId,
+    name: version.manifest.name,
+    icon: widgetIcon(widget),
     version: version.version,
     submittedAt: day(version.submittedAt),
     status: version.status as ReviewStatus,
@@ -352,5 +364,6 @@ export async function submissionsOf(deps: Deps, userId: string) {
     notes: version.notes,
     report: version.report,
     ...(note && decision === 'reject' ? { reviewerNote: note } : {}),
+    ...(version.yankReason ? { yankReason: version.yankReason } : {}),
   }))
 }

@@ -5,9 +5,12 @@ const dateFormat = new Intl.DateTimeFormat('en-US', {
   timeZone: 'UTC',
 })
 
-/** "2026-10-03" → "Oct 3, 2026". Dates are calendar days, so they're read and shown in UTC. */
+/**
+ * "2026-10-03" → "Oct 3, 2026". Dates are calendar days, so they're read and shown in UTC; a full
+ * timestamp from the API counts as its UTC day.
+ */
 export function formatDate(day: string): string {
-  return dateFormat.format(new Date(`${day}T00:00:00Z`))
+  return dateFormat.format(new Date(`${day.slice(0, 10)}T00:00:00Z`))
 }
 
 /** "every 15 minutes", "every 5 seconds". */

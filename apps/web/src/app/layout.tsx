@@ -6,6 +6,7 @@ import { SiteFooter } from '@/components/site/site-footer'
 import { SiteHeader, SkipLink } from '@/components/site/site-header'
 import { SmoothScroll } from '@/components/site/smooth-scroll'
 import { ThemeProvider } from '@/components/site/theme-provider'
+import { hasApi } from '@/lib/registry/gallery'
 import { site } from '@/lib/site'
 
 import './globals.css'
@@ -72,7 +73,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
         <ThemeProvider>
           <SmoothScroll>
             <SkipLink />
-            <SiteHeader />
+            <SiteHeader accounts={hasApi} />
             <main id="main" className="flex flex-1 flex-col">
               {children}
             </main>

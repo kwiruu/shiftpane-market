@@ -383,9 +383,9 @@ that scrolls on its own past a screenful.
 **Status badges** are chips: "Live" in `success`, "In review" and "Checking" with the live dot,
 "Rejected" and "Yanked" in `error`.
 
-**Sample notices** sit at the top of any page that shows sample data until the API exists: a
-muted "Sample data" chip and one line saying why. Controls that can't work yet are shown
-disabled rather than hidden, so the page shows its real shape.
+**Account pages** (upload, dashboard, review) show a white card asking to sign in until someone
+has, and a quiet card-sized block while they load. Controls that need an account are shown
+disabled rather than hidden, so the page shows its real shape. Errors are one line in `error`.
 
 **Icons** are lucide, stroke 1.75, monochrome, as on Dev Pane. The GitHub mark is drawn to match
 (`brand-icons.tsx`) and appears only to link to GitHub or to sign in with it. Widget icons are
@@ -395,7 +395,7 @@ lucide stand-ins until packages carry their own `icon.png`.
 
 - Do keep the page spacious and centered, letting the devices and previews dominate.
 - Do keep the phone's colors inside the phone: on black, in previews, never on page UI.
-- Do say when something is planned or sample data. Never present a planned feature as shipped.
+- Do say when something is planned. Never present a planned feature as shipped.
 - Do use lucide icons, monochrome, so every glyph shares one stroke.
 - Don't introduce gradients or saturated color on page surfaces.
 - Don't use sharp, boxy controls when a pill fits.

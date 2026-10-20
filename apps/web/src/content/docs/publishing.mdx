@@ -1,10 +1,11 @@
 <Planned>
-Uploads open with GitHub sign-in. Until then, the [upload page](/upload) shows what it will look like.
+Uploading a zip on the [Publish](/upload) page works today, and so does the review behind it. The `shiftpane-widget` CLI and sharing from the desktop app come later, and the app can't install gallery widgets yet.
 </Planned>
 
 ## Before you upload
 
-- Run `npx shiftpane-widget validate`. It runs the gallery's own checks on your folder, so nothing surprises you after uploading.
+- Make the manifest's `author` your GitHub login, and give the widget an id nobody else has used.
+- Zip the package's files themselves, not the folder they're in, so `manifest.json` is at the top of the zip.
 - Pick an OSI-approved license and include its `LICENSE` file. Widgets are open source, so others can read what runs on their PC.
 - Ask only for what the widget needs. Every permission is something a reviewer has to agree with.
 - Read the [content policy](/docs/content-policy).
@@ -14,7 +15,7 @@ Uploads open with GitHub sign-in. Until then, the [upload page](/upload) shows w
 Sign in with GitHub, then either:
 
 - **Share from the app.** The desktop app signs you in with a code and uploads the package for you.
-- **Upload the zip** on the [Publish](/upload) page, made with `npx shiftpane-widget pack`.
+- **Upload the zip** on the [Publish](/upload) page.
 - **Publish from the CLI** with `npx shiftpane-widget publish`, using an API token.
 
 ## What happens next
@@ -27,7 +28,7 @@ The automated checks run at once and you see the report. A failed check blocks t
 </Step>
 <Step title="Review">
 
-A person reviews every new widget and every version that changes permissions. Your dashboard shows when it's approved or rejected, with the reviewer's note.
+A person reviews every version before it's listed. Your dashboard shows when it's approved or rejected, with the reviewer's note.
 
 </Step>
 <Step title="Listed">
@@ -43,4 +44,4 @@ Upload a new version with a higher version number. If its permissions didn't cha
 
 ## Your dashboard
 
-[Your widgets](/dashboard) lists everything you've uploaded, each version's status, and the reports from its checks.
+[Your widgets](/dashboard) lists everything you've uploaded and each version's status, with the reviewer's note on a rejected one. Yank a live version there if it's broken: it leaves the gallery, and the app turns it off for everyone who has it.

@@ -6,6 +6,10 @@ describe('formatDate', () => {
   it('shows the calendar day whatever the time zone', () => {
     expect(formatDate('2026-10-03')).toBe('Oct 3, 2026')
   })
+
+  it('takes the API’s timestamps as their UTC day', () => {
+    expect(formatDate('2026-10-03T23:30:00.000Z')).toBe('Oct 3, 2026')
+  })
 })
 
 describe('formatInterval', () => {

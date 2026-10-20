@@ -9,16 +9,25 @@ import { z } from 'zod'
 
 import {
   createSession,
+  endBrowserSession,
   hashToken,
   requireUser,
   SESSION_COOKIE,
   sessionCookie,
+  startBrowserSession,
+  upsertDevUser,
   upsertGitHubUser,
 } from '../auth.ts'
 import type { AppEnv, Deps } from '../context.ts'
 import { parseJson } from './body.ts'
 
 const STATE_COOKIE = 'sp_oauth'
+
+const devForm = z.object({
+  login: z.string().regex(/^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,38})$/),
+  role: z.enum(['', 'author', 'reviewer', 'admin']).optional(),
+  next: z.string().optional(),
+})
 
 /** A path on the site to go back to after signing in; anything else goes to the dashboard. */
 const safeNext = (next: string | undefined) =>
@@ -58,15 +67,25 @@ export function authRoutes(deps: Deps) {
     }
     const token = await client.exchangeCode(code, redirectUri)
     const user = await upsertGitHubUser(deps, await client.user(token))
-    const session = await createSession(deps, user.id, 'browser')
-    setCookie(c, SESSION_COOKIE, session.token, sessionCookie(deps, session.maxAge))
+    await startBrowserSession(c, deps, user.id)
     return c.redirect(`${deps.config.siteOrigin}${safeNext(next)}`)
   })
+
+  // Local only (see `devSignIn` in config.ts): the site's dev sign-in form posts here.
+  if (deps.config.devSignIn) {
+    app.post('/auth/dev', async (c) => {
+      const form = devForm.safeParse(await c.req.parseBody())
+      if (!form.success) throw new HTTPException(400, { message: 'Give a GitHub-style login.' })
+      const user = await upsertDevUser(deps, form.data.login, form.data.role || undefined)
+      await startBrowserSession(c, deps, user.id)
+      return c.redirect(`${deps.config.siteOrigin}${safeNext(form.data.next)}`, 303)
+    })
+  }
 
   app.post('/auth/logout', async (c) => {
     const token = getCookie(c, SESSION_COOKIE)
     if (token) await deps.db.delete(sessions).where(eq(sessions.id, hashToken(token)))
-    deleteCookie(c, SESSION_COOKIE, { path: '/' })
+    endBrowserSession(c)
     return c.body(null, 204)
   })
 
