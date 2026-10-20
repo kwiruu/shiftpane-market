@@ -1,0 +1,31 @@
+{
+  "total": 2481,
+  "spread": [910, 640, 402, 233, 118, 74, 52, 31, 12, 9],
+  "repos": [
+    {
+      "title": "website",
+      "subtitle": "TypeScript",
+      "value": "910"
+    },
+    {
+      "title": "cli-tools",
+      "subtitle": "Rust",
+      "value": "640"
+    },
+    {
+      "title": "dotfiles",
+      "subtitle": "Shell",
+      "value": "402"
+    },
+    {
+      "title": "notes",
+      "subtitle": "Markdown",
+      "value": "233"
+    },
+    {
+      "title": "game-jam",
+      "subtitle": "C#",
+      "value": "118"
+    }
+  ]
+}

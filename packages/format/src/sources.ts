@@ -1,4 +1,4 @@
-import type { ActionName, SourceName } from './types'
+import type { ActionName, SourceName } from './types.ts'
 
 /**
  * The system sources and actions in plain words (PLAN, System sources), and the sample PC the

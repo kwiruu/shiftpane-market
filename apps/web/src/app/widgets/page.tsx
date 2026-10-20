@@ -1,6 +1,6 @@
+import { categories } from '@shiftpane/format'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-
 import { CategoryChips } from '@/components/market/category-chips'
 import { SearchForm } from '@/components/market/search-form'
 import { WidgetGrid } from '@/components/market/widget-tile'
@@ -15,7 +15,6 @@ import {
   getWidgets,
   newestWidgets,
 } from '@/lib/registry'
-import { categories } from '@/lib/registry/types'
 
 const description =
   'Free widgets for the ShiftPane board on your phone. Each is checked and reviewed by a person before it is listed.'

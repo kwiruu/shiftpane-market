@@ -1,0 +1,19 @@
+{
+  "id": "gpu-ring",
+  "name": "GPU ring",
+  "description": "GPU load as a ring, with the last minute below it.",
+  "version": "1.1.0",
+  "author": "shiftpane",
+  "license": "MIT",
+  "categories": ["system"],
+  "minAppVersion": "0.5.0",
+  "sizes": ["small", "medium"],
+  "permissions": {
+    "sources": ["gpu"],
+    "actions": [],
+    "local": [],
+    "network": [],
+    "secrets": []
+  },
+  "config": []
+}

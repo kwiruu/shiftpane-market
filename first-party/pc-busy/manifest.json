@@ -1,0 +1,28 @@
+{
+  "id": "pc-busy",
+  "name": "Is my PC busy?",
+  "description": "One word from your CPU and memory, for the person at the door.",
+  "version": "1.0.0",
+  "author": "shiftpane",
+  "license": "MIT",
+  "categories": ["productivity", "fun"],
+  "minAppVersion": "0.5.0",
+  "sizes": ["small"],
+  "refreshSeconds": 5,
+  "permissions": {
+    "sources": ["cpu", "memory"],
+    "actions": [],
+    "local": [],
+    "network": [],
+    "secrets": []
+  },
+  "config": [
+    {
+      "key": "threshold",
+      "label": "Busy above",
+      "type": "number",
+      "default": 80,
+      "help": "CPU or memory percent that counts as busy."
+    }
+  ]
+}

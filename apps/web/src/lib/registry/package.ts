@@ -1,4 +1,4 @@
-import type { Manifest, Widget } from './types'
+import type { Manifest, Widget } from '@shiftpane/format'
 
 /** The `manifest.json` a widget's package carries, rebuilt from what the gallery knows about it. */
 export function manifestOf(widget: Widget): Manifest {

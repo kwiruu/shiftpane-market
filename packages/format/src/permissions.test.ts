@@ -6,8 +6,8 @@ import {
   canSendOffPc,
   describePermissions,
   needsNothing,
-} from './permissions'
-import type { Permissions } from './types'
+} from './permissions.ts'
+import type { Permissions } from './types.ts'
 
 const none: Permissions = { sources: [], actions: [], local: [], network: [], secrets: [] }
 

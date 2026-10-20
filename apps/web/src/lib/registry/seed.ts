@@ -1,4 +1,4 @@
-import type { Author, Permissions, Widget } from './types'
+import type { Author, Permissions, Widget } from '@shiftpane/format'
 
 /**
  * The gallery's first widgets (PLAN, W2: "seeded with 3 to 5 first-party widgets"). They are the

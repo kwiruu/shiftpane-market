@@ -1,0 +1,113 @@
+{
+  "small": {
+    "type": "stack",
+    "align": "between",
+    "children": [
+      {
+        "type": "row",
+        "align": "between",
+        "children": [
+          {
+            "type": "label",
+            "text": "CPU"
+          },
+          {
+            "type": "value",
+            "bind": "/cpu",
+            "format": "celsius",
+            "size": "md"
+          }
+        ]
+      },
+      {
+        "type": "meter",
+        "bind": "/cpu"
+      },
+      {
+        "type": "row",
+        "align": "between",
+        "children": [
+          {
+            "type": "label",
+            "text": "GPU"
+          },
+          {
+            "type": "value",
+            "bind": "/gpu",
+            "format": "celsius",
+            "size": "md"
+          }
+        ]
+      },
+      {
+        "type": "meter",
+        "bind": "/gpu"
+      }
+    ]
+  },
+  "medium": {
+    "type": "stack",
+    "align": "between",
+    "children": [
+      {
+        "type": "row",
+        "align": "between",
+        "children": [
+          {
+            "type": "label",
+            "text": "Temperatures"
+          },
+          {
+            "type": "icon",
+            "name": "thermometer",
+            "color": "flame"
+          }
+        ]
+      },
+      {
+        "type": "grid",
+        "columns": 2,
+        "children": [
+          {
+            "type": "stack",
+            "children": [
+              {
+                "type": "value",
+                "bind": "/cpu",
+                "format": "celsius",
+                "size": "xl"
+              },
+              {
+                "type": "label",
+                "text": "CPU package"
+              },
+              {
+                "type": "meter",
+                "bind": "/cpu"
+              }
+            ]
+          },
+          {
+            "type": "stack",
+            "children": [
+              {
+                "type": "value",
+                "bind": "/gpu",
+                "format": "celsius",
+                "size": "xl"
+              },
+              {
+                "type": "label",
+                "text": "GPU core"
+              },
+              {
+                "type": "meter",
+                "bind": "/gpu"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

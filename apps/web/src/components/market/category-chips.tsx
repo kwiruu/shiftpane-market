@@ -1,8 +1,7 @@
+import { type Category, categories } from '@shiftpane/format'
 import Link from 'next/link'
-
 import { Badge } from '@/components/ui/badge'
 import { categoryInfo, countByCategory } from '@/lib/registry'
-import { type Category, categories } from '@/lib/registry/types'
 import { cn } from '@/lib/utils'
 
 /** The categories as chips, each a search link; the current one is the ink chip. */

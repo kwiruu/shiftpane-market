@@ -1,0 +1,21 @@
+{
+  "name": "@shiftpane/index",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Builds, signs and verifies the registry's index.json and revoked.json",
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc",
+    "test": "vitest run",
+    "keygen": "node src/keygen.ts"
+  },
+  "dependencies": {
+    "@shiftpane/format": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

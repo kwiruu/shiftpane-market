@@ -1,12 +1,11 @@
+import type { Widget } from '@shiftpane/format'
 import type { Metadata } from 'next'
-
 import { Hero } from '@/components/home/hero'
 import { Definitions } from '@/components/home/sections'
 import { Rail, Showcase } from '@/components/home/showcase'
 import { SplitView } from '@/components/home/split-view'
 import { SiteStructuredData } from '@/components/site/structured-data'
 import { getWidget } from '@/lib/registry'
-import type { Widget } from '@/lib/registry/types'
 
 export const metadata: Metadata = {
   alternates: { canonical: '/' },

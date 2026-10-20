@@ -1,9 +1,8 @@
+import { sampleSources } from '@shiftpane/format'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
-
 import { PreviewStage } from '@/components/widgets/preview-stage'
 import { getWidget } from '@/lib/registry'
-import { sampleSources } from '@/lib/registry/sources'
 
 const featured = [
   {

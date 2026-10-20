@@ -1,5 +1,5 @@
+import type { Author, Category, Widget } from '@shiftpane/format'
 import { authors, widgets } from './seed'
-import type { Author, Category, Widget } from './types'
 
 /**
  * Everything the site reads about widgets goes through here. Today it reads the seed; once the API

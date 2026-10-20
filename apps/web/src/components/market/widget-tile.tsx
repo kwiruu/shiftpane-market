@@ -1,8 +1,7 @@
+import type { Widget, WidgetSize } from '@shiftpane/format'
 import Link from 'next/link'
-
 import { WidgetCard } from '@/components/widgets/widget-view'
 import { categoryInfo, getAuthor } from '@/lib/registry'
-import type { Widget, WidgetSize } from '@/lib/registry/types'
 import { cn } from '@/lib/utils'
 
 // The tile shows the widget at the size that fills its preview best.

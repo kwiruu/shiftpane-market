@@ -1,8 +1,6 @@
+import { bindingsOf, categories, type SourceName, sources } from '@shiftpane/format'
 import { describe, expect, it } from 'vitest'
 import { countByCategory, getWidgets, newestWidgets, searchWidgets } from './index'
-import { sources } from './sources'
-import { categories, type SourceName } from './types'
-import { bindingsOf } from './view'
 
 const widgets = getWidgets()
 const ids = (list: { id: string }[]) => list.map((widget) => widget.id)

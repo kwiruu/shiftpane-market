@@ -1,7 +1,7 @@
-import { Check, ChevronLeft, CircleAlert, CircleX, Loader } from 'lucide-react'
+import { addedPermissions, type CheckResult, checks } from '@shiftpane/format'
+import { Check, ChevronLeft, CircleAlert, CircleMinus, CircleX, Loader } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-
 import { PermissionList } from '@/components/market/permission-list'
 import { SourceViewer } from '@/components/market/source-viewer'
 import { StatusBadge } from '@/components/market/status-badge'
@@ -10,9 +10,7 @@ import { Button } from '@/components/ui/button'
 import { PreviewStage } from '@/components/widgets/preview-stage'
 import { formatDate } from '@/lib/format'
 import { getWidget } from '@/lib/registry'
-import { type CheckResult, checks } from '@/lib/registry/checks'
 import { packageFiles } from '@/lib/registry/package'
-import { addedPermissions } from '@/lib/registry/permissions'
 import { getSubmission, submissions } from '@/lib/registry/review'
 
 export const dynamicParams = false
@@ -30,6 +28,7 @@ const resultIcon: Record<CheckResult | 'running', React.ReactNode> = {
   pass: <Check aria-hidden="true" strokeWidth={2} className="size-4 text-success" />,
   flag: <CircleAlert aria-hidden="true" strokeWidth={1.75} className="size-4 text-accent" />,
   fail: <CircleX aria-hidden="true" strokeWidth={1.75} className="size-4 text-error" />,
+  skip: <CircleMinus aria-hidden="true" strokeWidth={1.75} className="size-4 text-secondary" />,
   running: <Loader aria-hidden="true" strokeWidth={1.75} className="size-4 text-secondary" />,
 }
 
@@ -37,6 +36,7 @@ const resultLabel: Record<CheckResult | 'running', string> = {
   pass: 'Passed',
   flag: 'Flagged',
   fail: 'Failed',
+  skip: 'Not run',
   running: 'Running',
 }
 

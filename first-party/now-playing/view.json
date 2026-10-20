@@ -1,0 +1,95 @@
+{
+  "small": {
+    "type": "stack",
+    "align": "between",
+    "children": [
+      {
+        "type": "icon",
+        "name": "music",
+        "color": "flame"
+      },
+      {
+        "type": "stack",
+        "gap": 0.5,
+        "children": [
+          {
+            "type": "text",
+            "bind": "@media/title",
+            "size": "md"
+          },
+          {
+            "type": "text",
+            "bind": "@media/artist",
+            "size": "sm",
+            "muted": true
+          }
+        ]
+      }
+    ]
+  },
+  "medium": {
+    "type": "stack",
+    "align": "between",
+    "children": [
+      {
+        "type": "row",
+        "align": "between",
+        "children": [
+          {
+            "type": "text",
+            "bind": "@media/app",
+            "size": "sm",
+            "muted": true
+          },
+          {
+            "type": "icon",
+            "name": "music",
+            "color": "flame"
+          }
+        ]
+      },
+      {
+        "type": "stack",
+        "gap": 0.5,
+        "children": [
+          {
+            "type": "text",
+            "bind": "@media/title",
+            "size": "lg"
+          },
+          {
+            "type": "text",
+            "bind": "@media/artist",
+            "size": "sm",
+            "muted": true
+          }
+        ]
+      },
+      {
+        "type": "row",
+        "align": "center",
+        "gap": 3,
+        "children": [
+          {
+            "type": "button",
+            "action": "media.previous",
+            "icon": "skip-back",
+            "label": "Previous"
+          },
+          {
+            "type": "button",
+            "action": "media.play-pause",
+            "icon": "pause",
+            "label": "Play or pause"
+          },
+          {
+            "type": "button",
+            "action": "media.next",
+            "icon": "skip-forward",
+            "label": "Next"
+          }
+        ]
+      }
+    ]
+  }
+}

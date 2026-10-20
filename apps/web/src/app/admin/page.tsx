@@ -1,12 +1,11 @@
+import { checks } from '@shiftpane/format'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
-
 import { StatusBadge } from '@/components/market/status-badge'
 import { Badge } from '@/components/ui/badge'
 import { WidgetGlyph } from '@/components/widgets/widget-icon'
 import { formatDate } from '@/lib/format'
 import { getWidget } from '@/lib/registry'
-import { checks } from '@/lib/registry/checks'
 import { submissions } from '@/lib/registry/review'
 
 export const metadata = { title: 'Queue' }

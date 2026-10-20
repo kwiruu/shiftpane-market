@@ -1,8 +1,8 @@
+import { addedPermissions } from '@shiftpane/format'
 import { ArrowUpRight, ChevronLeft, Flag } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-
 import { PermissionList } from '@/components/market/permission-list'
 import { Readme } from '@/components/market/readme'
 import { SourceViewer } from '@/components/market/source-viewer'
@@ -14,7 +14,6 @@ import { WidgetGlyph } from '@/components/widgets/widget-icon'
 import { formatDate, formatInterval } from '@/lib/format'
 import { categoryInfo, getAuthor, getWidget, getWidgets, updatedAt } from '@/lib/registry'
 import { packageFiles } from '@/lib/registry/package'
-import { addedPermissions } from '@/lib/registry/permissions'
 import { installLink } from '@/lib/site'
 
 // Every widget page is prerendered; unknown ids are a 404. With the API, this becomes ISR.

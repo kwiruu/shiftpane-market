@@ -1,0 +1,22 @@
+{
+  "small": {
+    "type": "stack",
+    "align": "between",
+    "children": [
+      {
+        "type": "label",
+        "text": "Busy above {config.threshold}%"
+      },
+      {
+        "type": "text",
+        "bind": "/status",
+        "size": "lg"
+      },
+      {
+        "type": "progress",
+        "bind": "/load",
+        "color": "flame"
+      }
+    ]
+  }
+}

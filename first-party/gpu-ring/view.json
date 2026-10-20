@@ -1,0 +1,43 @@
+{
+  "small": {
+    "type": "stack",
+    "align": "between",
+    "children": [
+      {
+        "type": "label",
+        "text": "GPU"
+      },
+      {
+        "type": "ring",
+        "bind": "@gpu/percent",
+        "color": "flame"
+      }
+    ]
+  },
+  "medium": {
+    "type": "row",
+    "gap": 5,
+    "children": [
+      {
+        "type": "ring",
+        "bind": "@gpu/percent",
+        "label": "GPU",
+        "color": "flame"
+      },
+      {
+        "type": "stack",
+        "align": "between",
+        "children": [
+          {
+            "type": "label",
+            "text": "Last minute"
+          },
+          {
+            "type": "history-bars",
+            "bind": "@gpu/history"
+          }
+        ]
+      }
+    ]
+  }
+}

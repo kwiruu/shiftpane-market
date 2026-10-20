@@ -1,9 +1,8 @@
+import type { Widget, WidgetSize } from '@shiftpane/format'
 import { Check, ScanLine, Smartphone } from 'lucide-react'
-
 import { LogoMark } from '@/components/site/logo'
 import { PhoneBoard } from '@/components/widgets/phone-board'
 import { getWidget } from '@/lib/registry'
-import type { Widget, WidgetSize } from '@/lib/registry/types'
 
 /*
  * The hero devices (DESIGN.md, Motion): a laptop showing ShiftPane's pairing code, and a phone
