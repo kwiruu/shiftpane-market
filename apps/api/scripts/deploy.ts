@@ -85,8 +85,13 @@ async function deploy(app: string) {
     body: JSON.stringify({ source_blob: { url: blob.get_url, version: commit } }),
   })
   console.info(`Building ${commit} on ${app}…`)
-  const output = await fetch(build.output_stream_url)
-  if (output.body) for await (const chunk of output.body) process.stdout.write(chunk)
+  try {
+    const output = await fetch(build.output_stream_url)
+    if (output.body) for await (const chunk of output.body) process.stdout.write(chunk)
+  } catch {
+    // Some networks can't reach the log stream; the build runs either way.
+    console.info(`Can't stream the build log; it's at ${build.output_stream_url}`)
+  }
 
   let status = build.status
   while (status === 'pending') {
