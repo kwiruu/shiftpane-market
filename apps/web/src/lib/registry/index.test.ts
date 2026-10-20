@@ -1,8 +1,12 @@
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { bindingsOf, categories, type SourceName, sources } from '@shiftpane/format'
 import { describe, expect, it } from 'vitest'
-import { countByCategory, getWidgets, newestWidgets, searchWidgets } from './index'
 
-const widgets = getWidgets()
+import { countByCategory, newestWidgets, searchWidgets } from './index'
+import { packageFiles } from './package'
+import { widgets } from './seed'
+
 const ids = (list: { id: string }[]) => list.map((widget) => widget.id)
 
 describe('searchWidgets', () => {
@@ -36,7 +40,7 @@ describe('countByCategory and newestWidgets', () => {
   })
 
   it('puts the most recently listed first', () => {
-    const dates = newestWidgets().map((widget) => widget.createdAt)
+    const dates = newestWidgets(widgets).map((widget) => widget.createdAt)
     expect(dates).toEqual([...dates].sort().reverse())
   })
 })
@@ -74,4 +78,23 @@ describe('the seed widgets', () => {
     expect(new Set(ids(widgets)).size).toBe(widgets.length)
     for (const id of ids(widgets)) expect(id).toMatch(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
   })
+})
+
+// The seed is the site's offline copy of the first-party packages the API publishes; the two have
+// to say the same thing.
+describe('the seed and first-party/', () => {
+  const firstParty = join(import.meta.dirname, '../../../../../first-party')
+
+  it.each(widgets.map((widget) => [widget.id, widget] as const))(
+    '%s matches its package folder',
+    (_, widget) => {
+      for (const file of packageFiles(widget)) {
+        const text = readFileSync(join(firstParty, widget.id, file.name), 'utf8')
+        // Biome formats the JSON files, so compare what they say.
+        if (file.language === 'json') expect(JSON.parse(text)).toEqual(JSON.parse(file.content))
+        else expect(text).toBe(file.content)
+      }
+      expect(readFileSync(join(firstParty, widget.id, 'README.md'), 'utf8')).toBe(widget.readme)
+    },
+  )
 })

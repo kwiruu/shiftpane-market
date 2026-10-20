@@ -12,20 +12,22 @@ import { Button } from '@/components/ui/button'
 import { PreviewStage } from '@/components/widgets/preview-stage'
 import { WidgetGlyph } from '@/components/widgets/widget-icon'
 import { formatDate, formatInterval } from '@/lib/format'
-import { categoryInfo, getAuthor, getWidget, getWidgets, updatedAt } from '@/lib/registry'
+import { categoryInfo, updatedAt } from '@/lib/registry'
+import { getAuthor, getWidget, getWidgets } from '@/lib/registry/gallery'
 import { packageFiles } from '@/lib/registry/package'
 import { installLink } from '@/lib/site'
 
-// Every widget page is prerendered; unknown ids are a 404. With the API, this becomes ISR.
-export const dynamicParams = false
+// Listed widgets are prerendered and refreshed in the background (ISR); one approved after the
+// build renders on its first visit. Ids the gallery doesn't have are a 404.
+export const revalidate = 60
 
-export function generateStaticParams() {
-  return getWidgets().map((widget) => ({ id: widget.id }))
+export async function generateStaticParams() {
+  return (await getWidgets()).map((widget) => ({ id: widget.id }))
 }
 
 export async function generateMetadata({ params }: PageProps<'/widgets/[id]'>): Promise<Metadata> {
   const { id } = await params
-  const widget = getWidget(id)
+  const widget = await getWidget(id)
   if (!widget) return {}
   return {
     title: `${widget.name} widget`,
@@ -42,10 +44,10 @@ export async function generateMetadata({ params }: PageProps<'/widgets/[id]'>): 
 
 export default async function WidgetPage({ params }: PageProps<'/widgets/[id]'>) {
   const { id } = await params
-  const widget = getWidget(id)
+  const widget = await getWidget(id)
   if (!widget) notFound()
 
-  const author = getAuthor(widget.author)
+  const author = await getAuthor(widget.author)
   const latest = widget.versions[0]
 
   return (

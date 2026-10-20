@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 
-import { getWidgets } from '@/lib/registry'
+import { getWidgets } from '@/lib/registry/gallery'
 
 import { SearchResults } from './search-results'
 
@@ -11,12 +11,15 @@ export const metadata: Metadata = {
   alternates: { canonical: '/widgets/search' },
 }
 
+export const revalidate = 60
+
 // The page is prerendered; the results read the query in the browser, so it stays a static file.
-export default function SearchPage() {
+export default async function SearchPage() {
+  const widgets = await getWidgets()
   return (
     <div className="frame flex flex-col pt-28 sm:pt-32">
       <Suspense>
-        <SearchResults widgets={getWidgets()} />
+        <SearchResults widgets={widgets} />
       </Suspense>
     </div>
   )

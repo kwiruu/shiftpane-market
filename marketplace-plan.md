@@ -19,7 +19,7 @@ registry behind it, and the review pipeline.
 | How do people make widgets? | Three ways, one package format: a no-code builder in the desktop app, the AI generator, and an SDK + CLI for developers. See "Making widgets". |
 | How do widgets get PC data (CPU, GPU, media...)? | From **system sources** the app provides. A widget declares the sources it reads and binds them in its view; it never touches the OS itself. |
 | Money? | No payments. Free widgets only. |
-| Hosting? | Frontend on Vercel (Hobby, free). API and Postgres on Heroku, paid by the GitHub Student Developer Pack credit ($13/month for 24 months), so it must stay under $13/month. **Deployment is on hold until the Student Pack is approved**: build and test locally until then. See "Hosting and budget". |
+| Hosting? | Frontend and package storage on Vercel (Hobby and Blob, free). API and Postgres on Heroku, paid by the GitHub Student Developer Pack credit ($13/month for 24 months, approved; good until September 2028), so it must stay under $13/month. Nothing else costs money: no card-only services, no email service, no domain yet. See "Hosting and budget". |
 
 ## Context: ShiftPane and its widgets today
 
@@ -231,7 +231,7 @@ Review rule: a widget with secrets may only declare hosts that belong to the ser
 
 **Author publishes.** Builds with Widget Studio, the generator or the CLI. Shares from the app (signs in with GitHub
 by device code) or uploads the zip on the site. Sees the automated report at once; the version waits for review;
-gets an email when it is approved or rejected, with the reviewer's note.
+sees on their dashboard when it is approved or rejected, with the reviewer's note.
 
 **Reviewer approves.** The admin queue shows the automated report, the permissions, a diff against the previous
 version, the collector source, a preview rendered from `sample.json` and an AI summary. Approve signs and publishes;
@@ -301,29 +301,29 @@ Same tooling as ShiftPane: pnpm workspaces + Turborepo, TypeScript, Biome, Vites
 | Site and docs | Next.js (App Router) on Vercel, docs with Fumadocs | Static and ISR pages on a CDN, MDX docs, preview deploys per PR; no server code here |
 | API | Hono on Node, on one Heroku dyno | Small, typed, zod validation on every route; runs anywhere Node runs |
 | Database | Heroku Postgres via Drizzle | Covered by the student credit; migrations in TS |
-| Background jobs | pg-boss inside the API process | Postgres-backed queue (`SKIP LOCKED`), so no worker dyno and no queue service |
-| Package storage | Cloudflare R2 behind a `cdn.` subdomain | Heroku's disk is wiped on every restart; R2's free tier covers this and egress is free |
+| Background jobs | pg-boss inside the API process, once there are jobs | Postgres-backed queue (`SKIP LOCKED`), so no worker dyno and no queue service. The static checks run inline in the upload request; the sandbox run (needs `@shiftpane/widget-runtime`) and AI review are the first jobs |
+| Package storage | Vercel Blob, served through the site's `/registry` path | Heroku's disk is wiped on every restart. Blob is on the Vercel account the site already uses, needs no card, and stops serving instead of billing past the Hobby allowance (1 GB stored, 10 GB a month out). R2 is the move if the gallery outgrows it: one more storage adapter |
 | Auth | GitHub OAuth in the API (arctic), sessions in Postgres, httpOnly cookie | Authors are developers; GitHub gives a stable identity and an abuse signal |
 | Signing | Ed25519 key as a Heroku config var, used only by the publish step | Built into Node's `crypto` |
-| Email | Resend, free tier | Approve and reject notices |
+| Email | None for now | The author dashboard shows each decision and the reviewer's note. Sending email to authors needs a verified domain, which waits for a domain |
 | Local dev and tests | PGlite (Postgres in WASM) and a filesystem storage adapter | No Docker needed, so cloud sessions can run everything |
 
 ### Hosting and budget
 
-**Status: on hold.** Nothing is deployed and no Heroku, Vercel or Cloudflare resources are created until the GitHub
-Student Developer Pack is approved. Until then, everything runs locally.
+**Status: deploying.** The Student Pack is approved and its Heroku credit is on the account. The API ships to Heroku
+with `pnpm --filter @shiftpane/api deploy:heroku` (README, "Deploying"); the site and Blob are on Vercel.
 
 ```text
- browser ──▶ shiftpane.dev (Vercel) ── /api/* rewrite ──▶ Heroku: API dyno ──▶ Heroku Postgres
-                                                              │
- desktop app ──▶ cdn.shiftpane.dev (R2) ◀── publishes ────────┘
+ browser ──▶ site (Vercel) ── /api/* rewrite ──▶ Heroku: API dyno ──▶ Heroku Postgres
+                                                        │ publishes
+ desktop app ──▶ site /registry/* ──▶ Vercel Blob ◀─────┘
                  index.json, revoked.json, packages
 ```
 
 - The site calls the API through a Vercel rewrite (`/api/:path*` to the Heroku app), so the browser sees one origin:
   no CORS, first-party cookies, and the API needs no custom domain.
-- The desktop app reads the signed index and the packages straight from the CDN, never from Heroku. Installing keeps
-  working while the API restarts, deploys or is down.
+- The desktop app reads the signed index and the packages from the site's `/registry` path, which forwards to Blob,
+  never from Heroku. Installing keeps working while the API restarts, deploys or is down.
 
 | Item | Monthly |
 | --- | --- |
@@ -331,10 +331,9 @@ Student Developer Pack is approved. Until then, everything runs locally.
 | Heroku Postgres Essential-0 | $5 |
 | **Heroku total, paid by the $13 credit** | **$12** |
 | Vercel Hobby (free; non-commercial use, which fits free widgets) | $0 |
-| Cloudflare R2 free tier, Cloudflare DNS | $0 |
-| Resend free tier | $0 |
+| Vercel Blob, Hobby allowance | $0 |
 | Claude API for AI review (optional, off by default; not covered by the credit) | cents |
-| Domain: free for the first year from the Student Pack, then about $10 to $20 a year | $0 |
+| Domain: none yet; the site is on its `vercel.app` address | $0 |
 
 Rules that keep it at $12:
 
@@ -367,12 +366,12 @@ apps/
   web/          Next.js on Vercel: landing, docs (/docs), marketplace (/widgets), upload, author dashboard, admin
     content/docs/   MDX
   api/          Hono on Heroku: REST API, GitHub sign-in, uploads, pg-boss jobs (sandbox smoke run, AI review),
-                publishing to R2; Procfile at the repo root
+                publishing to storage; deployed as a bundle with scripts/deploy.ts
 packages/
   db/           Drizzle schema, migrations, queries
   checks/       Pure check functions (zip layout, manifest, view bindings, scanners); used by the API and tests
   index/        Builds, signs and verifies index.json and revoked.json; the verify half is what the app uses
-  storage/      One interface, two adapters: R2 (production) and the filesystem (local dev, tests)
+  storage/      One interface, two adapters: Vercel Blob (production) and the filesystem (local dev, tests)
   ui/           Site components (reuse ShiftPane's graphite tokens)
 ```
 
@@ -392,7 +391,7 @@ api_tokens   id, user_id, hash, name, last_used_at, revoked_at
 
 ### API
 
-Static files on the CDN (R2), what the desktop app uses. Rewritten by the API whenever something is approved or
+Static files in storage (Vercel Blob, served at the site's `/registry`), what the desktop app uses. Rewritten by the API whenever something is approved or
 yanked:
 
 ```text
@@ -411,7 +410,7 @@ POST /api/v1/uploads                           multipart zip -> version in "chec
 GET  /api/v1/me/widgets                        author dashboard data
 POST /api/v1/widgets/:id/versions/:v/yank      owner or admin
 POST /api/v1/reports                           anyone signed in
-POST /api/v1/admin/versions/:id/approve        reviewer; signs, uploads to R2, rewrites the index
+POST /api/v1/admin/versions/:id/approve        reviewer; stores the package, rewrites and signs the index
 POST /api/v1/admin/versions/:id/reject         reviewer; note required
 ```
 
@@ -483,10 +482,10 @@ once the SDK publishes its schemas (vendored until then). *Done when* someone ca
 widget from the docs alone.
 
 **W2: read-only gallery.** Widget pages and search, seeded with 3 to 5 first-party widgets; `packages/index` builds
-and signs the index; packages on R2. *Done when* (with A3) a user installs a widget from the site into the app.
+and signs the index; packages in Blob. *Done when* (with A3) a user installs a widget from the site into the app.
 
 **W3: uploads and review.** GitHub sign-in, upload, static checks in the API, the pg-boss job runner, review queue,
-approve and reject, emails, content policy. *Done when* a stranger's upload goes through checks, waits for review,
+approve and reject with the decision on the dashboard, content policy. *Done when* a stranger's upload goes through checks, waits for review,
 and once approved shows in the app.
 
 **W4: updates and safety.** Versions and permission diff, yank and `revoked.json`, reports, author dashboard, live
@@ -495,11 +494,10 @@ previews rendered from `sample.json`.
 **W5: growth.** API tokens and `shiftpane-widget publish`, download counts, collections, verified authors, the
 fast lane.
 
-**Deploy: blocked until the Student Pack is approved.** W1 to W3 are built and tested locally first (PGlite,
-filesystem storage, `next dev`). Once approved: Heroku app with one Basic dyno and Essential-0 Postgres, config vars
-(GitHub OAuth, signing key, R2 keys, Resend key), Vercel project with the `/api` rewrite, R2 bucket and `cdn.`
-domain, DNS. *Done when* the site is live, the Heroku bill shows $12 or less, and the desktop app installs from the
-real CDN. W1 alone can go live earlier as a static Vercel site, since it needs no backend.
+**Deploy.** The Student Pack is approved. Heroku app with one Basic dyno and Essential-0 Postgres, config vars
+(signing key, Blob token, site origin; GitHub OAuth once its app exists), Vercel project with the `/api` and
+`/registry` rewrites, and a Blob store. *Done when* the site is live, the Heroku bill shows $12 or less, and the
+desktop app installs from `/registry`.
 
 ## Not in scope
 
@@ -511,7 +509,7 @@ macro buttons (later), self-hosted registries (sideloading covers "no lock-in" f
 
 | Question | Recommendation |
 | --- | --- |
-| Name and domain | `shiftpane.dev` with `/docs` and `/widgets`; claim a free domain from the Student Pack and put its DNS on Cloudflare (R2 custom domains need that) |
+| Name and domain | `shiftpane.dev` with `/docs` and `/widgets`; later: a domain is free for a year from the Student Pack, then about $10 to $20 a year, so it waits until it is worth paying for. Until then the site is on `vercel.app` |
 | Allow AI-generated widgets? | Yes, through the same review; label them "made with the generator" |
 | Who reviews? | You, at first. Add reviewers by role when the queue grows |
 | Open-source this repo later? | Possible any time; nothing in the design depends on it being private |

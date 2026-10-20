@@ -9,7 +9,7 @@ import { DefinitionCard, MetaRow } from '@/components/site/list-group'
 import { Button } from '@/components/ui/button'
 import { PreviewStage } from '@/components/widgets/preview-stage'
 import { formatDate } from '@/lib/format'
-import { getWidget } from '@/lib/registry'
+import { sampleWidget } from '@/lib/registry'
 import { packageFiles } from '@/lib/registry/package'
 import { getSubmission, submissions } from '@/lib/registry/review'
 
@@ -47,7 +47,7 @@ const resultLabel: Record<CheckResult | 'running', string> = {
 export default async function ReviewPage({ params }: PageProps<'/admin/review/[id]'>) {
   const { id } = await params
   const submission = getSubmission(id)
-  const widget = submission && getWidget(submission.widgetId)
+  const widget = submission && sampleWidget(submission.widgetId)
   if (!submission || !widget) notFound()
 
   const current = widget.versions[0]
@@ -122,7 +122,7 @@ export default async function ReviewPage({ params }: PageProps<'/admin/review/[i
               rows={4}
               disabled={decided}
               defaultValue={submission.reviewerNote}
-              placeholder="Needed to reject; shown to the author by email."
+              placeholder="Needed to reject; shown to the author on their dashboard."
               className="w-full resize-y rounded-md bg-muted p-3 text-body-sm outline-none placeholder:text-secondary focus-visible:outline-2 focus-visible:outline-primary disabled:opacity-60"
             />
             <div className="grid grid-cols-2 gap-2">

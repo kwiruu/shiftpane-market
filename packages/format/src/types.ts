@@ -143,7 +143,10 @@ export interface Widget {
   name: string
   /** One line, for cards and search results. */
   summary: string
+  /** The author's login. */
   author: string
+  /** Their display name, when the gallery knows it. */
+  authorName?: string
   license: string
   repository?: string
   categories: Category[]

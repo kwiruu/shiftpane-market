@@ -5,14 +5,14 @@ import { Definitions } from '@/components/home/sections'
 import { Rail, Showcase } from '@/components/home/showcase'
 import { SplitView } from '@/components/home/split-view'
 import { SiteStructuredData } from '@/components/site/structured-data'
-import { getWidget } from '@/lib/registry'
+import { sampleWidget } from '@/lib/registry'
 
 export const metadata: Metadata = {
   alternates: { canonical: '/' },
 }
 
 const splitWidgets = ['gpu-ring', 'pc-busy', 'hardware-temps', 'github-stars']
-  .map((id) => getWidget(id))
+  .map((id) => sampleWidget(id))
   .filter((widget): widget is Widget => widget !== undefined)
 
 export default function Home() {

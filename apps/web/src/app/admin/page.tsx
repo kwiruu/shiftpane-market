@@ -5,7 +5,7 @@ import { StatusBadge } from '@/components/market/status-badge'
 import { Badge } from '@/components/ui/badge'
 import { WidgetGlyph } from '@/components/widgets/widget-icon'
 import { formatDate } from '@/lib/format'
-import { getWidget } from '@/lib/registry'
+import { sampleWidget } from '@/lib/registry'
 import { submissions } from '@/lib/registry/review'
 
 export const metadata = { title: 'Queue' }
@@ -25,7 +25,7 @@ export default function ReviewQueue() {
 
       <ul className="mt-10 flex flex-col rounded-lg bg-surface px-5 py-2 sm:px-6 [&>*+*]:border-t [&>*+*]:border-tertiary">
         {queue.map((submission) => {
-          const widget = getWidget(submission.widgetId)
+          const widget = sampleWidget(submission.widgetId)
           if (!widget) return null
           const flagged = Object.entries(submission.report).filter(([, r]) => r.result === 'flag')
           const reasons = flagged
@@ -68,7 +68,7 @@ export default function ReviewQueue() {
       <h2 className="mt-10 font-sans text-label-sm text-secondary uppercase">Decided</h2>
       <ul className="mt-3 flex flex-col rounded-lg bg-surface px-5 py-2 sm:px-6 [&>*+*]:border-t [&>*+*]:border-tertiary">
         {done.map((submission) => {
-          const widget = getWidget(submission.widgetId)
+          const widget = sampleWidget(submission.widgetId)
           if (!widget) return null
           return (
             <li key={submission.id}>

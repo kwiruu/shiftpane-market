@@ -8,13 +8,8 @@ import { DefinitionCard, ListRow, RowText } from '@/components/site/list-group'
 import { Badge } from '@/components/ui/badge'
 import { WidgetGlyph } from '@/components/widgets/widget-icon'
 import { formatDate } from '@/lib/format'
-import {
-  categoryInfo,
-  countByCategory,
-  featuredWidgets,
-  getWidgets,
-  newestWidgets,
-} from '@/lib/registry'
+import { categoryInfo, countByCategory, featuredWidgets, newestWidgets } from '@/lib/registry'
+import { getWidgets } from '@/lib/registry/gallery'
 
 const description =
   'Free widgets for the ShiftPane board on your phone. Each is checked and reviewed by a person before it is listed.'
@@ -26,8 +21,11 @@ export const metadata: Metadata = {
   openGraph: { type: 'website', title: 'Widgets', description, url: '/widgets' },
 }
 
-export default function WidgetsHome() {
-  const counts = countByCategory()
+export const revalidate = 60
+
+export default async function WidgetsHome() {
+  const widgets = await getWidgets()
+  const counts = countByCategory(widgets)
   return (
     <div className="frame flex flex-col pt-28 sm:pt-32">
       <header className="max-w-180">
@@ -40,19 +38,19 @@ export default function WidgetsHome() {
           before it&apos;s listed, and installs in the ShiftPane app.
         </p>
         <SearchForm className="mt-8 max-w-120" />
-        <CategoryChips className="mt-4" />
+        <CategoryChips counts={counts} className="mt-4" />
       </header>
 
       <section aria-labelledby="featured" className="mt-14">
         <h2 id="featured" className="font-sans text-label-sm text-secondary uppercase">
           Featured
         </h2>
-        <WidgetGrid widgets={featuredWidgets()} className="mt-3" />
+        <WidgetGrid widgets={featuredWidgets(widgets)} className="mt-3" />
       </section>
 
       <div className="mt-14 grid gap-3 lg:grid-cols-2">
         <DefinitionCard label="New" className="self-start">
-          {newestWidgets(5).map((widget) => (
+          {newestWidgets(widgets, 5).map((widget) => (
             <ListRow key={widget.id} href={`/widgets/${widget.id}`}>
               <WidgetGlyph name={widget.icon} className="size-9" />
               <RowText
@@ -94,7 +92,7 @@ export default function WidgetsHome() {
       </div>
 
       <p className="mt-6 text-body-sm text-secondary">
-        {getWidgets().length} widgets.{' '}
+        {widgets.length === 1 ? '1 widget' : `${widgets.length} widgets`}.{' '}
         <Link
           href="/widgets/search"
           className="text-on-surface underline decoration-border underline-offset-4 hover:decoration-current"

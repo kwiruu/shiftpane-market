@@ -13,9 +13,9 @@ tokens, type, pills, definition cards and motion, described in
 | Plan milestone | State |
 | --- | --- |
 | W1, docs site | Landing page and 20 docs pages, written from the ShiftPane README and the plan. Pages about features the app doesn't have yet say so. |
-| W2, read-only gallery | Gallery home, search, widget pages with live previews, author pages, seeded with six first-party widgets in `apps/web/src/lib/registry/seed.ts`. The signed index and R2 aren't built. |
-| W3, uploads and review | The upload page, author dashboard and review queue exist as pages, with sample data and their controls disabled. No API, sign-in or database yet. |
-| Deploy | On hold until the Student Pack is approved. Everything runs locally. |
+| W2, read-only gallery | Gallery home, search, widget pages with live previews, author pages. The six first-party widgets in `first-party/` are published through the API, which signs `index.json` and stores packages in Vercel Blob. |
+| W3, uploads and review | The API does uploads, the automated checks, the review queue, approving and rejecting, yanking and reports. Sign-in waits for the GitHub OAuth app, so the site's upload, dashboard and review pages still show sample data. |
+| Deploy | API and Postgres on Heroku, site and Blob on Vercel. See [Deploying](#deploying). |
 
 ## Run it
 
@@ -23,16 +23,27 @@ Requirements: Node 22.12+ and pnpm 10 (`corepack enable`).
 
 ```sh
 pnpm install
-pnpm dev          # http://localhost:3000
+pnpm dev          # the site on http://localhost:3000, the API on http://localhost:8787
 ```
+
+The site shows the seed (`apps/web/src/lib/registry/seed.ts`) unless `SHIFTPANE_API_ORIGIN` is set.
+To run it against the local API, publish the first-party widgets once, then start both:
+
+```sh
+pnpm --filter @shiftpane/api first-party        # PGlite allows one process: run it with the API stopped
+SHIFTPANE_API_ORIGIN=http://localhost:8787 pnpm dev
+```
+
+The API keeps its database (PGlite) and files under `apps/api/.data`; delete the folder to start over.
 
 | Command | What it does |
 | --- | --- |
-| `pnpm dev` | The site with hot reload |
-| `pnpm build` | Production build: type checks and prerenders every page |
+| `pnpm dev` | The site and the API with reload |
+| `pnpm build` | Production builds: the site prerenders every page, the API bundles into `apps/api/dist` |
 | `pnpm lint` / `pnpm format` | Biome over the whole repo, without and with fixes |
-| `pnpm typecheck` | Route types, then `tsc` |
-| `pnpm test` | Vitest |
+| `pnpm typecheck` | Route types, then `tsc`, in every package |
+| `pnpm test` | Vitest; the API's tests run the whole upload-to-index flow on PGlite |
+| `pnpm --filter @shiftpane/db generate` | A migration for each change to `packages/db/src/schema.ts` |
 
 ## Layout
 
@@ -49,19 +60,52 @@ apps/
       market/             Gallery tiles, search, permissions, source viewer, status badges
       content/            Blocks the docs and READMEs render with
       ui/                 shadcn components, restyled to DESIGN.md
-    src/lib/registry/     What the site knows about widgets: types, seed, sources, permissions,
-                          view bindings, checks, sample submissions. The API replaces seed.ts.
+    src/lib/registry/     The gallery (gallery.ts: the API, or the seed), helpers over it, and
+                          the sample submissions the upload and review pages show until sign-in
+  api/                    Hono on Heroku: sign-in, uploads, checks, review, publishing the index
+    scripts/              build.ts bundles it; deploy.ts ships the bundle to Heroku
+packages/
+  format/                 The widget package format: types, zod schemas, sources, permission wording
+  checks/                 Opens an uploaded zip and runs the automated checks
+  index/                  Builds and Ed25519-signs index.json and revoked.json; keys.ts has the public key
+  storage/                The registry's public files: the filesystem locally, Vercel Blob in production
+  db/                     Drizzle schema and migrations; Postgres in production, PGlite locally
+first-party/              The first-party widgets as package folders, and how the gallery shows them
 ```
 
-The plan's other pieces (`apps/api`, `packages/db`, `packages/checks`, `packages/index`,
-`packages/storage`) come with W3 and the signed index.
+## Deploying
 
-## Before publishing
+**API (Heroku).** One Basic dyno and Heroku Postgres Essential-0, $12 a month, covered by the
+Student Pack credit. Anything more is charged to the card on the account, so keep it to those two.
 
-- Set `NEXT_PUBLIC_SITE_URL` to the site's address. Canonical URLs, the sitemap, `robots.txt` and the
-  JSON-LD are built from it; on Vercel it falls back to the production URL.
-- Set `SHIFTPANE_API_ORIGIN` once the API is deployed. The site proxies `/api/*` to it, so the
-  browser sees one origin.
-- Read the [privacy](apps/web/src/content/docs/privacy.mdx) and
-  [content policy](apps/web/src/content/docs/content-policy.mdx) pages as the operator: they
-  describe what the plan intends, and you're the one making those promises.
+```sh
+HEROKU_API_KEY=… HEROKU_APP=… pnpm --filter @shiftpane/api deploy:heroku
+```
+
+That bundles the API, uploads it with the migrations and `first-party/` through Heroku's Build API,
+and Heroku's release phase runs the migrations before the new version starts. After adding or
+changing a first-party widget (raise its version), run `node dist/publish-first-party.js` on a
+one-off dyno.
+
+| Config var | What it is |
+| --- | --- |
+| `DATABASE_URL` | Set by Heroku Postgres |
+| `NODE_ENV` | `production` |
+| `SITE_ORIGIN` | The site's origin. Sign-in returns there, and cookie-signed writes must come from it |
+| `REGISTRY_URL` | The site's origin + `/registry`: the base of every package URL in the index |
+| `BLOB_READ_WRITE_TOKEN` | The Vercel Blob store's read-write token |
+| `SIGNING_KEY` | The Ed25519 private key that signs the index. Its public half is `packages/index/src/keys.ts` |
+| `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | The GitHub OAuth app. Sign-in answers 503 until both are set |
+| `ADMIN_LOGINS` | GitHub logins that become admins when they sign in, comma-separated |
+
+**Site (Vercel).** The project's root directory is `apps/web`.
+
+| Environment variable | What it is |
+| --- | --- |
+| `NEXT_PUBLIC_SITE_URL` | The site's address. Canonical URLs, the sitemap, `robots.txt` and the JSON-LD are built from it; on Vercel it falls back to the production URL |
+| `SHIFTPANE_API_ORIGIN` | The Heroku app's URL. The site reads the gallery from it and proxies `/api/*` to it |
+| `SHIFTPANE_REGISTRY_ORIGIN` | The Blob store's public URL. The site proxies `/registry/*` to it |
+
+Before going public, read the [privacy](apps/web/src/content/docs/privacy.mdx) and
+[content policy](apps/web/src/content/docs/content-policy.mdx) pages as the operator: they
+describe what the plan intends, and you're the one making those promises.

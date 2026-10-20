@@ -6,20 +6,20 @@ import { WidgetGrid } from '@/components/market/widget-tile'
 import { LogoMark } from '@/components/site/logo'
 import { Badge } from '@/components/ui/badge'
 import { formatDate } from '@/lib/format'
-import { getAuthor, getAuthors, widgetsBy } from '@/lib/registry'
+import { getAuthor, getAuthors, widgetsBy } from '@/lib/registry/gallery'
 import { site } from '@/lib/site'
 
-export const dynamicParams = false
+export const revalidate = 60
 
-export function generateStaticParams() {
-  return getAuthors().map((author) => ({ login: author.login }))
+export async function generateStaticParams() {
+  return (await getAuthors()).map((author) => ({ login: author.login }))
 }
 
 export async function generateMetadata({
   params,
 }: PageProps<'/authors/[login]'>): Promise<Metadata> {
   const { login } = await params
-  const author = getAuthor(login)
+  const author = await getAuthor(login)
   if (!author) return {}
   return {
     title: `${author.name}, widget author`,
@@ -30,9 +30,9 @@ export async function generateMetadata({
 
 export default async function AuthorPage({ params }: PageProps<'/authors/[login]'>) {
   const { login } = await params
-  const author = getAuthor(login)
+  const author = await getAuthor(login)
   if (!author) notFound()
-  const widgets = widgetsBy(login)
+  const widgets = await widgetsBy(login)
 
   return (
     <div className="frame flex flex-col pt-28 sm:pt-32">

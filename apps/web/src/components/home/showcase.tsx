@@ -2,7 +2,7 @@ import { sampleSources } from '@shiftpane/format'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { PreviewStage } from '@/components/widgets/preview-stage'
-import { getWidget } from '@/lib/registry'
+import { sampleWidget } from '@/lib/registry'
 
 const featured = [
   {
@@ -28,7 +28,7 @@ export function Showcase() {
   return (
     <div className="mx-auto flex w-full max-w-[calc(var(--container-showcase)+2*var(--gutter))] flex-col gap-14 px-[max(var(--gutter),env(safe-area-inset-left))]">
       {featured.map((entry) => {
-        const widget = getWidget(entry.id)
+        const widget = sampleWidget(entry.id)
         if (!widget) return null
         return (
           <div key={entry.id} data-cursor={entry.cursor}>
