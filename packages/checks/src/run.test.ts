@@ -39,7 +39,10 @@ const check = (zip: Uint8Array, context: CheckContext = octocat) =>
   checkPackage(openPackage(zip), context)
 
 describe('first-party widgets', () => {
-  for (const id of readdirSync(firstParty)) {
+  const ids = readdirSync(firstParty, { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+  for (const id of ids) {
     it(`${id} passes every failing check`, () => {
       const result = check(packPackage(folder(id)), official)
       const failed = Object.entries(result.report).filter(([, entry]) => entry.result === 'fail')

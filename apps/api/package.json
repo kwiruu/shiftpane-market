@@ -1,0 +1,32 @@
+{
+  "name": "@shiftpane/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The registry API: uploads, checks, review, and publishing the signed index",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.ts",
+    "build": "node scripts/build.ts",
+    "typecheck": "tsc",
+    "test": "vitest run",
+    "first-party": "node src/publish-first-party.ts",
+    "deploy:heroku": "node scripts/deploy.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.5",
+    "@shiftpane/checks": "workspace:*",
+    "@shiftpane/db": "workspace:*",
+    "@shiftpane/format": "workspace:*",
+    "@shiftpane/index": "workspace:*",
+    "@shiftpane/storage": "workspace:*",
+    "drizzle-orm": "^0.45.4",
+    "hono": "^4.13.13",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "esbuild": "^0.28.2",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
