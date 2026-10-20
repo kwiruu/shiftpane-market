@@ -95,10 +95,12 @@ function Laptop() {
       {/* Lid */}
       <div className="rounded-[clamp(10px,2.6cqw,28px)] bg-[#0d0d0d] p-[1.3%] shadow-device dark:bg-[#1c1c1c]">
         <div className="relative aspect-[16/10] overflow-hidden rounded-[clamp(6px,1.7cqw,18px)] [container-type:inline-size]">
-          <div className="board-desk absolute inset-0 bg-[radial-gradient(120%_90%_at_20%_10%,#e9eef5_0%,#c8d3e1_45%,#a9b8cb_100%)] dark:bg-[radial-gradient(120%_90%_at_20%_10%,#27303f_0%,#141a25_50%,#080b11_100%)]">
-            {/* A menu bar, so it reads as a desktop on any OS */}
-            <div className="absolute inset-x-0 top-0 h-[3.4%] bg-white/45 dark:bg-black/35" />
-            <DevicesWindow />
+          {/* A Windows 11 desktop: the window centered above the taskbar (globals.css, .wallpaper) */}
+          <div className="board-desk wallpaper absolute inset-0 flex flex-col">
+            <div className="relative flex-1">
+              <DevicesWindow />
+            </div>
+            <div className="taskbar flex-none" />
           </div>
         </div>
       </div>
