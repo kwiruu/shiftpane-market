@@ -7,15 +7,39 @@ import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { devSignIn, isReviewer, signInHref, signOut, useAccount } from '@/lib/api'
+import { devSignIn, isReviewer, type Me, signInHref, signOut, useAccount } from '@/lib/api'
 
 import { SignInOptions } from './sign-in-options'
 
 const roleLabels = { author: 'Author', reviewer: 'Reviewer', admin: 'Admin' } as const
 
+/** Their GitHub photo (allowed by the CSP's img-src), or a round initial when there is none or it fails to load. */
+function Avatar({ me }: { me: Me }) {
+  const [failed, setFailed] = useState(false)
+  if (me.avatarUrl && !failed) {
+    return (
+      // biome-ignore lint/performance/noImgElement: a 24px external avatar; next/image would add nothing
+      <img
+        src={me.avatarUrl}
+        alt=""
+        width={24}
+        height={24}
+        referrerPolicy="no-referrer"
+        onError={() => setFailed(true)}
+        className="size-6 rounded-full bg-muted object-cover"
+      />
+    )
+  }
+  return (
+    <span className="grid size-6 place-items-center rounded-full bg-primary text-label-sm text-surface uppercase">
+      {me.login.slice(0, 1)}
+    </span>
+  )
+}
+
 /**
- * The header's account control: "Sign in" for visitors, and for a signed-in author a round
- * initial that opens their pages. Avatars would load from GitHub, which the CSP keeps out.
+ * The header's account control: "Sign in" for visitors, and for a signed-in author their GitHub
+ * photo that opens their pages.
  */
 export function AccountMenu({ enabled }: { enabled: boolean }) {
   const account = useAccount(enabled)
@@ -53,9 +77,7 @@ export function AccountMenu({ enabled }: { enabled: boolean }) {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon-sm" aria-label={`Account, signed in as ${me.login}`}>
-          <span className="grid size-7 place-items-center rounded-full bg-primary text-label-md text-surface uppercase">
-            {me.login.slice(0, 1)}
-          </span>
+          <Avatar me={me} />
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-64 gap-0 p-2">
