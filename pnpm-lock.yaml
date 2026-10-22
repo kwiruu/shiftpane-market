@@ -102,6 +102,9 @@ importers:
       '@next/mdx':
         specifier: ^16.4.2
         version: 16.4.2(@mdx-js/loader@3.1.1)(@mdx-js/react@3.1.1(@types/react@19.3.0)(react@19.3.1))
+      '@shiftpane/board':
+        specifier: workspace:*
+        version: link:../../vendor/shiftpane/board
       '@shiftpane/format':
         specifier: workspace:*
         version: link:../../packages/format
@@ -228,6 +231,9 @@ importers:
 
   packages/format:
     dependencies:
+      '@shiftpane/widget-sdk':
+        specifier: workspace:*
+        version: link:../../vendor/shiftpane/widget-sdk
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -270,6 +276,54 @@ importers:
       vitest:
         specifier: 'catalog:'
         version: 5.0.5(@types/node@24.19.2)(vite@8.3.4(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15))
+
+  vendor/shiftpane/board:
+    dependencies:
+      '@shiftpane/layout':
+        specifier: workspace:*
+        version: link:../layout
+      '@shiftpane/protocol':
+        specifier: workspace:*
+        version: link:../protocol
+      '@shiftpane/ui':
+        specifier: workspace:*
+        version: link:../ui
+      '@shiftpane/widget-sdk':
+        specifier: workspace:*
+        version: link:../widget-sdk
+    devDependencies:
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.3.0
+      react:
+        specifier: 'catalog:'
+        version: 19.3.1
+
+  vendor/shiftpane/layout: {}
+
+  vendor/shiftpane/protocol:
+    dependencies:
+      '@shiftpane/widget-sdk':
+        specifier: workspace:*
+        version: link:../widget-sdk
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
+
+  vendor/shiftpane/ui:
+    devDependencies:
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.3.0
+      react:
+        specifier: 'catalog:'
+        version: 19.3.1
+
+  vendor/shiftpane/widget-sdk:
+    dependencies:
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
 
 packages:
 

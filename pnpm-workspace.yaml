@@ -1,6 +1,8 @@
 packages:
   - apps/*
   - packages/*
+  # The app's widget format and renderer, copied by `pnpm sync:shiftpane`.
+  - vendor/shiftpane/*
 
 # One version of each shared dependency across the repo. Reference with "catalog:".
 catalog:
