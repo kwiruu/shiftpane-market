@@ -1,8 +1,4 @@
-<Planned>
-The SDK and the CLI aren't published yet. This is the workflow they're being built for.
-</Planned>
-
-From nothing to a widget on your phone, with live data, in a few minutes.
+From nothing to a widget on your phone, with live data, in a few minutes. You need Node 22 or later and the ShiftPane desktop app.
 
 ## Create a widget
 
@@ -10,49 +6,52 @@ From nothing to a widget on your phone, with live data, in a few minutes.
 npm create shiftpane-widget@latest
 ```
 
-Pick a template:
+It asks for a folder, the widget's name, your GitHub login (the widget's `author`), and a template:
 
 | Template | What it gives you |
 | --- | --- |
-| PC data | A view bound to system sources. No collector. |
-| Web API | A collector that fetches from a host you name, and a view for its JSON. |
-| Local app | A collector that talks to an app on your PC, such as LibreHardwareMonitor. |
-| Phone only | A view with no PC data at all, like a countdown. |
+| `pc` | A view bound to the PC's CPU. No collector, no code. |
+| `web` | A collector that fetches from one host (GitHub, to start), and a view for its JSON. |
 
-## Run it on your phone
+Pass them as flags to skip the questions: `npm create shiftpane-widget@latest my-widget -- --template web --author your-login`.
 
-<Steps>
-<Step title="Turn on Developer mode">
-
-In the desktop app, open **Settings** and turn on **Developer mode**. It shows a one-time token for the CLI.
-
-</Step>
-<Step title="Start the dev server">
+## Run the collector
 
 ```bash
 npx shiftpane-widget dev
 ```
 
-It connects to the desktop app on the same PC, loads your folder, and reloads it every time you save. The widget shows on your paired phone, and in a browser preview at every size.
+It checks the folder, runs the collector on a sample PC, and prints what it returned. It runs again every time you save. Give config values with `--config key=value`; secrets a widget declares, such as `GITHUB_TOKEN`, come from environment variables of the same name.
+
+## See it on your phone
+
+<Steps>
+<Step title="Turn on Developer mode">
+
+In the desktop app, open **Settings** and turn on **Developer mode**.
+
+</Step>
+<Step title="Load the folder">
+
+Open **Marketplace → Installed** and press **Choose a folder**. The app shows what the widget can do, then installs it. Add it to your board from **Phone layout**.
 
 </Step>
 <Step title="Edit">
 
-Change `view.json` or `collector.js` and watch the phone. Sources are your PC's real data; without the desktop app running, the preview uses `sample.json`.
+Change `view.json` or `collector.js` and save. The app loads the folder again and your phone redraws. A change that asks for a new permission isn't applied on its own: press **Load again** in the widget's settings, and the app asks you first.
 
 </Step>
 </Steps>
 
-## Types for free
-
-The CLI generates types from your `manifest.json`: `ctx.sources` has exactly the sources you declared, and `ctx.config` your config fields. JSON Schemas for `manifest.json` and `view.json` give your editor autocomplete.
-
-## Check, pack, publish
+## Check and pack
 
 ```bash
-npx shiftpane-widget validate   # the gallery's own checks, locally
-npx shiftpane-widget pack       # the zip
-npx shiftpane-widget publish    # upload it
+npx shiftpane-widget validate   # every check the gallery runs that can run on your PC
+npx shiftpane-widget pack       # <id>-<version>.zip, the file the gallery takes
 ```
 
-See [Publishing](/docs/publishing) for what happens next.
+The zip is deterministic: the same folder always packs to the same bytes and the same SHA-256.
+
+## Share it
+
+With Developer mode on, open the widget's settings in **Marketplace → Installed** and use **Share to the marketplace**: it signs you in with GitHub, packs the folder and sends it for review. Or upload the zip on the [Publish](/upload) page. See [Publishing](/docs/publishing) for what happens next.
