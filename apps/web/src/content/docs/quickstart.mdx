@@ -13,7 +13,7 @@ It asks for a folder, the widget's name, your GitHub login (the widget's `author
 | `pc` | A view bound to the PC's CPU. No collector, no code. |
 | `web` | A collector that fetches from one host (GitHub, to start), and a view for its JSON. |
 
-Pass them as flags to skip the questions: `npm create shiftpane-widget@latest my-widget -- --template web --author your-login`.
+Pass them as flags to skip the questions. `npx create-shiftpane-widget my-widget --template web --author your-login` works in every shell; with `npm create`, the flags need a `--` before them, which Windows PowerShell drops.
 
 ## Run the collector
 
