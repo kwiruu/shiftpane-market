@@ -19,7 +19,7 @@ const contentSecurityPolicy = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}${forToolbar('https://vercel.live')}`,
   `style-src 'self' 'unsafe-inline'${forToolbar('https://vercel.live')}`,
-  `img-src 'self' blob: data:${forToolbar('https://vercel.live', 'https://vercel.com')}`,
+  `img-src 'self' blob: data: https://avatars.githubusercontent.com${forToolbar('https://vercel.live', 'https://vercel.com')}`,
   `font-src 'self'${forToolbar('https://vercel.live', 'https://assets.vercel.com')}`,
   `connect-src 'self'${forToolbar('https://vercel.live', 'wss://ws-us3.pusher.com')}`,
   `frame-src ${isPreview ? 'https://vercel.live' : "'none'"}`,
