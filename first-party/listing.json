@@ -5,18 +5,6 @@
     "featured": true,
     "notes": "Adds the medium size, with the ring beside a minute of history."
   },
-  "pc-stats": {
-    "icon": "activity",
-    "tone": "light",
-    "featured": true,
-    "notes": "Laid out like the PC overview in the ShiftPane app, with CPU load as the big figure."
-  },
-  "now-playing": {
-    "icon": "music",
-    "tone": "dark",
-    "featured": true,
-    "notes": "Looks like the media widget in the ShiftPane app: a cover colored from the title, the app playing it, and a large size."
-  },
   "github-stars": {
     "icon": "star",
     "tone": "dark",

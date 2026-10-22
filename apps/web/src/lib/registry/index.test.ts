@@ -17,7 +17,7 @@ describe('searchWidgets', () => {
   it('ranks a name match above a README mention', () => {
     const found = ids(searchWidgets(widgets, { query: 'gpu' }))
     expect(found[0]).toBe('gpu-ring')
-    expect(found).toContain('pc-stats')
+    expect(found).toContain('hardware-temps')
   })
 
   it('needs every word to match', () => {
@@ -26,8 +26,8 @@ describe('searchWidgets', () => {
   })
 
   it('filters by category, with or without words', () => {
-    expect(ids(searchWidgets(widgets, { category: 'media' }))).toEqual(['now-playing'])
-    expect(searchWidgets(widgets, { query: 'gpu', category: 'media' })).toEqual([])
+    expect(ids(searchWidgets(widgets, { category: 'dev' }))).toEqual(['github-stars'])
+    expect(searchWidgets(widgets, { query: 'gpu', category: 'dev' })).toEqual([])
   })
 })
 

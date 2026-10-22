@@ -12,9 +12,10 @@ const featured = [
       'GPU load as a ring, with the last minute beside it, bound straight to the GPU source. No code.',
   },
   {
-    id: 'now-playing',
-    cursor: 'Asks before it sees your music',
-    caption: 'The track playing on your PC, with buttons that press play, pause and skip on it.',
+    id: 'pc-busy',
+    cursor: 'A setting, no code',
+    caption:
+      'One word from your CPU and memory, for the person at the door. Where busy starts is a setting.',
   },
   {
     id: 'github-stars',

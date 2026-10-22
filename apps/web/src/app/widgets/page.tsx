@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { BuiltInWidgets } from '@/components/market/built-in'
 import { CategoryChips } from '@/components/market/category-chips'
 import { SearchForm } from '@/components/market/search-form'
 import { WidgetGrid } from '@/components/market/widget-tile'
@@ -41,6 +42,17 @@ export default async function WidgetsHome() {
           Featured
         </h2>
         <WidgetGrid widgets={featuredWidgets(widgets)} className="mt-3" />
+      </section>
+
+      <section aria-labelledby="built-in" className="mt-14">
+        <h2 id="built-in" className="font-sans text-label-sm text-secondary uppercase">
+          Comes with ShiftPane
+        </h2>
+        <p className="mt-1 max-w-[60ch] text-body-sm text-secondary">
+          Already in the app, so there&apos;s nothing to install: add them to your board from its
+          Widgets page.
+        </p>
+        <BuiltInWidgets className="mt-3" />
       </section>
     </div>
   )

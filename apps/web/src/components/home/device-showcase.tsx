@@ -1,7 +1,7 @@
-import type { Widget, WidgetSize } from '@shiftpane/format'
+import type { Widget } from '@shiftpane/format'
 import { Check, ScanLine, Smartphone } from 'lucide-react'
 import { LogoMark } from '@/components/site/logo'
-import { PhoneBoard } from '@/components/widgets/phone-board'
+import { type BoardItem, PhoneBoard } from '@/components/widgets/phone-board'
 import { sampleWidget } from '@/lib/registry'
 
 /*
@@ -113,21 +113,23 @@ function Laptop() {
 }
 
 // What the phone shows once paired, held sideways like the app's split view: four columns, two
-// rows. A medium tile takes two columns, so each row adds up to four.
-const boardLayout: [id: string, size: WidgetSize][] = [
-  ['gpu-ring', 'small'],
-  ['pc-busy', 'small'],
-  ['now-playing', 'medium'],
-  ['pc-stats', 'medium'],
-  ['hardware-temps', 'small'],
-  ['github-stars', 'small'],
+// rows. A medium tile takes two columns, so each row adds up to four. Gallery widgets by id, and two
+// that come with the app.
+const boardLayout: (BoardItem | { id: string; size: 'small' | 'medium' })[] = [
+  { id: 'gpu-ring', size: 'small' },
+  { id: 'pc-busy', size: 'small' },
+  { kind: 'media', size: 'medium' },
+  { kind: 'pc-stats', size: 'medium' },
+  { id: 'hardware-temps', size: 'small' },
+  { id: 'github-stars', size: 'small' },
 ]
 
 /** A phone held sideways, 2400 × 1080 like the one in the split view figure. */
 function Phone() {
-  const items = boardLayout.flatMap(([id, size]) => {
-    const widget = sampleWidget(id)
-    return widget ? [{ widget: widget as Widget, size }] : []
+  const items = boardLayout.flatMap((item): BoardItem[] => {
+    if (!('id' in item)) return [item]
+    const widget = sampleWidget(item.id)
+    return widget ? [{ widget: widget as Widget, size: item.size }] : []
   })
   return (
     <div className="relative w-[37%] flex-none">
