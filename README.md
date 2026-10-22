@@ -75,12 +75,13 @@ apps/
   api/                    Hono on Heroku: sign-in, uploads, checks, review, publishing the index
     scripts/              build.ts bundles it; deploy.ts ships the bundle to Heroku
 packages/
-  format/                 The widget package format: types, zod schemas, sources, permission wording
+  format/                 The app's widget format (@shiftpane/widget-sdk), plus the gallery's checks and types
   checks/                 Opens an uploaded zip and runs the automated checks
   index/                  Builds and Ed25519-signs index.json and revoked.json; keys.ts has the public key
   storage/                The registry's public files: the filesystem locally, Vercel Blob in production
   db/                     Drizzle schema and migrations; Postgres in production, PGlite locally
 first-party/              The first-party widgets as package folders, and how the gallery shows them
+vendor/shiftpane/         The app's widget-sdk, protocol, layout, board and icons, copied by pnpm sync:shiftpane
 ```
 
 ## Deploying
@@ -95,7 +96,8 @@ HEROKU_API_KEY=… HEROKU_APP=… pnpm --filter @shiftpane/api deploy:heroku
 That bundles the API, uploads it with the migrations and `first-party/` through Heroku's Build API,
 and Heroku's release phase runs the migrations before the new version starts. After adding or
 changing a first-party widget (raise its version), run `node dist/publish-first-party.js` on a
-one-off dyno.
+one-off dyno. To take a widget down without signing in to `/admin`, run
+`node dist/yank-widget.js <id> "<reason>"` the same way: the app shows the reason to anyone who has it.
 
 | Config var | What it is |
 | --- | --- |
