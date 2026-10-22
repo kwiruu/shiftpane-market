@@ -20,7 +20,14 @@ export interface Config {
   github?: { clientId: string; clientSecret: string }
   /** GitHub logins that become admins when they sign in. */
   adminLogins: string[]
+  /**
+   * Sign in as anyone, no GitHub, for trying the site locally as different people. Only outside
+   * production, and only while the site is on this machine.
+   */
+  devSignIn: boolean
 }
+
+const localOrigin = /^http:\/\/(?:localhost|127\.0\.0\.1)(?::\d+)?$/
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const production = env.NODE_ENV === 'production'
@@ -41,11 +48,12 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
 
   const clientId = env.GITHUB_CLIENT_ID
   const clientSecret = env.GITHUB_CLIENT_SECRET
+  const siteOrigin = required('SITE_ORIGIN', 'http://localhost:3000').replace(/\/$/, '')
   return {
     port,
     production,
     databaseUrl: required('DATABASE_URL', 'pglite:.data/db'),
-    siteOrigin: required('SITE_ORIGIN', 'http://localhost:3000').replace(/\/$/, ''),
+    siteOrigin,
     registryUrl: required('REGISTRY_URL', `http://localhost:${port}/registry`).replace(/\/$/, ''),
     // A dyno's disk is wiped on every restart, so production has to store files in Blob.
     blobToken: production
@@ -57,5 +65,6 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       .split(',')
       .map((login) => login.trim().toLowerCase())
       .filter(Boolean),
+    devSignIn: !production && localOrigin.test(siteOrigin),
   }
 }

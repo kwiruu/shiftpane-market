@@ -21,9 +21,6 @@ export const site = {
     name: 'MIT License',
     url: 'https://github.com/kwiruu/shiftpane/blob/main/LICENSE',
   },
-  // Sign-in, uploads and review need the API (PLAN, W3). Until it exists, the pages that depend on
-  // it show sample data and say so.
-  accountsOpen: false,
 } as const
 
 /** A file in the ShiftPane repository, such as "README.md". */

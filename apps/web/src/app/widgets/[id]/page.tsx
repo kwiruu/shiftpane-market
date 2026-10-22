@@ -1,8 +1,9 @@
 import { addedPermissions } from '@shiftpane/format'
-import { ArrowUpRight, ChevronLeft, Flag } from 'lucide-react'
+import { ArrowUpRight, ChevronLeft } from 'lucide-react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { ReportWidget } from '@/components/account/report-widget'
 import { PermissionList } from '@/components/market/permission-list'
 import { Readme } from '@/components/market/readme'
 import { SourceViewer } from '@/components/market/source-viewer'
@@ -13,7 +14,7 @@ import { PreviewStage } from '@/components/widgets/preview-stage'
 import { WidgetGlyph } from '@/components/widgets/widget-icon'
 import { formatDate, formatInterval } from '@/lib/format'
 import { categoryInfo, updatedAt } from '@/lib/registry'
-import { getAuthor, getWidget, getWidgets } from '@/lib/registry/gallery'
+import { getAuthor, getWidget, getWidgets, hasApi } from '@/lib/registry/gallery'
 import { packageFiles } from '@/lib/registry/package'
 import { installLink } from '@/lib/site'
 
@@ -213,13 +214,7 @@ export default async function WidgetPage({ params }: PageProps<'/widgets/[id]'>)
             })}
           </DefinitionCard>
 
-          <Link
-            href="/docs/content-policy#reporting"
-            className="inline-flex items-center gap-1.5 self-start px-1 text-label-md text-secondary transition-colors hover:text-on-surface"
-          >
-            <Flag aria-hidden="true" strokeWidth={1.75} className="size-3.5" />
-            Report this widget
-          </Link>
+          <ReportWidget enabled={hasApi} widgetId={widget.id} version={latest?.version} />
         </aside>
       </div>
     </div>

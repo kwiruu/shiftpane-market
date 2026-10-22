@@ -1,6 +1,6 @@
 import { FsStorage } from '@shiftpane/storage'
 import { sql } from 'drizzle-orm'
-import { Hono } from 'hono'
+import { Hono, type MiddlewareHandler } from 'hono'
 import { HTTPException } from 'hono/http-exception'
 import { secureHeaders } from 'hono/secure-headers'
 
@@ -11,12 +11,21 @@ import { authRoutes } from './routes/auth.ts'
 import { authorRoutes } from './routes/author.ts'
 import { publicRoutes } from './routes/public.ts'
 
+/**
+ * Answers are per person unless a route says otherwise (the gallery's public reads do), so no
+ * browser or CDN keeps one person's account, uploads or review queue for the next.
+ */
+const noStore: MiddlewareHandler<AppEnv> = async (c, next) => {
+  await next()
+  if (!c.res.headers.has('Cache-Control')) c.header('Cache-Control', 'private, no-store')
+}
+
 /** The API (PLAN, "API"), at `/api/v1` behind the site's rewrite. */
 export function createApp(deps: Deps) {
   const app = new Hono<AppEnv>()
 
   app.use(secureHeaders({ crossOriginResourcePolicy: 'same-origin' }))
-  app.use('/api/*', loadSession(deps), sameOrigin(deps))
+  app.use('/api/*', noStore, loadSession(deps), sameOrigin(deps))
 
   app.get('/api/v1/health', async (c) => {
     await deps.db.execute(sql`select 1`)

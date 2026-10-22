@@ -3,7 +3,7 @@ import { createHash, randomBytes } from 'node:crypto'
 import { sessions, users } from '@shiftpane/db'
 import { and, eq, gt, isNull, ne } from 'drizzle-orm'
 import type { Context, MiddlewareHandler } from 'hono'
-import { getCookie } from 'hono/cookie'
+import { deleteCookie, getCookie, setCookie } from 'hono/cookie'
 import { HTTPException } from 'hono/http-exception'
 
 import type { AppEnv, Deps, User } from './context.ts'
@@ -16,6 +16,11 @@ import type { GitHubUser } from './github.ts'
  */
 
 export const SESSION_COOKIE = 'sp_session'
+/**
+ * Readable by the site's scripts and says only "someone signed in here", so the header asks the
+ * API who that is only when there's a chance of an answer. Anonymous visitors cost no request.
+ */
+export const SIGNED_IN_COOKIE = 'sp_signed_in'
 const BROWSER_DAYS = 30
 const DEVICE_DAYS = 90
 
@@ -42,6 +47,21 @@ export function sessionCookie(deps: Deps, maxAge: number) {
     path: '/',
     maxAge,
   }
+}
+
+/** Signs the browser in: the session cookie, and the hint the site's header reads. */
+export async function startBrowserSession(c: Context<AppEnv>, deps: Deps, userId: string) {
+  const session = await createSession(deps, userId, 'browser')
+  setCookie(c, SESSION_COOKIE, session.token, sessionCookie(deps, session.maxAge))
+  setCookie(c, SIGNED_IN_COOKIE, '1', {
+    ...sessionCookie(deps, session.maxAge),
+    httpOnly: false,
+  })
+}
+
+export function endBrowserSession(c: Context<AppEnv>) {
+  deleteCookie(c, SESSION_COOKIE, { path: '/' })
+  deleteCookie(c, SIGNED_IN_COOKIE, { path: '/' })
 }
 
 /** Reads the session from the cookie or the bearer token. Never fails: no session is `null`. */
@@ -142,5 +162,28 @@ export async function upsertGitHubUser(deps: Deps, profile: GitHubUser): Promise
     .returning()
   if (!user) throw new Error('The user was not saved')
   if (user.bannedAt) throw new HTTPException(403, { message: 'This account is banned.' })
+  return user
+}
+
+/**
+ * A local account for trying the site as different people without GitHub (`config.devSignIn`
+ * only). It's a year old, so the account-age check passes; `role` sets what it may do.
+ */
+export async function upsertDevUser(
+  deps: Deps,
+  login: string,
+  role: User['role'] | undefined,
+): Promise<User> {
+  const { db, config } = deps
+  const values = {
+    login,
+    role: role ?? (config.adminLogins.includes(login.toLowerCase()) ? 'admin' : 'author'),
+  }
+  const [user] = await db
+    .insert(users)
+    .values({ ...values, name: login, githubCreatedAt: new Date(Date.now() - 365 * 86_400_000) })
+    .onConflictDoUpdate({ target: users.login, set: role ? { role } : { login } })
+    .returning()
+  if (!user) throw new Error('The user was not saved')
   return user
 }

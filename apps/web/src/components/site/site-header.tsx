@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
+import { AccountMenu } from '@/components/account/account-menu'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -33,9 +34,10 @@ function useActiveHref() {
 
 /**
  * A quiet navigation bar: the name, the platforms, and one notice chip on the left, a few text links
- * on the right. It turns into translucent page color with a hairline once content scrolls under it.
+ * and the account on the right. It turns into translucent page color with a hairline once content
+ * scrolls under it. `accounts` is false where the site runs without the API.
  */
-export function SiteHeader() {
+export function SiteHeader({ accounts }: { accounts: boolean }) {
   const active = useActiveHref()
   const lenis = useLenis()
   const [scrolled, setScrolled] = useState(false)
@@ -88,6 +90,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-1 md:ml-3">
+          <AccountMenu enabled={accounts} />
           <Button
             asChild
             variant="ghost"

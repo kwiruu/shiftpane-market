@@ -14,7 +14,7 @@ tokens, type, pills, definition cards and motion, described in
 | --- | --- |
 | W1, docs site | Landing page and 20 docs pages, written from the ShiftPane README and the plan. Pages about features the app doesn't have yet say so. |
 | W2, read-only gallery | Gallery home, search, widget pages with live previews, author pages. The six first-party widgets in `first-party/` are published through the API, which signs `index.json` and stores packages in Vercel Blob. |
-| W3, uploads and review | The API does uploads, the automated checks, the review queue, approving and rejecting, yanking and reports. Sign-in waits for the GitHub OAuth app, so the site's upload, dashboard and review pages still show sample data. |
+| W3, uploads and review | GitHub sign-in, uploads with the automated checks, the author dashboard, the review queue with approve and reject, yanking, reports and takedowns, on the site and the API. |
 | Deploy | Live: the site at [shiftpane.vercel.app](https://shiftpane.vercel.app) (Vercel project `shiftpane`, Blob store `shiftpane-registry`), the API on the Heroku app `shiftpane-api` with Postgres. See [Deploying](#deploying). |
 
 ## Run it
@@ -35,6 +35,15 @@ SHIFTPANE_API_ORIGIN=http://localhost:8787 pnpm dev
 ```
 
 The API keeps its database (PGlite) and files under `apps/api/.data`; delete the folder to start over.
+
+**Trying it as different people.** Run against the local API as above and the sign-in prompts offer
+a local test account under the GitHub button: type any login and pick a role (author, reviewer or
+admin). Upload as `alice` (the manifest's `author` has to be `alice`), sign out, sign in as `keiru`
+with the admin role, approve it at `/admin`, then sign back in as `alice` to see it live on
+`/dashboard`. GitHub sign-in works locally too once `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET`
+are set for the API, from an OAuth app whose callback is
+`http://localhost:3000/api/v1/auth/github/callback`. Test accounts exist only while the API runs
+outside production for a site on localhost.
 
 | Command | What it does |
 | --- | --- |
@@ -58,10 +67,11 @@ apps/
       home/               The landing page: hero devices, widget showcase, split view, spec cards
       widgets/            The preview renderer: view.json + sample.json drawn like the phone
       market/             Gallery tiles, search, permissions, source viewer, status badges
+      account/            Sign-in, the upload panel, the dashboard and the review pages
       content/            Blocks the docs and READMEs render with
       ui/                 shadcn components, restyled to DESIGN.md
-    src/lib/registry/     The gallery (gallery.ts: the API, or the seed), helpers over it, and
-                          the sample submissions the upload and review pages show until sign-in
+    src/lib/api.ts        The API from the browser: fetch helpers, the signed-in account, types
+    src/lib/registry/     The gallery (gallery.ts: the API, or the seed) and helpers over it
   api/                    Hono on Heroku: sign-in, uploads, checks, review, publishing the index
     scripts/              build.ts bundles it; deploy.ts ships the bundle to Heroku
 packages/

@@ -37,4 +37,20 @@ describe('loadConfig', () => {
     expect(config.github).toEqual({ clientId: 'id', clientSecret: 's' })
     expect(config.adminLogins).toEqual(['kwiruu', 'mona'])
   })
+
+  it('allows local sign-in only for a site on this machine, never in production', () => {
+    expect(loadConfig({}).devSignIn).toBe(true)
+    expect(loadConfig({ SITE_ORIGIN: 'http://127.0.0.1:3000' }).devSignIn).toBe(true)
+    expect(loadConfig({ SITE_ORIGIN: 'https://shiftpane.vercel.app' }).devSignIn).toBe(false)
+    expect(loadConfig({ SITE_ORIGIN: 'http://localhost.evil.example' }).devSignIn).toBe(false)
+    const production = loadConfig({
+      NODE_ENV: 'production',
+      SIGNING_KEY: 'k',
+      DATABASE_URL: 'postgres://x',
+      SITE_ORIGIN: 'http://localhost:3000',
+      REGISTRY_URL: 'https://s/registry',
+      BLOB_READ_WRITE_TOKEN: 't',
+    })
+    expect(production.devSignIn).toBe(false)
+  })
 })

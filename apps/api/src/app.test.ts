@@ -76,7 +76,7 @@ afterEach(async () => {
   for (const close of cleanup.splice(0)) await close()
 })
 
-async function setup({ github = true } = {}) {
+async function setup({ github = true, devSignIn = true } = {}) {
   const url = 'pglite:memory'
   const { db, close } = await connect(url)
   cleanup.push(close)
@@ -90,6 +90,7 @@ async function setup({ github = true } = {}) {
     registryUrl: 'http://localhost:8787/registry',
     signingKey: keys.privateKey,
     adminLogins: ['kwiruu'],
+    devSignIn,
   }
   const storage = new FsStorage(await mkdtemp(join(tmpdir(), 'registry-')), config.registryUrl)
   const deps: Deps = { db, storage, config, github: github ? fakeGitHub : undefined }
@@ -158,6 +159,16 @@ describe('the public API', () => {
     expect((await call('/api/v1/widgets/nope')).status).toBe(404)
     expect((await call('/api/v1/nowhere')).status).toBe(404)
   })
+
+  it('lets only the gallery be cached, never an account', async () => {
+    const { call, signIn } = await setup()
+    const cookie = await signIn('octocat')
+    expect((await call('/api/v1/widgets')).headers.get('cache-control')).toBe('public, max-age=30')
+    expect((await call('/api/v1/authors')).headers.get('cache-control')).toBe('public, max-age=30')
+    for (const path of ['/api/v1/me', '/api/v1/me/widgets', '/api/v1/widgets/nope']) {
+      expect((await call(path, { cookie })).headers.get('cache-control')).toBe('private, no-store')
+    }
+  })
 })
 
 describe('sign-in', () => {
@@ -183,11 +194,52 @@ describe('sign-in', () => {
     expect((await call('/api/v1/device-code', { method: 'POST' })).status).toBe(503)
   })
 
-  it('logs out', async () => {
+  it('logs out, clearing the hint the header reads', async () => {
     const { call, signIn } = await setup()
     const cookie = await signIn('octocat')
-    expect((await call('/api/v1/auth/logout', { method: 'POST', cookie })).status).toBe(204)
+    const response = await call('/api/v1/auth/logout', { method: 'POST', cookie })
+    expect(response.status).toBe(204)
+    const cleared = response.headers.getSetCookie()
+    expect(cleared.some((c) => c.startsWith('sp_session=;'))).toBe(true)
+    expect(cleared.some((c) => c.startsWith('sp_signed_in=;'))).toBe(true)
     expect((await call('/api/v1/me', { cookie })).status).toBe(401)
+  })
+
+  it('signs in as anyone locally, with the role asked for', async () => {
+    const { call } = await setup()
+    const devSignIn = (fields: Record<string, string>, cookie?: string) =>
+      call('/api/v1/auth/dev', {
+        method: 'POST',
+        cookie,
+        body: new URLSearchParams(fields),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      })
+    const response = await devSignIn({ login: 'alice', role: 'reviewer', next: '/admin' })
+    expect(response.status).toBe(303)
+    expect(response.headers.get('location')).toBe(`${site}/admin`)
+    const cookies = response.headers.getSetCookie()
+    expect(cookies.find((c) => c.startsWith('sp_signed_in=1'))).not.toContain('HttpOnly')
+    const cookie = cookies.find((c) => c.startsWith('sp_session='))?.split(';')[0] ?? ''
+    expect((await body(call('/api/v1/me', { cookie }))).user).toMatchObject({
+      login: 'alice',
+      role: 'reviewer',
+    })
+    expect((await call('/api/v1/admin/queue', { cookie })).status).toBe(200)
+
+    // Signing in again without a role keeps the one it has; a bad login is refused.
+    await devSignIn({ login: 'alice' }, cookie)
+    expect((await body(call('/api/v1/me', { cookie }))).user.role).toBe('reviewer')
+    expect((await devSignIn({ login: '-nope' })).status).toBe(400)
+  })
+
+  it('has no local sign-in unless the config allows it', async () => {
+    const { call } = await setup({ devSignIn: false })
+    const response = await call('/api/v1/auth/dev', {
+      method: 'POST',
+      body: new URLSearchParams({ login: 'alice', role: 'admin' }),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    })
+    expect(response.status).toBe(404)
   })
 
   it('gives the desktop app a bearer token through the device flow', async () => {
@@ -245,9 +297,11 @@ describe('uploading, reviewing and publishing', () => {
 
     const queue = (await body(call('/api/v1/admin/queue', { cookie: admin }))).queue
     expect(queue).toHaveLength(1)
+    expect(queue[0]).toMatchObject({ author: 'octocat', widgetName: 'GPU ring', icon: 'gauge' })
     expect(queue[0].version.package).toBeUndefined()
     const detail = await body(call(`/api/v1/admin/versions/${submission.id}`, { cookie: admin }))
     expect(detail.version.files.readme).toContain('GPU load')
+    expect(detail).toMatchObject({ widgetName: 'GPU ring', previous: null })
     expect((await call('/api/v1/admin/versions/not-a-uuid', { cookie: admin })).status).toBe(404)
 
     const approved = await json(`/api/v1/admin/versions/${submission.id}/approve`, {}, admin)
@@ -282,7 +336,16 @@ describe('uploading, reviewing and publishing', () => {
     expect(author).toMatchObject({ login: 'octocat', name: 'The Octocat' })
 
     const mine = (await body(call('/api/v1/me/widgets', { cookie: octocat }))).submissions
-    expect(mine[0]).toMatchObject({ widgetId: 'octo-ring', status: 'approved' })
+    expect(mine[0]).toMatchObject({
+      widgetId: 'octo-ring',
+      name: 'GPU ring',
+      icon: 'gauge',
+      status: 'approved',
+    })
+    const { decided } = await body(call('/api/v1/admin/queue', { cookie: admin }))
+    expect(decided).toMatchObject([
+      { id: submission.id, status: 'approved', widgetName: 'GPU ring' },
+    ])
   })
 
   it('answers a failing upload with its report and keeps nothing', async () => {
@@ -369,7 +432,12 @@ describe('uploading, reviewing and publishing', () => {
     expect((await json('/api/v1/reports', report)).status).toBe(401)
     const { id } = await body(json('/api/v1/reports', report, octocat))
     const open = (await body(call('/api/v1/admin/reports', { cookie: admin }))).reports
-    expect(open[0]).toMatchObject({ id, status: 'open' })
+    expect(open[0]).toMatchObject({
+      id,
+      status: 'open',
+      widgetName: 'GPU ring',
+      reporter: 'octocat',
+    })
     expect((await json(`/api/v1/admin/reports/${id}/resolve`, {}, admin)).status).toBe(200)
   })
 })
