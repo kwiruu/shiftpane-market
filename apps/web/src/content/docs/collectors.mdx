@@ -26,27 +26,25 @@ It returns plain JSON, which has to match what the view binds and is checked bef
 
 ## The sandbox
 
-<Planned>
-The sandbox is part of the work to load third-party widgets. This is its design.
-</Planned>
-
 Collectors run in QuickJS compiled to WebAssembly, not in Node. There is no `require`, no file system, no processes, and no Electron.
 
 | Limit | Per run |
 | --- | --- |
-| Memory | 32 MB |
+| Memory | About 32 MB |
 | Time | 10 seconds |
+| Computing without a pause | 250 ms |
+| Requests | 16 |
 | Output | 64 KB of JSON |
-| A response it fetches | 2 MB |
+| A response it fetches | 2 MB, after at most 3 redirects |
 
 `fetch` is the app's, not the browser's:
 
 - A host has to match `permissions.network`, over HTTPS, or exactly match a `permissions.local` address and port.
 - For internet hosts, the app resolves the name first and refuses anything that lands on your own network: loopback, private, link-local and carrier-grade NAT addresses. A widget can't reach your router by pointing a public name at it.
-- Each widget has its own rate limit.
+- Each redirect is checked again, as if the widget had asked for it.
 
 Secrets are kept encrypted on the PC and only given to the widget that declared them.
 
 ## One file, readable
 
-`collector.js` is one ES module, at most 256 KB, and not minified. The CLI bundles any npm packages into it as readable code, so a reviewer reads exactly what runs.
+`collector.js` is one ES module, at most 256 KB, and not minified, so a reviewer reads exactly what runs. The only thing it can import is `defineCollector` from `@shiftpane/widget-sdk`.

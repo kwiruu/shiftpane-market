@@ -1,11 +1,8 @@
-<Planned>
-Uploading a zip on the [Publish](/upload) page works today, and so does the review behind it. The `shiftpane-widget` CLI and sharing from the desktop app come later, and the app can't install gallery widgets yet.
-</Planned>
-
 ## Before you upload
 
 - Make the manifest's `author` your GitHub login, and give the widget an id nobody else has used.
-- Zip the package's files themselves, not the folder they're in, so `manifest.json` is at the top of the zip.
+- Run `npx shiftpane-widget validate`: it runs every check the gallery runs that can run on your PC.
+- If you zip it yourself, zip the package's files, not the folder they're in, so `manifest.json` is at the top. `npx shiftpane-widget pack` does this for you.
 - Pick an OSI-approved license and include its `LICENSE` file. Widgets are open source, so others can read what runs on their PC.
 - Ask only for what the widget needs. Every permission is something a reviewer has to agree with.
 - Read the [content policy](/docs/content-policy).
@@ -14,9 +11,10 @@ Uploading a zip on the [Publish](/upload) page works today, and so does the revi
 
 Sign in with GitHub, then either:
 
-- **Share from the app.** The desktop app signs you in with a code and uploads the package for you.
+- **Share from the app.** With Developer mode on, open a widget you loaded from a folder and use **Share to the marketplace**. The app signs you in with a code, packs the folder and uploads it.
 - **Upload the zip** on the [Publish](/upload) page.
-- **Publish from the CLI** with `npx shiftpane-widget publish`, using an API token.
+
+Publishing straight from the CLI, with an API token, comes later.
 
 ## What happens next
 
@@ -33,7 +31,7 @@ A person reviews every version before it's listed. Your dashboard shows when it'
 </Step>
 <Step title="Listed">
 
-Approved versions are signed and published. The widget shows in the gallery and in the app's Get widgets page.
+Approved versions are signed and published. The widget shows in the gallery and in the app's **Get widgets** page, and **Install in ShiftPane** on its gallery page opens it in the app.
 
 </Step>
 </Steps>
@@ -44,4 +42,4 @@ Upload a new version with a higher version number. If its permissions didn't cha
 
 ## Your dashboard
 
-[Your widgets](/dashboard) lists everything you've uploaded and each version's status, with the reviewer's note on a rejected one. Yank a live version there if it's broken: it leaves the gallery, and the app turns it off for everyone who has it.
+[Your widgets](/dashboard) lists everything you've uploaded and each version's status, with the reviewer's note on a rejected one. Yank a live version there if it's broken: it leaves the gallery, and the app turns it off for everyone who has it the next time it checks.

@@ -1,3 +1,5 @@
+import { packageLimits as sdkPackageLimits } from '@shiftpane/widget-sdk'
+
 /**
  * The marketplace's automated checks (PLAN, Moderation). A `fail` blocks the upload; a `flag` goes
  * to the reviewer. The docs, the upload page and the review queue all read this one list.
@@ -67,50 +69,9 @@ export const checks: Check[] = [
   },
 ]
 
-export const reservedIds = ['pc-stats', 'media', 'clock', 'calendar', 'cpu', 'memory', 'network']
-
-/** Limits on a package (PLAN, Widget package format). */
+/** The SDK's limits on a package, plus the ones only the marketplace checks: the icon and screenshots. */
 export const packageLimits = {
-  totalBytes: 1024 * 1024,
-  collectorBytes: 256 * 1024,
+  ...sdkPackageLimits,
   iconPixels: 256,
   screenshots: 6,
-  /** The collector's output is capped at 64 KB, so its example is too. */
-  sampleBytes: 64 * 1024,
 }
-
-/** OSI-approved licenses by SPDX id, the ones a widget is likely to use. The license check reads this. */
-export const osiLicenses = [
-  '0BSD',
-  'AFL-3.0',
-  'AGPL-3.0-only',
-  'AGPL-3.0-or-later',
-  'Apache-2.0',
-  'Artistic-2.0',
-  'BSD-2-Clause',
-  'BSD-3-Clause',
-  'BSL-1.0',
-  'CDDL-1.0',
-  'ECL-2.0',
-  'EPL-2.0',
-  'EUPL-1.2',
-  'GPL-2.0-only',
-  'GPL-2.0-or-later',
-  'GPL-3.0-only',
-  'GPL-3.0-or-later',
-  'ISC',
-  'LGPL-2.1-only',
-  'LGPL-2.1-or-later',
-  'LGPL-3.0-only',
-  'LGPL-3.0-or-later',
-  'MIT',
-  'MIT-0',
-  'MPL-2.0',
-  'MS-PL',
-  'NCSA',
-  'OSL-3.0',
-  'PostgreSQL',
-  'UPL-1.0',
-  'Unlicense',
-  'Zlib',
-]

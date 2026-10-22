@@ -1,68 +1,26 @@
-import {
-  Activity,
-  Circle,
-  Coffee,
-  Cpu,
-  Gauge,
-  type LucideIcon,
-  MemoryStick,
-  Music,
-  Network,
-  Pause,
-  Play,
-  SkipBack,
-  SkipForward,
-  Star,
-  Thermometer,
-} from 'lucide-react'
+'use client'
+
+// A client module only because @shiftpane/board/parts also holds hooks; the icons themselves are static.
+import { WidgetIcon as AppWidgetIcon } from '@shiftpane/board/parts'
+import type { CSSProperties } from 'react'
 
 import { cn } from '@/lib/utils'
 
 /**
- * Icons by name, for a widget's `icon` and the `icon` and `button` nodes in its view. The app draws
- * these from Solar (`@shiftpane/ui/icons`); the site stands in with lucide, its own icon set, until
- * the SDK publishes the list of names. Unknown names draw a dot rather than failing.
+ * Icons by name, for a widget's `icon` and the `icon` and `button` nodes in its view: the app's own
+ * (Solar, from @shiftpane/board), so a widget's icon is the same here as on the phone. Unknown names
+ * draw a dot rather than failing.
  */
-const icons: Record<string, LucideIcon> = {
-  activity: Activity,
-  coffee: Coffee,
-  cpu: Cpu,
-  gauge: Gauge,
-  memory: MemoryStick,
-  music: Music,
-  network: Network,
-  pause: Pause,
-  play: Play,
-  'skip-back': SkipBack,
-  'skip-forward': SkipForward,
-  star: Star,
-  thermometer: Thermometer,
-}
-
 export function WidgetIcon({
   name,
   className,
-  strokeWidth = 1.75,
   style,
-  filled = false,
 }: {
   name: string
   className?: string
-  strokeWidth?: number
-  style?: React.CSSProperties
-  /** Solid shapes, as the app draws its transport buttons and the note on a cover. */
-  filled?: boolean
+  style?: CSSProperties
 }) {
-  const Icon = icons[name] ?? Circle
-  return (
-    <Icon
-      aria-hidden="true"
-      strokeWidth={filled ? 1.5 : strokeWidth}
-      fill={filled ? 'currentColor' : 'none'}
-      className={cn('flex-none', className)}
-      style={style}
-    />
-  )
+  return <AppWidgetIcon name={name} className={cn('flex-none', className)} style={style} />
 }
 
 /** A widget's icon on a black tile, the way the app lists it. */

@@ -1,0 +1,10 @@
+{
+  "name": "@shiftpane/layout",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Split-view math: how much of the phone is monitor, and what resolution Windows should create (copied from the ShiftPane app; see vendor/shiftpane/README.md)",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

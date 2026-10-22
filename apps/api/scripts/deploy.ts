@@ -71,7 +71,8 @@ async function deploy(app: string) {
   const slug = join(dir, 'slug')
   stage(slug)
   const tarball = join(dir, 'source.tgz')
-  execFileSync('tar', ['-czf', tarball, '-C', slug, '.'])
+  // Relative paths: Git for Windows' GNU tar reads `C:` in an absolute path as a remote host.
+  execFileSync('tar', ['-czf', 'source.tgz', '-C', 'slug', '.'], { cwd: dir })
 
   const { source_blob: blob } = await heroku<Source>(`/apps/${app}/sources`, { method: 'POST' })
   const upload = await fetch(blob.put_url, { method: 'PUT', body: readFileSync(tarball) })

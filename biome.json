@@ -6,7 +6,13 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!**/cn-tables.ts", "!marketplace-plan.md", "!packages/db/migrations"]
+    "includes": [
+      "**",
+      "!**/cn-tables.ts",
+      "!marketplace-plan.md",
+      "!packages/db/migrations",
+      "!vendor"
+    ]
   },
   "formatter": {
     "enabled": true,

@@ -11,6 +11,7 @@ export async function bundle() {
       server: 'src/server.ts',
       migrate: 'src/migrate.ts',
       'publish-first-party': 'src/publish-first-party.ts',
+      'yank-widget': 'src/yank-widget.ts',
     },
     outdir: 'dist',
     bundle: true,

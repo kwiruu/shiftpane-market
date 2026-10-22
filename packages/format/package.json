@@ -2,14 +2,15 @@
   "name": "@shiftpane/format",
   "version": "0.0.0",
   "private": true,
-  "description": "The widget package format: types, zod schemas, system sources, permission wording and view bindings",
+  "description": "The marketplace's checks and gallery types, on top of the app's widget format (@shiftpane/widget-sdk)",
   "type": "module",
   "exports": "./src/index.ts",
   "scripts": {
     "typecheck": "tsc",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@shiftpane/widget-sdk": "workspace:*",
     "zod": "catalog:"
   },
   "devDependencies": {

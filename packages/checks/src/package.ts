@@ -125,7 +125,13 @@ export function readText(opened: OpenedPackage, name: string): string | undefine
 /**
  * The same files always make the same zip: sorted names, a fixed date, no extra fields. The CLI packs
  * this way so a package's sha256 follows from its contents.
+ *
+ * Zip dates are local time, so the fixed date is midnight local time (as in the app's
+ * `packPackage`): a UTC date is written as a different hour in each time zone, and the same files
+ * would pack differently on the API's server and on an author's laptop.
  */
+const FIXED_DATE = new Date(1980, 0, 1)
+
 export function packPackage(files: Record<string, Uint8Array | string>): Uint8Array {
   const encoder = new TextEncoder()
   const sorted = Object.keys(files).sort()
@@ -134,7 +140,7 @@ export function packPackage(files: Record<string, Uint8Array | string>): Uint8Ar
     const value = files[name]
     if (value === undefined) continue
     const bytes = typeof value === 'string' ? encoder.encode(value) : value
-    entries[name] = [bytes, { level: 9, mtime: new Date('1980-01-01T00:00:00Z') }]
+    entries[name] = [bytes, { level: 9, mtime: FIXED_DATE }]
   }
   return zipSync(entries)
 }

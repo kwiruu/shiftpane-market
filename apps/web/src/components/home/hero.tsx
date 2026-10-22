@@ -63,7 +63,6 @@ function HeroCopy() {
                 >
                   <WidgetIcon
                     name={glyph.name}
-                    strokeWidth={2}
                     className="size-3.5"
                     style={{ color: glyph.color }}
                   />
