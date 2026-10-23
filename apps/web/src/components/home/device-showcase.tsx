@@ -1,5 +1,5 @@
-import type { Widget } from '@shiftpane/format'
-import { Check, ScanLine, Smartphone } from 'lucide-react'
+import Image from 'next/image'
+import { Check, Smartphone, Zap, SwitchCamera } from 'lucide-react'
 import { LogoMark } from '@/components/site/logo'
 import { type BoardItem, PhoneBoard } from '@/components/widgets/phone-board'
 import { sampleWidget } from '@/lib/registry'
@@ -112,48 +112,64 @@ function Laptop() {
   )
 }
 
-// What the phone shows once paired, held sideways like the app's split view: four columns, two
-// rows. A medium tile takes two columns, so each row adds up to four. Gallery widgets by id, and two
-// that come with the app.
-const boardLayout: (BoardItem | { id: string; size: 'small' | 'medium' })[] = [
-  { id: 'gpu-ring', size: 'small' },
-  { id: 'pc-busy', size: 'small' },
-  { kind: 'media', size: 'medium' },
-  { kind: 'pc-stats', size: 'medium' },
-  { id: 'hardware-temps', size: 'small' },
-  { id: 'github-stars', size: 'small' },
-]
-
-/** A phone held sideways, 2400 × 1080 like the one in the split view figure. */
+/** The landscape shell rotates upright while the camera is waiting to pair. */
 function Phone() {
-  const items = boardLayout.flatMap((item): BoardItem[] => {
-    if (!('id' in item)) return [item]
-    const widget = sampleWidget(item.id)
-    return widget ? [{ widget: widget as Widget, size: item.size }] : []
-  })
   return (
-    <div className="relative w-[37%] flex-none">
-      <div className="rounded-[7%/15.5%] bg-[#0d0d0d] p-[1.6%] shadow-device ring-1 ring-black/10 dark:bg-[#1c1c1c] dark:ring-white/10">
-        <div className="relative aspect-[2400/1080] overflow-hidden rounded-[5.6%/12.4%] bg-black [container-type:inline-size]">
-          {/* The camera, on the left edge */}
-          <div className="absolute top-1/2 left-[1.4cqw] h-[10cqw] w-[2cqw] -translate-y-1/2 rounded-full bg-[#0d0d0d]" />
-
-          <div className="board-hint absolute inset-0 flex-col items-center justify-center gap-[2cqw] text-center text-white">
-            <ScanLine strokeWidth={1.75} className="size-[9cqw] text-white/80" />
-            <span className="rounded-full bg-white/15 px-[3.4cqw] py-[1.2cqw] text-[3.2cqw] font-semibold backdrop-blur-md">
-              Scan to pair
-            </span>
+    <div className="hero-phone relative w-[31%] flex-none">
+      <div className="rounded-[10%/21%] bg-[#0d0d0d] p-[1.6%] shadow-device ring-1 ring-black/10 dark:bg-[#1c1c1c] dark:ring-white/10">
+        <div className="relative aspect-[764/363] overflow-hidden rounded-[8.5%/17.9%] bg-black [container-type:inline-size]">
+          <div className="board-hint absolute inset-0 items-center justify-center text-white">
+            <div className="phone-scanner relative flex h-[100cqw] w-[47.5cqw] flex-none flex-col overflow-hidden bg-[#111216]">
+              <div className="flex items-center justify-between px-[5cqw] pt-[5cqw] pb-[3cqw]">
+                <Zap className="size-[4cqw]" strokeWidth={1.5} />
+                <span className="h-[2cqw] w-[7cqw] rounded-full bg-white/20" />
+                <span className="rounded-full border border-white/60 px-[1.5cqw] text-[2.6cqw]">
+                  4:3
+                </span>
+              </div>
+              <div className="relative flex flex-1 items-center justify-center overflow-hidden bg-[linear-gradient(135deg,#668b9a,#274659_50%,#182c42)]">
+                <div className="absolute inset-[8%] rotate-[-8deg] rounded-[2cqw] border-[1cqw] border-[#101218] bg-[#20232b] shadow-xl" />
+                <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 opacity-15">
+                  {Array.from({ length: 9 }, (_, i) => (
+                    <span key={i} className="border border-white/50" />
+                  ))}
+                </div>
+                <div className="relative rounded-[2cqw] border border-[#f8d779]/80 p-[2cqw]">
+                  <QrCode className="w-[21cqw] rounded-[0.6cqw]" />
+                </div>
+                <span className="absolute bottom-[3cqw] rounded-full bg-black/60 px-[2.4cqw] py-[1cqw] text-[2.7cqw] text-[#f8d779]">
+                  ShiftPane · Connect
+                </span>
+              </div>
+              <div className="flex justify-center gap-[3cqw] pt-[3cqw] text-[2.5cqw] font-medium tracking-widest text-white/50">
+                <span>VIDEO</span>
+                <span className="text-[#f8d779]">PHOTO</span>
+                <span>PORTRAIT</span>
+              </div>
+              <div className="flex items-center justify-between px-[5cqw] py-[3cqw]">
+                <span className="size-[6cqw] rounded-[1cqw] border border-white/30 bg-[#274659]" />
+                <span className="grid size-[11cqw] place-items-center rounded-full border border-white">
+                  <span className="size-[9cqw] rounded-full bg-white" />
+                </span>
+                <SwitchCamera className="size-[5cqw]" strokeWidth={1.5} />
+              </div>
+              <span className="mx-auto mb-[2cqw] h-[0.8cqw] w-[14cqw] rounded-full bg-white/70" />
+            </div>
           </div>
-
-          <div className="board-panel absolute inset-0 flex items-center justify-center">
-            <PhoneBoard items={items} className="w-[78cqw] grid-cols-4 gap-[1.6cqw]" />
+          <div className="board-panel absolute inset-0">
+            <Image
+              src="/images/hero-widget-board.png"
+              alt="October calendar and CPU load widgets"
+              fill
+              unoptimized
+              className="object-contain"
+            />
           </div>
         </div>
       </div>
     </div>
   )
 }
-
 export function DeviceShowcase() {
   return (
     // biome-ignore lint/a11y/useSemanticElements: a group of pictures with one name, not a form's fieldset
@@ -168,7 +184,7 @@ export function DeviceShowcase() {
         <figure className="hero-device mx-auto w-full max-w-[min(calc(var(--container-stage)+2*var(--gutter)),calc((100svh-150px)*1.9))] px-[max(var(--gutter),env(safe-area-inset-left))]">
           <div
             aria-hidden="true"
-            className="flex items-end justify-between [container-type:inline-size]"
+            className="flex items-center justify-between [container-type:inline-size]"
           >
             <Laptop />
             <Phone />

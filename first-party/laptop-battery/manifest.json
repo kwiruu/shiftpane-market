@@ -1,0 +1,20 @@
+{
+  "id": "laptop-battery",
+  "name": "Laptop Battery",
+  "description": "Your laptop battery in glowing purple segments, with charging status and time remaining.",
+  "version": "1.0.0",
+  "author": "shiftpane",
+  "license": "MIT",
+  "categories": ["system"],
+  "minAppVersion": "0.6.0",
+  "sizes": ["small", "medium"],
+  "refreshSeconds": 30,
+  "permissions": {
+    "sources": ["battery"],
+    "actions": [],
+    "local": [],
+    "network": [],
+    "secrets": []
+  },
+  "config": []
+}

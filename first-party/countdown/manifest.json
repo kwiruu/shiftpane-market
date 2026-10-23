@@ -1,0 +1,33 @@
+{
+  "id": "countdown",
+  "name": "Countdown",
+  "description": "Days, hours and minutes until something you look forward to.",
+  "version": "1.0.0",
+  "author": "shiftpane",
+  "license": "MIT",
+  "categories": ["productivity"],
+  "minAppVersion": "0.6.0",
+  "sizes": ["small", "medium", "large"],
+  "refreshSeconds": 60,
+  "permissions": {
+    "sources": [],
+    "actions": [],
+    "local": [],
+    "network": [],
+    "secrets": []
+  },
+  "config": [
+    {
+      "key": "event",
+      "label": "Event name",
+      "type": "string",
+      "required": true
+    },
+    {
+      "key": "target",
+      "label": "Target date",
+      "type": "datetime",
+      "required": true
+    }
+  ]
+}

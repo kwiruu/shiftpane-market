@@ -26,7 +26,10 @@ describe('searchWidgets', () => {
   })
 
   it('filters by category, with or without words', () => {
-    expect(ids(searchWidgets(widgets, { category: 'dev' }))).toEqual(['github-stars'])
+    expect(ids(searchWidgets(widgets, { category: 'dev' }))).toEqual([
+      'github-stars',
+      'github-contributions',
+    ])
     expect(searchWidgets(widgets, { query: 'gpu', category: 'dev' })).toEqual([])
   })
 })
@@ -36,7 +39,7 @@ describe('countByCategory and newestWidgets', () => {
     const counts = countByCategory(widgets)
     expect(Object.keys(counts).sort()).toEqual([...categories].sort())
     expect(counts.system).toBeGreaterThan(0)
-    expect(counts.weather).toBe(0)
+    expect(counts.weather).toBe(1)
   })
 
   it('puts the most recently listed first', () => {

@@ -1,0 +1,43 @@
+{
+  "id": "weather",
+  "name": "Weather",
+  "description": "One large temperature, with your city and current conditions.",
+  "version": "1.0.0",
+  "author": "shiftpane",
+  "license": "MIT",
+  "categories": ["weather"],
+  "minAppVersion": "0.6.0",
+  "sizes": ["small", "medium", "large"],
+  "refreshSeconds": 900,
+  "permissions": {
+    "sources": [],
+    "actions": [],
+    "local": [],
+    "network": ["api.open-meteo.com", "geocoding-api.open-meteo.com"],
+    "secrets": []
+  },
+  "config": [
+    {
+      "key": "location",
+      "label": "City",
+      "type": "location",
+      "required": true
+    },
+    {
+      "key": "units",
+      "label": "Temperature unit",
+      "type": "select",
+      "options": [
+        {
+          "value": "celsius",
+          "label": "Celsius"
+        },
+        {
+          "value": "fahrenheit",
+          "label": "Fahrenheit"
+        }
+      ],
+      "default": "celsius"
+    }
+  ]
+}

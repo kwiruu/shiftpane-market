@@ -21,6 +21,7 @@ export const MAX_CROP = 320
 
 /** The built-in widgets. Each one is drawn by the phone; some need data from the PC. */
 export const WidgetKind = z.enum([
+  'time',
   'clock',
   'analog-clock',
   'calendar',
@@ -32,8 +33,11 @@ export const WidgetKind = z.enum([
 ])
 export type WidgetKind = z.infer<typeof WidgetKind>
 
-/** A light (white) or dark card. */
-export const Tone = z.enum(['light', 'dark'])
+/**
+ * A widget's card: light (white), dark (a dark gray card), or black, which is the board's own black,
+ * so the widget has no visible card and its text floats on the board in white.
+ */
+export const Tone = z.enum(['light', 'dark', 'black'])
 export type Tone = z.infer<typeof Tone>
 
 /** Lowercase letters, digits and dashes, such as `clock-2` or `table-1`. */

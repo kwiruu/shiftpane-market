@@ -1,4 +1,8 @@
 import type { Author, Permissions, Widget } from '@shiftpane/format'
+import { countdown } from './countdown'
+import { githubContributions } from './github-contributions'
+import { laptopBattery } from './laptop-battery'
+import { weather } from './weather'
 
 /**
  * The gallery's first widgets (PLAN, W2: "seeded with 3 to 5 first-party widgets"). They are the
@@ -465,4 +469,13 @@ ShiftPane's own \`temperatures\` source will cover GPUs through their vendors' A
 `,
 }
 
-export const widgets: Widget[] = [gpuRing, githubStars, pcBusy, temperatures]
+export const widgets: Widget[] = [
+  laptopBattery,
+  gpuRing,
+  githubStars,
+  pcBusy,
+  temperatures,
+  githubContributions,
+  weather,
+  countdown,
+]

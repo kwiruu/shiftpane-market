@@ -1,0 +1,10 @@
+{
+  "small": {
+    "type": "battery-gauge",
+    "bind": "@battery"
+  },
+  "medium": {
+    "type": "battery-gauge",
+    "bind": "@battery"
+  }
+}
