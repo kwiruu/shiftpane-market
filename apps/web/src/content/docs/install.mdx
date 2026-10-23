@@ -1,13 +1,26 @@
-ShiftPane is in early development and hasn't had a release yet, so for now you build it from source. It runs on Windows, macOS and Linux. Once there are releases, each one comes as an installer: an `.exe` for Windows, a `.dmg` for macOS, and an AppImage or `.deb` for Linux.
+ShiftPane runs on Windows, macOS and Linux, and each release comes as an installer: nothing to clone or build.
 
-## What you need
+## Download
+
+Get the installer for your system from the [latest release](https://github.com/kwiruu/shiftpane/releases/latest):
+
+| System | File |
+| --- | --- |
+| Windows | `ShiftPane-<version>-win-x64.exe` |
+| macOS (Apple silicon) | `ShiftPane-<version>-mac-arm64.dmg` |
+| Linux | `ShiftPane-<version>-linux-x86_64.AppImage` or `ShiftPane-<version>-linux-amd64.deb` |
+
+Run it, and the window opens on the Devices page with a QR code to [pair your first phone](/docs/pair-a-phone). The widget board works everywhere. The virtual monitor is the part that differs by system (below), and it's the part that's only been tried on Windows so far.
+
+The installers aren't signed yet. On Windows, SmartScreen says "Windows protected your PC": choose **More info → Run anyway**. On macOS, right-click the app and choose **Open** the first time. Each file's SHA-256 is on the release page, so you can check what you downloaded, and the workflow that builds the installers is in the repository.
+
+## Build it yourself
+
+You need:
 
 <Requirements />
 
 On Windows, building the native helper also needs Visual Studio (or its Build Tools) with the C++ workload, as any Rust program on Windows does.
-
-## Build and run
-
 <Steps>
 <Step title="Get the code">
 
@@ -53,6 +66,6 @@ Then open **VDD Control** from the folder winget installed it to and click **Ins
 
 ## Make an installer
 
-To package the app for the OS you're on, run `pnpm package`. The installer lands in `apps/desktop/release/`.
+To package the app for the OS you're on, run `pnpm package`. The installer lands in `apps/desktop/release/`; this is how the releases are made.
 
 Next: [pair a phone](/docs/pair-a-phone).

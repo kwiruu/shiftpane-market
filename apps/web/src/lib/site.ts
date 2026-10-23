@@ -6,6 +6,8 @@ export const site = {
     'ShiftPane turns a phone or tablet into a second monitor sized exactly to it, with a live widget board beside it. Documentation and the widget marketplace.',
   // Every link into the app's repository comes from here.
   repo: 'https://github.com/kwiruu/shiftpane',
+  /** The newest release, where the installers are. */
+  releases: 'https://github.com/kwiruu/shiftpane/releases/latest',
   branch: 'main',
   url:
     process.env.NEXT_PUBLIC_SITE_URL ??
