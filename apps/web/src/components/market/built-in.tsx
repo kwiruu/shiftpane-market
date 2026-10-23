@@ -44,7 +44,7 @@ const radius: Record<WidgetSize, string> = {
  * A built-in widget drawn by the app's own code (@shiftpane/board) from its sample PC, which
  * wanders a little each second. Decorative, like the other pictures of widgets.
  */
-export function BuiltInCard({
+function BuiltInCard({
   kind,
   size,
   className,

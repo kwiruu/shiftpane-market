@@ -60,7 +60,7 @@ function HeroCopy() {
                 <span
                   key={glyph.name}
                   style={{ transitionDelay: `${index * 45}ms` }}
-                  className="grid size-7 place-items-center rounded-full bg-black ring-2 ring-primary transition-transform duration-300 ease-out-expo group-hover:-translate-y-[3px] motion-reduce:transition-none motion-reduce:group-hover:translate-y-0 dark:bg-[#111]"
+                  className="grid size-7 place-items-center rounded-full bg-white ring-2 ring-primary transition-transform duration-300 ease-out-expo group-hover:-translate-y-[3px] motion-reduce:transition-none motion-reduce:group-hover:translate-y-0"
                 >
                   <WidgetIcon
                     name={glyph.name}

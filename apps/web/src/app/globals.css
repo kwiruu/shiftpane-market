@@ -335,10 +335,37 @@
   display: none;
 }
 
+@keyframes phone-landscape {
+  from {
+    transform: translate(-20cqw, calc(3.5425cqw - clamp(3.5px, 0.8cqw, 7px))) rotate(-90deg);
+  }
+  to {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+@keyframes scanner-upright {
+  from {
+    transform: rotate(90deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     .board-hint {
       display: flex;
+    }
+    .hero-phone {
+      animation: phone-landscape ease-in-out both;
+      animation-timeline: --board;
+      animation-range: contain 18% contain 42%;
+    }
+    .phone-scanner {
+      animation: scanner-upright ease-in-out both;
+      animation-timeline: --board;
+      animation-range: contain 18% contain 42%;
     }
     .pair-qr {
       display: grid;
@@ -446,6 +473,11 @@
       .board-hint {
         animation-timeline: --hero;
         animation-range: contain 36% contain 44%;
+      }
+      .hero-phone,
+      .phone-scanner {
+        animation-timeline: --hero;
+        animation-range: contain 44% contain 62%;
       }
       .pair-qr {
         animation-timeline: --hero;

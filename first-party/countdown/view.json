@@ -1,0 +1,131 @@
+{
+  "small": {
+    "type": "stack",
+    "gap": 2,
+    "align": "start",
+    "children": [
+      {
+        "type": "stack",
+        "gap": 0.5,
+        "align": "start",
+        "children": [
+          {
+            "type": "text",
+            "text": "{/event}",
+            "size": "md",
+            "muted": false
+          }
+        ]
+      },
+      {
+        "type": "stack",
+        "gap": 0.5,
+        "align": "start",
+        "children": [
+          {
+            "type": "value",
+            "bind": "/primary",
+            "size": "hero"
+          },
+          {
+            "type": "text",
+            "text": "{/unit}",
+            "size": "sm",
+            "muted": true
+          }
+        ]
+      }
+    ],
+    "surface": "violet"
+  },
+  "medium": {
+    "type": "stack",
+    "gap": 2,
+    "align": "start",
+    "children": [
+      {
+        "type": "stack",
+        "gap": 0.5,
+        "align": "start",
+        "children": [
+          {
+            "type": "text",
+            "text": "{/event}",
+            "size": "md",
+            "muted": false
+          },
+          {
+            "type": "text",
+            "text": "{/targetDate}",
+            "size": "xs",
+            "muted": true
+          }
+        ]
+      },
+      {
+        "type": "stack",
+        "gap": 0.5,
+        "align": "start",
+        "children": [
+          {
+            "type": "value",
+            "bind": "/primary",
+            "size": "hero"
+          },
+          {
+            "type": "text",
+            "text": "{/unit}",
+            "size": "sm",
+            "muted": true
+          }
+        ]
+      }
+    ],
+    "surface": "violet"
+  },
+  "large": {
+    "type": "stack",
+    "gap": 2,
+    "align": "start",
+    "children": [
+      {
+        "type": "stack",
+        "gap": 0.5,
+        "align": "start",
+        "children": [
+          {
+            "type": "text",
+            "text": "{/event}",
+            "size": "md",
+            "muted": false
+          },
+          {
+            "type": "text",
+            "text": "{/targetDate}",
+            "size": "xs",
+            "muted": true
+          }
+        ]
+      },
+      {
+        "type": "stack",
+        "gap": 0.5,
+        "align": "start",
+        "children": [
+          {
+            "type": "value",
+            "bind": "/primary",
+            "size": "hero"
+          },
+          {
+            "type": "text",
+            "text": "{/unit}",
+            "size": "sm",
+            "muted": true
+          }
+        ]
+      }
+    ],
+    "surface": "violet"
+  }
+}

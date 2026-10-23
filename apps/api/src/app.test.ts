@@ -3,7 +3,7 @@ import { mkdtemp } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
-import { packPackage } from '@shiftpane/checks'
+import { openPackage, packPackage } from '@shiftpane/checks'
 import { connect, migrateDb } from '@shiftpane/db'
 import type { Widget } from '@shiftpane/format'
 import { generateKeyPair, type RegistryIndex, verifyBytes } from '@shiftpane/index'
@@ -578,18 +578,17 @@ describe('the fast lane, install counts and verified authors', () => {
 
 describe('first-party widgets', () => {
   it('publish through the pipeline once, with their gallery settings', async () => {
-    const { deps, call, file } = await setup()
+    const { deps, call, file, keys } = await setup()
+    const expectedIds = readdirSync(firstParty, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort()
     const published = await publishFirstParty(deps, firstParty)
-    expect(published).toHaveLength(4)
+    expect(published).toHaveLength(expectedIds.length)
     expect(await publishFirstParty(deps, firstParty)).toEqual([])
 
     const widgets = (await body(call('/api/v1/widgets'))).widgets as Widget[]
-    expect(widgets.map((w) => w.id).sort()).toEqual([
-      'github-stars',
-      'gpu-ring',
-      'hardware-temps',
-      'pc-busy',
-    ])
+    expect(widgets.map((w) => w.id).sort()).toEqual(expectedIds)
     expect(widgets.find((w) => w.id === 'gpu-ring')).toMatchObject({
       featured: true,
       tone: 'dark',
@@ -599,6 +598,22 @@ describe('first-party widgets', () => {
     const authors = (await body(call('/api/v1/authors'))).authors
     expect(authors).toEqual([expect.objectContaining({ login: 'shiftpane', official: true })])
     const index = JSON.parse(new TextDecoder().decode(await file('index.json')))
-    expect(index.widgets).toHaveLength(4)
+    expect(index.widgets).toHaveLength(expectedIds.length)
+    const bytes = await file('index.json')
+    expect(
+      bytes &&
+        verifyBytes(bytes, new TextDecoder().decode(await file('index.json.sig')), [
+          keys.publicKey,
+        ]),
+    ).toBe(true)
+    const calendar = index.widgets.find(
+      (widget: { id: string }) => widget.id === 'github-contributions',
+    )
+    expect(calendar).toMatchObject({ author: { login: 'shiftpane' }, latest: '1.0.0' })
+    expect(calendar.versions['1.0.0'].minAppVersion).toBe('0.6.0')
+    const zip = await file(`packages/${calendar.versions['1.0.0'].sha256}.zip`)
+    expect(zip).toBeDefined()
+    if (!zip) throw new Error('Calendar package missing from signed registry')
+    expect(openPackage(zip).files.get('manifest.json')).toBeDefined()
   })
 })
