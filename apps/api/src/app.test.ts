@@ -613,6 +613,7 @@ describe('first-party widgets', () => {
     expect(calendar.versions['1.0.0'].minAppVersion).toBe('0.6.0')
     const zip = await file(`packages/${calendar.versions['1.0.0'].sha256}.zip`)
     expect(zip).toBeDefined()
-    expect(openPackage(zip!).files.get('manifest.json')).toBeDefined()
+    if (!zip) throw new Error('Calendar package missing from signed registry')
+    expect(openPackage(zip).files.get('manifest.json')).toBeDefined()
   })
 })

@@ -57,6 +57,7 @@ export function TimeWidget({
   useEffect(() => {
     if (preview) return
     const tick = () => {
+      if (!modes.some((mode) => stateRef.current.clocks[mode].startedAt !== null)) return
       const time = Date.now()
       setNow(time)
       const previous = stateRef.current

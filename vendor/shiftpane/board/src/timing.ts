@@ -36,7 +36,11 @@ export function clockValue(state: TimeState, mode: TimeMode, now: number): numbe
 export function nextPhase(state: TimeState, count = true): TimeState {
   const completed = state.completed + (state.phase === 'focus' && count ? 1 : 0)
   const phase =
-    state.phase === 'focus' ? (completed > 0 && completed % 4 === 0 ? 'long' : 'short') : 'focus'
+    state.phase === 'focus'
+      ? count && completed > 0 && completed % 4 === 0
+        ? 'long'
+        : 'short'
+      : 'focus'
   return {
     ...state,
     completed,

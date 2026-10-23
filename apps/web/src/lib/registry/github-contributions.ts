@@ -1,3 +1,4 @@
+// biome-ignore-all lint/suspicious/noTemplateCurlyInString: shipped collector source is displayed verbatim.
 // Offline gallery copy; checked against the first-party package.
 import type { Widget } from '@shiftpane/format'
 export const githubContributions: Widget = {

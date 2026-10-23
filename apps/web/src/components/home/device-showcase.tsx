@@ -1,8 +1,6 @@
+import { Check, Smartphone, SwitchCamera, Zap } from 'lucide-react'
 import Image from 'next/image'
-import { Check, Smartphone, Zap, SwitchCamera } from 'lucide-react'
 import { LogoMark } from '@/components/site/logo'
-import { type BoardItem, PhoneBoard } from '@/components/widgets/phone-board'
-import { sampleWidget } from '@/lib/registry'
 
 /*
  * The hero devices (DESIGN.md, Motion): a laptop showing ShiftPane's pairing code, and a phone
@@ -130,8 +128,8 @@ function Phone() {
               <div className="relative flex flex-1 items-center justify-center overflow-hidden bg-[linear-gradient(135deg,#668b9a,#274659_50%,#182c42)]">
                 <div className="absolute inset-[8%] rotate-[-8deg] rounded-[2cqw] border-[1cqw] border-[#101218] bg-[#20232b] shadow-xl" />
                 <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 opacity-15">
-                  {Array.from({ length: 9 }, (_, i) => (
-                    <span key={i} className="border border-white/50" />
+                  {['tl', 'tc', 'tr', 'ml', 'mc', 'mr', 'bl', 'bc', 'br'].map((position) => (
+                    <span key={position} className="border border-white/50" />
                   ))}
                 </div>
                 <div className="relative rounded-[2cqw] border border-[#f8d779]/80 p-[2cqw]">
