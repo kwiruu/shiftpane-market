@@ -76,10 +76,17 @@ export function BuiltInCard({
  * The widgets that come with ShiftPane. They're in the app already, so there's nothing to install
  * and no page for each: these tiles only show what they look like.
  */
-export function BuiltInWidgets({ className }: { className?: string }) {
+export function BuiltInWidgets({
+  kinds = KINDS,
+  className,
+}: {
+  /** Which ones, in this order; all of them by default. */
+  kinds?: BuiltInKind[]
+  className?: string
+}) {
   return (
     <ul className={cn('grid gap-3 sm:grid-cols-2 lg:grid-cols-4', className)}>
-      {KINDS.map((kind) => {
+      {kinds.map((kind) => {
         const info = WIDGET_KINDS[kind]
         const wide = info.columns === 2
         return (

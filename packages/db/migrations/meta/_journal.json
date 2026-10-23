@@ -8,6 +8,13 @@
       "when": 1792461746493,
       "tag": "0000_init",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792715528483,
+      "tag": "0001_installs_verified_fast_lane",
+      "breakpoints": true
     }
   ]
 }

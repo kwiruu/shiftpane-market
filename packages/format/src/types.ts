@@ -37,6 +37,8 @@ export interface Widget {
   /** A dark card unless the widget looks better light. */
   tone: 'dark' | 'light'
   featured?: boolean
+  /** First installs from the marketplace, as the desktop app reports them. */
+  installs?: number
   minAppVersion: string
   sizes: WidgetSize[]
   refreshSeconds?: number
@@ -59,4 +61,6 @@ export interface Author {
   joinedAt: string
   /** First-party: made by the ShiftPane project. */
   official?: boolean
+  /** An admin vouches for them. */
+  verified?: boolean
 }

@@ -36,6 +36,8 @@ export const users = pgTable('users', {
   role: userRole('role').notNull().default('author'),
   /** First-party: made by the ShiftPane project. May use reserved widget ids. */
   official: boolean('official').notNull().default(false),
+  /** An author an admin vouches for: a badge in the gallery, and the fast lane for updates. */
+  verified: boolean('verified').notNull().default(false),
   githubCreatedAt: timestamp('github_created_at', { withTimezone: true }),
   createdAt: createdAt(),
   bannedAt: timestamp('banned_at', { withTimezone: true }),
@@ -75,6 +77,8 @@ export const widgets = pgTable('widgets', {
   featured: boolean('featured').notNull().default(false),
   icon: text('icon'),
   tone: text('tone', { enum: ['dark', 'light'] }),
+  /** First installs from the marketplace, as the desktop app reports them; nothing personal. */
+  installs: integer('installs').notNull().default(0),
   createdAt: createdAt(),
 })
 
@@ -138,9 +142,8 @@ export const reviews = pgTable('reviews', {
   versionId: uuid('version_id')
     .notNull()
     .references(() => versions.id),
-  reviewerId: uuid('reviewer_id')
-    .notNull()
-    .references(() => users.id),
+  /** Null when the fast lane approved it: no person did. */
+  reviewerId: uuid('reviewer_id').references(() => users.id),
   decision: text('decision', { enum: ['approve', 'reject'] }).notNull(),
   note: text('note').notNull().default(''),
   createdAt: createdAt(),

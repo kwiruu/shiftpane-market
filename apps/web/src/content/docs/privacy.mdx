@@ -7,10 +7,12 @@ ShiftPane works on your network. Your phone talks to your PC directly, over your
 - **Paired phones:** the PC keeps a fingerprint of each phone's key, not the key.
 - **No telemetry.** The app doesn't report how you use it.
 
-Installing and updating widgets downloads from the gallery's file server, and the app checks the revocation list every six hours. Neither sends anything about you beyond the request itself. The app only talks to the gallery's API when you share a widget from it.
+Installing and updating widgets downloads from the gallery's file server, and the app checks the revocation list every six hours. Neither sends anything about you beyond the request itself.
+
+When you install a widget from the marketplace for the first time, the app tells the gallery that widget's id, and nothing else, so its page can say how many people installed it. The gallery keeps only the count; the address the report came from is kept for an hour so one install isn't counted twice. Apart from that, the app talks to the gallery's API only when you share a widget from it.
 
 ## This site
 
 The site has no analytics and no ads, and loads nothing from other sites.
 
-When accounts open, signing in uses GitHub. We'll keep your GitHub login, name and avatar to show you as an author, and a session cookie to keep you signed in. Widgets you upload are public once approved, along with their source.
+Signing in uses GitHub. We keep your GitHub login, name and avatar to show you as an author, and a session cookie to keep you signed in; the CLI and the app keep a token instead, which signing out ends. Widgets you upload are public once approved, along with their source.

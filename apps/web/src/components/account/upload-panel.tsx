@@ -22,6 +22,8 @@ type Outcome =
       widgetId: string
       version: string
       report: CheckReport
+      /** Why it skipped the review queue, when it did. */
+      fastLane?: string
     }
   | { kind: 'failed'; report: CheckReport }
   | { kind: 'error'; message: string }
@@ -228,12 +230,14 @@ function OutcomeReport({ outcome }: { outcome: Outcome }) {
         <StatusBadge status={outcome.status} />
       </div>
       <p>
-        A person reviews it next, and{' '}
+        {outcome.fastLane
+          ? `It's live already: ${outcome.fastLane} skips the review queue. `
+          : 'A person reviews it next, and '}
         <Link
           href="/dashboard"
           className="text-on-surface underline decoration-border underline-offset-4 hover:decoration-current"
         >
-          your dashboard
+          {outcome.fastLane ? 'Your dashboard' : 'your dashboard'}
         </Link>{' '}
         shows where it is.
       </p>

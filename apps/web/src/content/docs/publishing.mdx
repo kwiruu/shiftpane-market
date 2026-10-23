@@ -9,12 +9,13 @@
 
 ## Upload
 
-Sign in with GitHub, then either:
+Any of these, each signed in with your GitHub account:
 
+- **From the CLI.** `npx shiftpane-widget login` once (it shows a code to type on GitHub), then `npx shiftpane-widget publish` in the widget's folder. It runs the checks, packs the folder and uploads it, with `--notes` for the reviewer. In CI, sign in once with `npx shiftpane-widget login --print-token` and keep what it prints as a `SHIFTPANE_TOKEN` secret.
 - **Share from the app.** With Developer mode on, open a widget you loaded from a folder and use **Share to the marketplace**. The app signs you in with a code, packs the folder and uploads it.
 - **Upload the zip** on the [Publish](/upload) page.
 
-Publishing straight from the CLI, with an API token, comes later.
+`npx shiftpane-widget logout` signs the CLI out and ends its token.
 
 ## What happens next
 
@@ -26,7 +27,9 @@ The automated checks run at once and you see the report. A failed check blocks t
 </Step>
 <Step title="Review">
 
-A person reviews every version before it's listed. Your dashboard shows when it's approved or rejected, with the reviewer's note.
+A person reviews every new widget, and every update the fast lane doesn't take. Your dashboard shows when it's approved or rejected, with the reviewer's note.
+
+**The fast lane.** An update is published as soon as its checks pass when it asks for nothing the approved version didn't, and either it has no collector, or you're a verified author, or you've had three versions approved and none yanked.
 
 </Step>
 <Step title="Listed">

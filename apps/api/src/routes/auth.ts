@@ -83,7 +83,8 @@ export function authRoutes(deps: Deps) {
   }
 
   app.post('/auth/logout', async (c) => {
-    const token = getCookie(c, SESSION_COOKIE)
+    const bearer = c.req.header('authorization')?.match(/^Bearer\s+(\S+)$/i)?.[1]
+    const token = bearer ?? getCookie(c, SESSION_COOKIE)
     if (token) await deps.db.delete(sessions).where(eq(sessions.id, hashToken(token)))
     endBrowserSession(c)
     return c.body(null, 204)

@@ -46,8 +46,9 @@ is the plan; README.md says where each milestone is and how to deploy.
   and the built-in widgets with its `WidgetCard` (`src/components/market/built-in.tsx`). Never
   render author-supplied HTML or run author code in the browser; READMEs go through react-markdown
   with `skipHtml`.
-- Say when something is planned (`<Planned />` in docs). Don't present planned app features (Widget
-  Studio, the AI generator, publishing from the CLI) as shipped. The SDK and the CLIs are on npm.
+- Say when something is planned (`<Planned />` in docs). Don't present planned app features (virtual
+  monitors on GNOME and KDE, remote control) as shipped. Widget Studio, its generator and CLI publishing
+  ship with the app's next release; the SDK and CLIs are on npm.
 - `src/lib/split.ts` is a port of ShiftPane's `packages/layout`; keep it in step with the app.
 - Shared dependency versions live in the `catalog:` in `pnpm-workspace.yaml`.
 - Index keys are allowed in `src/components/widgets` (fixed, decorative lists); Biome flags them elsewhere.

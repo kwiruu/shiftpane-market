@@ -2,12 +2,14 @@ import type { CheckContext, CheckedPackage, OpenedPackage } from '@shiftpane/che
 import { reviews, users, versions, widgets } from '@shiftpane/db'
 import {
   type Author,
+  addedPermissions,
   type Category,
   compareVersions,
+  type Permissions,
   type ReviewStatus,
   type Widget,
 } from '@shiftpane/format'
-import { and, desc, eq, getTableColumns, inArray } from 'drizzle-orm'
+import { and, count, desc, eq, getTableColumns, inArray, sql } from 'drizzle-orm'
 import { HTTPException } from 'hono/http-exception'
 
 import type { Deps, User } from './context.ts'
@@ -122,11 +124,54 @@ async function versionById(deps: Deps, id: string) {
   return version
 }
 
+/** Approved versions an author needs, none of them yanked, for the fast lane with code. */
+export const TRACK_RECORD = 3
+
+/**
+ * Why an upload may skip the review queue, or null when a person has to look (PLAN, Review: the
+ * fast lane). Only an update qualifies, and only when it asks for nothing the approved version
+ * didn't: then either it has no code, or its author is verified or has a clean track record.
+ */
+export async function fastLane(
+  deps: Deps,
+  user: User,
+  version: { widgetId: string; permissions: Permissions; hasCollector: boolean },
+): Promise<string | null> {
+  const approved = await deps.db
+    .select({ version: versions.version, permissions: versions.permissions })
+    .from(versions)
+    .where(and(eq(versions.widgetId, version.widgetId), eq(versions.status, 'approved')))
+  const latest = approved.sort((a, b) => compareVersions(b.version, a.version))[0]
+  if (!latest) return null
+  if (addedPermissions(latest.permissions, version.permissions).length > 0) return null
+  if (!version.hasCollector) return 'an update with no code that asks for nothing new'
+  if (user.official || user.verified) {
+    return 'an update from a verified author that asks for nothing new'
+  }
+  const [record] = await deps.db
+    .select({
+      approved: count(sql`case when ${versions.status} = 'approved' then 1 end`),
+      yanked: count(sql`case when ${versions.status} = 'yanked' then 1 end`),
+    })
+    .from(versions)
+    .where(eq(versions.submittedBy, user.id))
+  if ((record?.approved ?? 0) >= TRACK_RECORD && (record?.yanked ?? 0) === 0) {
+    return 'an update from an author with a clean track record that asks for nothing new'
+  }
+  return null
+}
+
 /**
  * Publishes a version: its package goes to storage first (content-addressed, so doing it twice is
- * harmless), then the database says approved, then the index is rewritten.
+ * harmless), then the database says approved, then the index is rewritten. With no reviewer, the
+ * fast lane approved it.
  */
-export async function approveVersion(deps: Deps, versionId: string, reviewer: User, note = '') {
+export async function approveVersion(
+  deps: Deps,
+  versionId: string,
+  reviewer: User | null,
+  note = '',
+) {
   const version = await versionById(deps, versionId)
   if (version.status !== 'in_review') {
     throw new HTTPException(409, { message: `This version is ${version.status}, not in review.` })
@@ -144,7 +189,7 @@ export async function approveVersion(deps: Deps, versionId: string, reviewer: Us
     if (!updated) throw new HTTPException(409, { message: 'Someone else decided first.' })
     await tx
       .insert(reviews)
-      .values({ versionId, reviewerId: reviewer.id, decision: 'approve', note })
+      .values({ versionId, reviewerId: reviewer?.id ?? null, decision: 'approve', note })
 
     // The listing follows the newest approved version.
     const approved = await tx
@@ -289,6 +334,7 @@ export async function listWidgets(deps: Deps, ids?: string[]): Promise<Widget[]>
         icon: widgetIcon(widget),
         tone: widget.tone ?? 'dark',
         ...(widget.featured ? { featured: true } : {}),
+        installs: widget.installs,
         minAppVersion: manifest.minAppVersion,
         sizes: manifest.sizes,
         ...(manifest.refreshSeconds ? { refreshSeconds: manifest.refreshSeconds } : {}),
@@ -333,6 +379,7 @@ export async function listAuthors(deps: Deps, logins?: string[]): Promise<Author
       bio: user.bio ?? '',
       joinedAt: day(user.createdAt),
       ...(user.official ? { official: true } : {}),
+      ...(user.verified ? { verified: true } : {}),
     }))
     .sort((a, b) => a.login.localeCompare(b.login))
 }

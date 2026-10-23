@@ -51,6 +51,7 @@ export default async function AuthorPage({ params }: PageProps<'/authors/[login]
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-headline-lg">{author.name}</h1>
             {author.official && <Badge variant="ink">Official</Badge>}
+            {author.verified && <Badge variant="outline">Verified</Badge>}
           </div>
           <p className="mt-1 text-body-sm text-secondary">
             @{author.login}

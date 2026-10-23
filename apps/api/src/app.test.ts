@@ -151,6 +151,19 @@ function octoRing(edit: (manifest: Record<string, unknown>) => void = () => {}) 
   return packPackage(files)
 }
 
+/** github-stars, which has a collector, renamed to octo-stars and authored by octocat. */
+function octoStars(edit: (manifest: Record<string, unknown>) => void = () => {}) {
+  const dir = join(firstParty, 'github-stars')
+  const files: Record<string, string> = Object.fromEntries(
+    readdirSync(dir).map((name) => [name, readFileSync(join(dir, name), 'utf8')]),
+  )
+  const manifest = JSON.parse(files['manifest.json'] ?? '{}')
+  Object.assign(manifest, { id: 'octo-stars', author: 'octocat', version: '1.0.0' })
+  edit(manifest)
+  files['manifest.json'] = JSON.stringify(manifest)
+  return packPackage(files)
+}
+
 describe('the public API', () => {
   it('serves an empty gallery and its health', async () => {
     const { call } = await setup()
@@ -439,6 +452,127 @@ describe('uploading, reviewing and publishing', () => {
       reporter: 'octocat',
     })
     expect((await json(`/api/v1/admin/reports/${id}/resolve`, {}, admin)).status).toBe(200)
+  })
+})
+
+describe('the fast lane, install counts and verified authors', () => {
+  it('publishes an update at once when it has no code and asks for nothing new', async () => {
+    const { call, json, signIn, upload } = await setup()
+    const octocat = await signIn('octocat')
+    const admin = await signIn('kwiruu')
+    // A first version always waits for a person.
+    const first = await body(upload(octoRing(), octocat))
+    expect(first.status).toBe('in_review')
+    await json(`/api/v1/admin/versions/${first.id}/approve`, {}, admin)
+
+    const update = await body(
+      upload(
+        octoRing((m) => (m.version = '1.0.1')),
+        octocat,
+      ),
+    )
+    expect(update).toMatchObject({
+      status: 'approved',
+      fastLane: expect.stringContaining('no code'),
+    })
+    const widgets = (await body(call('/api/v1/widgets'))).widgets as Widget[]
+    expect(widgets[0]?.versions.map((v) => v.version)).toEqual(['1.0.1', '1.0.0'])
+
+    // Asking for more goes back to a person.
+    const more = await body(
+      upload(
+        octoRing((m) => {
+          m.version = '1.0.2'
+          m.permissions = { sources: ['gpu', 'cpu'] }
+        }),
+        octocat,
+      ),
+    )
+    expect(more.status).toBe('in_review')
+    expect(more.fastLane).toBeUndefined()
+  })
+
+  it("lets a verified author's code through, and only an admin verifies", async () => {
+    const { call, json, signIn, upload } = await setup()
+    const octocat = await signIn('octocat')
+    const admin = await signIn('kwiruu')
+    const first = await body(upload(octoStars(), octocat))
+    await json(`/api/v1/admin/versions/${first.id}/approve`, {}, admin)
+
+    // Code from an author nobody vouches for waits.
+    const second = await body(
+      upload(
+        octoStars((m) => (m.version = '1.0.1')),
+        octocat,
+      ),
+    )
+    expect(second.status).toBe('in_review')
+    await json(`/api/v1/admin/versions/${second.id}/approve`, {}, admin)
+
+    const verify = (cookie: string) =>
+      call('/api/v1/admin/authors/octocat', {
+        method: 'PATCH',
+        cookie,
+        body: JSON.stringify({ verified: true }),
+        headers: { 'Content-Type': 'application/json' },
+      })
+    const reviewer = await call('/api/v1/auth/dev', {
+      method: 'POST',
+      body: new URLSearchParams({ login: 'alice', role: 'reviewer' }),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    })
+    const alice =
+      reviewer.headers
+        .getSetCookie()
+        .find((c) => c.startsWith('sp_session='))
+        ?.split(';')[0] ?? ''
+    expect((await verify(alice)).status).toBe(403)
+    expect((await verify(octocat)).status).toBe(403)
+    expect((await verify(admin)).status).toBe(200)
+
+    const third = await body(
+      upload(
+        octoStars((m) => (m.version = '1.0.2')),
+        octocat,
+      ),
+    )
+    expect(third).toMatchObject({
+      status: 'approved',
+      fastLane: expect.stringContaining('verified'),
+    })
+    const authors = (await body(call('/api/v1/authors'))).authors
+    expect(authors).toEqual([expect.objectContaining({ login: 'octocat', verified: true })])
+  })
+
+  it('counts a first install once per address an hour, and nothing for an unknown widget', async () => {
+    const { call, json, signIn, upload } = await setup()
+    const octocat = await signIn('octocat')
+    const admin = await signIn('kwiruu')
+    const first = await body(upload(octoRing(), octocat))
+    await json(`/api/v1/admin/versions/${first.id}/approve`, {}, admin)
+
+    const installed = (id: string, address: string) =>
+      call(`/api/v1/widgets/${id}/installed`, {
+        method: 'POST',
+        headers: { 'X-Forwarded-For': `${address}, 10.0.0.1` },
+      })
+    expect((await installed('octo-ring', '203.0.113.7')).status).toBe(204)
+    await installed('octo-ring', '203.0.113.7')
+    await installed('octo-ring', '198.51.100.2')
+    expect((await installed('no-such-widget', '203.0.113.7')).status).toBe(204)
+    const widgets = (await body(call('/api/v1/widgets'))).widgets as Widget[]
+    expect(widgets[0]?.installs).toBe(2)
+  })
+
+  it('ends a bearer session when the app or the CLI signs out', async () => {
+    const { call, json } = await setup()
+    const done = await body(json('/api/v1/device-code/token', { deviceCode: 'ok' }))
+    const bearer = { Authorization: `Bearer ${done.token}` }
+    expect((await call('/api/v1/me', { headers: bearer })).status).toBe(200)
+    expect((await call('/api/v1/auth/logout', { method: 'POST', headers: bearer })).status).toBe(
+      204,
+    )
+    expect((await call('/api/v1/me', { headers: bearer })).status).toBe(401)
   })
 })
 
