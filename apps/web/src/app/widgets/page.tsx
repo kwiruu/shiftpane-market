@@ -1,10 +1,12 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { BuiltInWidgets } from '@/components/market/built-in'
 import { CategoryChips } from '@/components/market/category-chips'
 import { SearchForm } from '@/components/market/search-form'
 import { WidgetGrid } from '@/components/market/widget-tile'
 import { Badge } from '@/components/ui/badge'
 import { countByCategory, featuredWidgets } from '@/lib/registry'
+import { collections } from '@/lib/registry/collections'
 import { getWidgets } from '@/lib/registry/gallery'
 
 const description =
@@ -42,6 +44,29 @@ export default async function WidgetsHome() {
           Featured
         </h2>
         <WidgetGrid widgets={featuredWidgets(widgets)} className="mt-3" />
+      </section>
+
+      <section aria-labelledby="collections" className="mt-14">
+        <h2 id="collections" className="font-sans text-label-sm text-secondary uppercase">
+          Collections
+        </h2>
+        <ul className="mt-3 grid gap-3 sm:grid-cols-3">
+          {collections.map((collection) => (
+            <li key={collection.slug} className="flex">
+              <Link
+                href={`/widgets/collections/${collection.slug}`}
+                data-cursor={`Open ${collection.title}`}
+                className="flex flex-1 flex-col rounded-lg bg-surface p-5 transition-colors hover:bg-muted"
+              >
+                <h3 className="font-sans text-body-md">{collection.title}</h3>
+                <p className="mt-1 text-body-sm text-secondary">{collection.summary}</p>
+                <p className="mt-auto pt-4 text-label-md text-secondary">
+                  {collection.widgets.length + collection.builtIn.length} widgets
+                </p>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section aria-labelledby="built-in" className="mt-14">

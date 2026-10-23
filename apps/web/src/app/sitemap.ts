@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 
 import { docs } from '@/lib/docs'
 import { updatedAt } from '@/lib/registry'
+import { collections } from '@/lib/registry/collections'
 import { getAuthors, getWidgets } from '@/lib/registry/gallery'
 import { site } from '@/lib/site'
 
@@ -14,6 +15,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     { url: site.url, lastModified, changeFrequency: 'weekly', priority: 1 },
     { url: `${site.url}/widgets`, lastModified, changeFrequency: 'daily', priority: 0.9 },
+    ...collections.map((collection) => ({
+      url: `${site.url}/widgets/collections/${collection.slug}`,
+      lastModified,
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    })),
     ...widgets.map((widget) => ({
       url: `${site.url}/widgets/${widget.id}`,
       lastModified: new Date(`${updatedAt(widget)}T00:00:00Z`),

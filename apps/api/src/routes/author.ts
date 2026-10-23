@@ -9,7 +9,15 @@ import { z } from 'zod'
 
 import { requireUser } from '../auth.ts'
 import type { AppEnv, Deps } from '../context.ts'
-import { checkContextFor, submissionsOf, submitVersion, widgetOwner, yank } from '../registry.ts'
+import {
+  approveVersion,
+  checkContextFor,
+  fastLane,
+  submissionsOf,
+  submitVersion,
+  widgetOwner,
+  yank,
+} from '../registry.ts'
 import { parseJson } from './body.ts'
 
 /** Per account per day (PLAN, "Abuse limits"). */
@@ -55,13 +63,16 @@ export function authorRoutes(deps: Deps) {
       if (!checked.passed) return c.json({ status: 'failed', report: checked.report }, 422)
 
       const version = await submitVersion(deps, user, opened, checked, notes, zip)
+      const lane = await fastLane(deps, user, version)
+      if (lane) await approveVersion(deps, version.id, null, `Fast lane: ${lane}.`)
       return c.json(
         {
-          status: version.status,
+          status: lane ? 'approved' : version.status,
           id: version.id,
           widgetId: version.widgetId,
           version: version.version,
           report: version.report,
+          ...(lane ? { fastLane: lane } : {}),
         },
         201,
       )

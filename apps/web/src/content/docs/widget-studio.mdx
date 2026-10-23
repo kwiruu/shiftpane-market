@@ -1,20 +1,27 @@
-<Planned>
-Widget Studio and the generator come after the SDK. This is the design.
-</Planned>
-
-Widget Studio makes widgets without code, in the desktop app, with your phone showing the result as you go.
+Widget Studio makes widgets without code, in the desktop app, with the phone's own cards previewing every size as you go. Open it from **Widgets → Make a widget**.
 
 ## Make one
 
-1. **Pick a source:** CPU, GPU, memory, network, what's playing, and the rest of the [system sources](/docs/system-sources).
-2. **Pick a component:** a ring, a value, a meter, history bars, a sparkline, a list.
-3. **Bind them:** the GPU's percent to the ring, its history to the bars.
-4. **Pick sizes:** small, medium, large. Each size is its own layout.
+1. **Name it** and pick its **sizes**: small is one cell, medium two across, large two by two.
+2. **Add blocks**, up to four. Each block is one reading from your PC, shown one way: the GPU's load as a ring, the download speed as bars over the last minute, the track that's playing as text. The first block is the biggest; medium and large cards fit the rest beside or under it.
+3. **Pick colors** for rings, lines and bars, or leave them in the card's own ink.
 
-What you see on the phone is the widget. Save it, and it's a package like any other, ready to [publish](/docs/publishing).
+The readings are the [system sources](/docs/system-sources): CPU, GPU and memory load, memory used, download and upload speed, the main drive, battery, volume, CPU and GPU temperature, time since start, what's playing, the busiest programs and the app in front. Rings and meters show a percent; bars and lines need a reading with a minute of history.
+
+**Save and install** writes an ordinary widget to `Documents\ShiftPane widgets`: a manifest, a view, a README and an MIT license, with no code. The app shows what it can read before installing it, like any widget. **Edit in Studio** in its settings opens it again, and saving installs the next version.
 
 ## Describe it instead
 
-Type what you want, such as "my CPU and GPU as two rings, with the network underneath", and the generator makes the widget and opens it in Widget Studio, where you can adjust it. It can write simple collectors too.
+Type what you want, such as "my CPU and GPU as two rings, with the network underneath", and press **Make it**. A language model writes the widget's blocks, and they open in Studio to adjust.
 
-Generated widgets go through the same review as everything else, and are labelled as made with the generator.
+The model runs on your PC, in [Ollama](https://ollama.com), so nothing you type leaves it. It's an open-weights model you pick; ShiftPane asks for the best one it knows from the ones you have. We suggest **Qwen3 4B** (Apache 2.0, about 2.5 GB), which runs well without a graphics card:
+
+```bash
+ollama pull qwen3:4b
+```
+
+The first answer loads the model, which can take a minute on a CPU; after that, a widget takes a few seconds. Whatever the model writes is checked against the same short list of readings and ways to show them, and drawn by ShiftPane's own components, so nothing it writes runs.
+
+## Share it
+
+A Studio widget is a folder like any other: turn on Developer mode to **Share to the marketplace**, or `npx shiftpane-widget publish` in its folder. Put your GitHub login in Studio's **Author** field first, since the gallery takes a widget only from its author.

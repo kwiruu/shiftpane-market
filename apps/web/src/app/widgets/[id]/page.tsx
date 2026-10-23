@@ -75,6 +75,7 @@ export default async function WidgetPage({ params }: PageProps<'/widgets/[id]'>)
             >
               {author?.name ?? widget.author}
             </Link>
+            {author?.verified && <span className="ml-1.5 text-on-surface">✓ Verified</span>}
             <span aria-hidden="true"> · </span>
             {latest && <>Version {latest.version}</>}
             <span aria-hidden="true"> · </span>
@@ -137,6 +138,9 @@ export default async function WidgetPage({ params }: PageProps<'/widgets/[id]'>)
             <MetaRow term="Version">{latest?.version}</MetaRow>
             <MetaRow term="Updated">{formatDate(updatedAt(widget))}</MetaRow>
             <MetaRow term="Listed">{formatDate(widget.createdAt)}</MetaRow>
+            {widget.installs ? (
+              <MetaRow term="Installs">{widget.installs.toLocaleString('en')}</MetaRow>
+            ) : null}
             <MetaRow term="Sizes">
               <span className="capitalize">{widget.sizes.join(', ')}</span>
             </MetaRow>

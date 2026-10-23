@@ -114,6 +114,21 @@ export function adminRoutes(deps: Deps) {
     return c.json({ yanked })
   })
 
+  /** Vouches for an author, or stops: a badge in the gallery, and the fast lane for updates. */
+  app.patch('/authors/:login', async (c) => {
+    if (requireReviewer(c).role !== 'admin') {
+      throw new HTTPException(403, { message: 'Only an admin can verify an author.' })
+    }
+    const { verified } = await parseJson(c, z.object({ verified: z.boolean() }))
+    const [updated] = await deps.db
+      .update(users)
+      .set({ verified })
+      .where(eq(users.login, c.req.param('login')))
+      .returning({ login: users.login })
+    if (!updated) throw new HTTPException(404, { message: 'No such author.' })
+    return c.json({ ok: true })
+  })
+
   /** How the gallery shows a widget; none of this is in the package. */
   app.patch('/widgets/:id', async (c) => {
     const body = await parseJson(

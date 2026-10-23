@@ -54,4 +54,9 @@ The zip is deterministic: the same folder always packs to the same bytes and the
 
 ## Share it
 
-With Developer mode on, open the widget's settings in **Widgets → Installed** and use **Share to the marketplace**: it signs you in with GitHub, packs the folder and sends it for review. Or upload the zip on the [Publish](/upload) page. See [Publishing](/docs/publishing) for what happens next.
+```bash
+npx shiftpane-widget login      # once: a code to type on GitHub
+npx shiftpane-widget publish    # checks, packs and uploads this folder
+```
+
+Or, with Developer mode on, open the widget's settings in **Widgets → Installed** and use **Share to the marketplace**, or upload the zip on the [Publish](/upload) page. See [Publishing](/docs/publishing) for what happens next.
