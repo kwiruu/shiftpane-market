@@ -1,0 +1,28 @@
+{
+  "id": "github-contributions",
+  "name": "GitHub contributions",
+  "description": "Big green contribution squares, with a full-year overview on large.",
+  "version": "1.0.0",
+  "author": "shiftpane",
+  "license": "MIT",
+  "categories": ["dev"],
+  "minAppVersion": "0.6.0",
+  "sizes": ["small", "medium", "large"],
+  "refreshSeconds": 1800,
+  "permissions": {
+    "sources": [],
+    "actions": [],
+    "local": [],
+    "network": ["api.github.com"],
+    "secrets": ["GITHUB_TOKEN"]
+  },
+  "config": [
+    {
+      "key": "username",
+      "label": "GitHub username",
+      "type": "string",
+      "required": true,
+      "help": "A GitHub.com user, not an organization. Add GITHUB_TOKEN in Secrets."
+    }
+  ]
+}
