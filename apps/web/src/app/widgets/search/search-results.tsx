@@ -5,9 +5,10 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { CategoryChips } from '@/components/market/category-chips'
 import { SearchForm } from '@/components/market/search-form'
-import { WidgetGrid } from '@/components/market/widget-tile'
+import { CatalogGrid } from '@/components/market/widget-tile'
 import { Button } from '@/components/ui/button'
-import { categoryInfo, countByCategory, isCategory, searchWidgets } from '@/lib/registry'
+import { categoryInfo, countByCategory, isCategory } from '@/lib/registry'
+import { catalogEntries, searchCatalog } from '@/lib/registry/catalog'
 
 /** The search box, the categories, and what matches, all from the URL. */
 export function SearchResults({ widgets }: { widgets: Widget[] }) {
@@ -15,7 +16,7 @@ export function SearchResults({ widgets }: { widgets: Widget[] }) {
   const query = params.get('q')?.trim() ?? ''
   const rawCategory = params.get('category')
   const category = isCategory(rawCategory) ? rawCategory : undefined
-  const results = searchWidgets(widgets, { query, category })
+  const results = searchCatalog(widgets, { query, category })
 
   const heading = query
     ? `Widgets matching “${query}”`
@@ -40,7 +41,7 @@ export function SearchResults({ widgets }: { widgets: Widget[] }) {
           autoFocus={!query && !category}
         />
         <CategoryChips
-          counts={countByCategory(widgets)}
+          counts={countByCategory(catalogEntries(widgets))}
           current={category}
           query={query}
           className="mt-4"
@@ -48,7 +49,7 @@ export function SearchResults({ widgets }: { widgets: Widget[] }) {
       </header>
 
       {results.length > 0 ? (
-        <WidgetGrid widgets={results} className="mt-10" />
+        <CatalogGrid entries={results} className="mt-10" />
       ) : (
         <div className="mt-10 flex flex-col items-start gap-4 rounded-lg bg-surface p-6 sm:p-8">
           <p className="text-body-md">Nothing matches that yet.</p>

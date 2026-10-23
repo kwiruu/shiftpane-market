@@ -1,4 +1,4 @@
-import type { BuiltInKind } from '@/components/market/built-in'
+import type { BuiltInKind } from './catalog'
 
 /**
  * Collections: widgets that make a good board together, picked by us. A board mixes widgets from

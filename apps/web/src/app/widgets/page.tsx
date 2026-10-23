@@ -1,16 +1,16 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { BuiltInWidgets } from '@/components/market/built-in'
 import { CategoryChips } from '@/components/market/category-chips'
 import { SearchForm } from '@/components/market/search-form'
-import { WidgetGrid } from '@/components/market/widget-tile'
+import { CatalogGrid } from '@/components/market/widget-tile'
 import { Badge } from '@/components/ui/badge'
-import { countByCategory, featuredWidgets } from '@/lib/registry'
+import { countByCategory } from '@/lib/registry'
+import { catalogEntries } from '@/lib/registry/catalog'
 import { collections } from '@/lib/registry/collections'
 import { getWidgets } from '@/lib/registry/gallery'
 
 const description =
-  'Free widgets for the ShiftPane board on your phone. Each is checked and reviewed by a person before it is listed.'
+  'Explore all ShiftPane widgets in one gallery, including built-in widgets and free marketplace extras.'
 
 export const metadata: Metadata = {
   title: 'Widgets',
@@ -23,7 +23,8 @@ export const revalidate = 60
 
 export default async function WidgetsHome() {
   const widgets = await getWidgets()
-  const counts = countByCategory(widgets)
+  const entries = catalogEntries(widgets)
+  const counts = countByCategory(entries)
   return (
     <div className="frame flex flex-col pt-28 sm:pt-32">
       <header className="max-w-180">
@@ -32,18 +33,18 @@ export default async function WidgetsHome() {
         </Badge>
         <h1 className="text-headline-lg">Widgets</h1>
         <p className="mt-3 max-w-[44ch] text-body-lg text-secondary">
-          Free widgets for your phone&apos;s board. Each one is checked, then reviewed by a person,
-          before it&apos;s listed, and installs in the ShiftPane app.
+          Explore every widget for your phone&apos;s board, from the ones built into ShiftPane to
+          free extras you can install. Previews show each widget in its small layout.
         </p>
         <SearchForm className="mt-8 max-w-120" />
         <CategoryChips counts={counts} className="mt-4" />
       </header>
 
-      <section aria-labelledby="featured" className="mt-14">
-        <h2 id="featured" className="font-sans text-label-sm text-secondary uppercase">
-          Featured
+      <section aria-labelledby="all-widgets" className="mt-14">
+        <h2 id="all-widgets" className="font-sans text-label-sm text-secondary uppercase">
+          All widgets
         </h2>
-        <WidgetGrid widgets={featuredWidgets(widgets)} className="mt-3" />
+        <CatalogGrid entries={entries} className="mt-3" />
       </section>
 
       <section aria-labelledby="collections" className="mt-14">
@@ -67,17 +68,6 @@ export default async function WidgetsHome() {
             </li>
           ))}
         </ul>
-      </section>
-
-      <section aria-labelledby="built-in" className="mt-14">
-        <h2 id="built-in" className="font-sans text-label-sm text-secondary uppercase">
-          Comes with ShiftPane
-        </h2>
-        <p className="mt-1 max-w-[60ch] text-body-sm text-secondary">
-          Already in the app, so there&apos;s nothing to install: add them to your board from its
-          Widgets page.
-        </p>
-        <BuiltInWidgets className="mt-3" />
       </section>
     </div>
   )

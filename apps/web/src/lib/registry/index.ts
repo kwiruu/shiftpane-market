@@ -45,7 +45,7 @@ export function recentlyUpdated(list: Widget[], limit = list.length): Widget[] {
   return [...list].sort((a, b) => updatedAt(b).localeCompare(updatedAt(a))).slice(0, limit)
 }
 
-export function countByCategory(list: Widget[]): Record<Category, number> {
+export function countByCategory(list: Pick<Widget, 'categories'>[]): Record<Category, number> {
   const counts = Object.fromEntries(
     Object.keys(categoryInfo).map((category) => [category, 0]),
   ) as Record<Category, number>
