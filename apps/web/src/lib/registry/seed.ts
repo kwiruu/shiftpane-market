@@ -134,7 +134,7 @@ const githubStars: Widget = {
       publishedAt: '2026-10-08',
       permissions: { ...none, network: ['api.github.com'], secrets: ['GITHUB_TOKEN'] },
       notes:
-        'Uses a token when you give it one, for GitHubâ€™s higher rate limit. Adds the large size.',
+        'Uses a token when you give it one, for GitHub’s higher rate limit. Adds the large size.',
     },
     {
       version: '1.0.0',
@@ -428,9 +428,9 @@ const temperatures: Widget = {
   collector: `import { defineCollector } from '@shiftpane/widget-sdk'
 
 // LibreHardwareMonitor serves its sensor tree as JSON when its remote web server is on
-// (Options â†’ Remote Web Server â†’ Run). Sensors are nested nodes with a Text and a Value like "61.0 Â°C".
+// (Options → Remote Web Server → Run). Sensors are nested nodes with a Text and a Value like "61.0 °C".
 const celsius = (node) => {
-  const match = /(-?\\d+(?:\\.\\d+)?)\\s*Â°C/.exec(node?.Value ?? '')
+  const match = /(-?\\d+(?:\\.\\d+)?)\\s*°C/.exec(node?.Value ?? '')
   return match ? Number(match[1]) : null
 }
 
@@ -460,7 +460,7 @@ ShiftPane's own \`temperatures\` source will cover GPUs through their vendors' A
 ## Setup
 
 1. Install and run LibreHardwareMonitor.
-2. Turn on **Options â†’ Remote Web Server â†’ Run**. It listens on port 8085.
+2. Turn on **Options → Remote Web Server → Run**. It listens on port 8085.
 3. Install this widget and allow it to reach \`127.0.0.1:8085\` when ShiftPane asks.
 
 ## Permissions

@@ -6,7 +6,7 @@
   "author": "shiftpane",
   "license": "MIT",
   "categories": ["system"],
-  "minAppVersion": "0.6.0",
+  "minAppVersion": "0.7.0",
   "sizes": ["small", "medium"],
   "refreshSeconds": 30,
   "permissions": {
