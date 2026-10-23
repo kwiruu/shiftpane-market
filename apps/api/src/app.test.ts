@@ -580,15 +580,17 @@ describe('first-party widgets', () => {
   it('publish through the pipeline once, with their gallery settings', async () => {
     const { deps, call, file } = await setup()
     const published = await publishFirstParty(deps, firstParty)
-    expect(published).toHaveLength(4)
+    expect(published).toHaveLength(6)
     expect(await publishFirstParty(deps, firstParty)).toEqual([])
 
     const widgets = (await body(call('/api/v1/widgets'))).widgets as Widget[]
     expect(widgets.map((w) => w.id).sort()).toEqual([
+      'countdown',
       'github-stars',
       'gpu-ring',
       'hardware-temps',
       'pc-busy',
+      'weather',
     ])
     expect(widgets.find((w) => w.id === 'gpu-ring')).toMatchObject({
       featured: true,
@@ -599,6 +601,6 @@ describe('first-party widgets', () => {
     const authors = (await body(call('/api/v1/authors'))).authors
     expect(authors).toEqual([expect.objectContaining({ login: 'shiftpane', official: true })])
     const index = JSON.parse(new TextDecoder().decode(await file('index.json')))
-    expect(index.widgets).toHaveLength(4)
+    expect(index.widgets).toHaveLength(6)
   })
 })
