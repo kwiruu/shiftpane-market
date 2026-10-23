@@ -285,18 +285,6 @@
     filter: brightness(0.82) saturate(0.9);
   }
 }
-@keyframes pair-out {
-  to {
-    opacity: 0;
-    scale: 0.96;
-  }
-}
-@keyframes pair-in {
-  from {
-    opacity: 0;
-    scale: 0.96;
-  }
-}
 @keyframes hint-out {
   to {
     opacity: 0;
@@ -330,8 +318,7 @@
 
 /* The "Scan to pair" state only makes sense when scrolling pairs the phone. Without scroll-driven
    animation the devices are shown already paired. */
-.board-hint,
-.pair-qr {
+.board-hint {
   display: none;
 }
 
@@ -339,9 +326,6 @@
   @supports (animation-timeline: view()) {
     .board-hint {
       display: flex;
-    }
-    .pair-qr {
-      display: grid;
     }
 
     /* Phones and tablets: the devices sit under the hero text in a section taller than the screen,
@@ -366,16 +350,6 @@
       animation-timeline: --board;
       animation-range: contain 14% contain 58%;
     }
-    .pair-qr {
-      animation: pair-out linear both;
-      animation-timeline: --board;
-      animation-range: contain 14% contain 30%;
-    }
-    .pair-done {
-      animation: pair-in linear both;
-      animation-timeline: --board;
-      animation-range: contain 26% contain 40%;
-    }
     .board-hint {
       animation: hint-out linear both;
       animation-timeline: --board;
@@ -388,7 +362,6 @@
          0 to 22%   text fades out to the left
          0 to 30%   devices move to the center and grow; their caption fades in near the end
          36 to 44%  the hint fades
-         40 to 52%  the pairing code on the laptop gives way to "Connected"
          44 to 74%  the board fills the phone, the laptop dims; the rest is time to look at it
        From 1280px, where the text and a 62% stage fit side by side without touching. */
     @media (width >= 80rem) {
@@ -446,14 +419,6 @@
       .board-hint {
         animation-timeline: --hero;
         animation-range: contain 36% contain 44%;
-      }
-      .pair-qr {
-        animation-timeline: --hero;
-        animation-range: contain 40% contain 48%;
-      }
-      .pair-done {
-        animation-timeline: --hero;
-        animation-range: contain 46% contain 54%;
       }
       .board-panel,
       .board-desk {
