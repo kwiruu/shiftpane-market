@@ -1,19 +1,17 @@
-import type { Widget, WidgetSize } from '@shiftpane/format'
+import type { Widget } from '@shiftpane/format'
 import Link from 'next/link'
 import { WidgetCard } from '@/components/widgets/widget-view'
 import { categoryInfo } from '@/lib/registry'
+import type { CatalogEntry } from '@/lib/registry/catalog'
 import { cn } from '@/lib/utils'
-
-// The tile shows the widget at the size that fills its preview best.
-const previewSize = (widget: Widget): WidgetSize =>
-  widget.sizes.includes('medium') ? 'medium' : (widget.sizes[0] ?? 'small')
+import { BuiltInTile } from './built-in'
 
 /**
  * A widget in the gallery (DESIGN.md, Widget tiles): a white card with the widget on a patch of
  * the phone's board, then its name, its summary, and who made it.
  */
 export function WidgetTile({ widget, className }: { widget: Widget; className?: string }) {
-  const size = previewSize(widget)
+  const size = 'small'
   return (
     <Link
       href={`/widgets/${widget.id}`}
@@ -31,7 +29,7 @@ export function WidgetTile({ widget, className }: { widget: Widget; className?: 
         <div
           className={cn(
             'transition-transform duration-300 ease-out-expo group-hover/tile:scale-[1.03] motion-reduce:transition-none',
-            size === 'small' ? 'w-[42%]' : 'w-[82%]',
+            'w-[54%]',
           )}
         >
           <WidgetCard widget={widget} size={size} />
@@ -56,6 +54,29 @@ export function WidgetGrid({ widgets, className }: { widgets: Widget[]; classNam
       {widgets.map((widget) => (
         <li key={widget.id} className="flex">
           <WidgetTile widget={widget} className="flex-1" />
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+/** Built-ins are display-only; installable widgets retain their existing detail pages. */
+export function CatalogGrid({
+  entries,
+  className,
+}: {
+  entries: CatalogEntry[]
+  className?: string
+}) {
+  return (
+    <ul className={cn('grid gap-3 sm:grid-cols-2 lg:grid-cols-4', className)}>
+      {entries.map((entry) => (
+        <li key={`${entry.type}:${entry.id}`} className="flex">
+          {entry.type === 'built-in' ? (
+            <BuiltInTile kind={entry.id} className="flex-1" />
+          ) : (
+            <WidgetTile widget={entry.widget} className="flex-1" />
+          )}
         </li>
       ))}
     </ul>

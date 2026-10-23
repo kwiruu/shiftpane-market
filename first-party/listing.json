@@ -40,5 +40,11 @@
     "tone": "dark",
     "featured": true,
     "notes": "First release. One event, counted down to the minute."
+  },
+  "laptop-battery": {
+    "icon": "bolt",
+    "tone": "dark",
+    "featured": true,
+    "notes": "First release. Purple laptop battery with charging status and remaining time."
   }
 }

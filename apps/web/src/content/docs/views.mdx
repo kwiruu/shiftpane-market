@@ -33,6 +33,7 @@ Every `@` binding has to name a source the manifest declares, and every `/` bind
 | `text` | Text, from `text` or `bind`. `size`: `xs`, `sm`, `md`, `lg`; `muted` for the quiet gray |
 | `value` | A big number with a small unit. `format`: `percent`, `number`, `compact`, `bytes`, `rate`, `celsius`, `duration`. `size`: `sm`, `md`, `lg`, `xl` |
 | `ring` | A circular gauge, 0 to 100. `size: "sm"` is the small gauge beside a figure; `color: "ink"` draws it in the card's own text color; `unit: false` drops the % sign |
+| `battery-gauge` | Purple battery card; bind to `{ percent, charging, minutesLeft }`, usually `@battery`. Requires ShiftPane 0.7.0 |
 | `meter` | A row of blocks filling up, 0 to 100 |
 | `progress` | A thin bar, 0 to 100 |
 | `history-bars` | Recent values as thin bars around a middle line, newest on the right. `max` is what a full bar means; `count` keeps only the newest values |
@@ -51,6 +52,24 @@ Accent colors (`color`) are `flame`, `lime`, `mint`, `sky` and `ink`. Type, ring
 There are no images from the web: an image URL would make the phone call out and give away its address.
 
 ## Sizes
+
+### Contribution calendar data
+
+Bind a `contribution-calendar` to an object with `startDate`, `endDate`, and `days`. Dates are real `YYYY-MM-DD` dates, displayed without timezone conversion. Each day has `date`, a nonnegative integer `count`, and a `level` from 0 to 4. The renderer uses five fixed green shades, starts weeks on Sunday, leaves missing and future days blank, and ignores invalid entries. Input is capped at 378 entries and 54 weeks. The total counts only days shown by that node.
+
+```json
+{
+  "calendar": {
+    "startDate": "2026-10-01",
+    "endDate": "2026-10-23",
+    "days": [{ "date": "2026-10-23", "count": 6, "level": 2 }]
+  }
+}
+```
+
+Use `{ "type": "contribution-calendar", "bind": "/calendar", "weeks": 8 }` for a recent grid. Use `split: true` for a full year on a large square tile.
+
+### Board sizes
 
 A widget lists its sizes in the manifest, and gives each a tree: `small` is one cell of the board, `medium` two cells wide, `large` two by two. A size without its own tree uses the nearest one that has one.
 

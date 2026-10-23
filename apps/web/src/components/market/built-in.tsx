@@ -3,13 +3,11 @@
 import { type PcData, SampleFeed, WIDGET_KINDS, WidgetCard } from '@shiftpane/board'
 import type { WidgetSize } from '@shiftpane/format'
 import { type CSSProperties, useEffect, useSyncExternalStore } from 'react'
+import type { BuiltInKind } from '@/lib/registry/catalog'
 import { cn } from '@/lib/utils'
 
 /** A widget that comes with ShiftPane: a clock, the calendar, now playing, the PC's stats. */
-export type BuiltInKind = keyof typeof WIDGET_KINDS
-
-/** In the order the app lists them. */
-const KINDS = Object.keys(WIDGET_KINDS) as BuiltInKind[]
+export type { BuiltInKind } from '@/lib/registry/catalog'
 
 // One sample PC for the whole page, running while anything shows it.
 const feed = new SampleFeed()
@@ -44,7 +42,7 @@ const radius: Record<WidgetSize, string> = {
  * A built-in widget drawn by the app's own code (@shiftpane/board) from its sample PC, which
  * wanders a little each second. Decorative, like the other pictures of widgets.
  */
-function BuiltInCard({
+export function BuiltInCard({
   kind,
   size,
   className,
@@ -63,6 +61,7 @@ function BuiltInCard({
     >
       <WidgetCard
         widget={{ kind, tone: WIDGET_KINDS[kind].tone }}
+        preview
         radius={0}
         data={data}
         connected
@@ -72,44 +71,23 @@ function BuiltInCard({
   )
 }
 
-/**
- * The widgets that come with ShiftPane. They're in the app already, so there's nothing to install
- * and no page for each: these tiles only show what they look like.
- */
-export function BuiltInWidgets({
-  kinds = KINDS,
-  className,
-}: {
-  /** Which ones, in this order; all of them by default. */
-  kinds?: BuiltInKind[]
-  className?: string
-}) {
+export function BuiltInTile({ kind, className }: { kind: BuiltInKind; className?: string }) {
+  const info = WIDGET_KINDS[kind]
   return (
-    <ul className={cn('grid gap-3 sm:grid-cols-2 lg:grid-cols-4', className)}>
-      {kinds.map((kind) => {
-        const info = WIDGET_KINDS[kind]
-        const wide = info.columns === 2
-        return (
-          <li key={kind} className="flex flex-col rounded-lg bg-surface p-2">
-            {/* A thumbnail like a gallery tile's: the cards are a fraction of a phone's. */}
-            <div
-              className="board relative grid aspect-[16/10] place-items-center overflow-hidden rounded-md dark:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)]"
-              style={{ '--fmin': 0 } as CSSProperties}
-            >
-              <BuiltInCard
-                kind={kind}
-                size={wide ? 'medium' : 'small'}
-                className={wide ? 'w-[82%]' : 'w-[42%]'}
-              />
-            </div>
-            <div className="flex flex-1 flex-col px-2 pt-3 pb-2">
-              <h3 className="font-sans text-body-md">{info.name}</h3>
-              <p className="mt-0.5 line-clamp-2 text-body-sm text-secondary">{info.description}.</p>
-              <p className="mt-auto pt-3 text-label-md text-secondary">ShiftPane · Built in</p>
-            </div>
-          </li>
-        )
-      })}
-    </ul>
+    <article className={cn('flex flex-col rounded-lg bg-surface p-2', className)}>
+      <div
+        className="board relative grid aspect-[16/10] place-items-center overflow-hidden rounded-md"
+        style={{ '--fmin': 0 } as CSSProperties}
+      >
+        <BuiltInCard kind={kind} size="small" className="w-[54%]" />
+      </div>
+      <div className="flex flex-1 flex-col px-2 pt-3 pb-2">
+        <h3 className="font-sans text-body-md">{info.name}</h3>
+        <p className="mt-0.5 line-clamp-2 text-body-sm text-secondary">{info.description}.</p>
+        <p className="mt-auto pt-3 text-label-md text-secondary">
+          ShiftPane · Built in{kind === 'time' ? ' · 0.7.0' : ''}
+        </p>
+      </div>
+    </article>
   )
 }

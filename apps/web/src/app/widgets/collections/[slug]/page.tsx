@@ -3,8 +3,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { BuiltInWidgets } from '@/components/market/built-in'
-import { WidgetGrid } from '@/components/market/widget-tile'
+import { CatalogGrid } from '@/components/market/widget-tile'
+import { catalogEntries } from '@/lib/registry/catalog'
 import { collectionBySlug, collections } from '@/lib/registry/collections'
 import { getWidgets } from '@/lib/registry/gallery'
 
@@ -33,7 +33,11 @@ export default async function CollectionPage({ params }: PageProps<'/widgets/col
   const collection = collectionBySlug(slug)
   if (!collection) notFound()
   const listed = await getWidgets()
-  const widgets = collection.widgets.flatMap((id) => listed.filter((widget) => widget.id === id))
+  const entries = catalogEntries(listed).filter((entry) =>
+    entry.type === 'built-in'
+      ? collection.builtIn.includes(entry.id)
+      : collection.widgets.includes(entry.id),
+  )
 
   return (
     <div className="frame flex flex-col pt-28 sm:pt-32">
@@ -50,23 +54,7 @@ export default async function CollectionPage({ params }: PageProps<'/widgets/col
         <p className="mt-3 max-w-[44ch] text-body-lg text-secondary">{collection.summary}</p>
       </header>
 
-      {widgets.length > 0 && (
-        <section aria-labelledby="to-install" className="mt-14">
-          <h2 id="to-install" className="font-sans text-label-sm text-secondary uppercase">
-            From the gallery
-          </h2>
-          <WidgetGrid widgets={widgets} className="mt-3" />
-        </section>
-      )}
-
-      {collection.builtIn.length > 0 && (
-        <section aria-labelledby="built-in" className="mt-14">
-          <h2 id="built-in" className="font-sans text-label-sm text-secondary uppercase">
-            Comes with ShiftPane
-          </h2>
-          <BuiltInWidgets kinds={collection.builtIn} className="mt-3" />
-        </section>
-      )}
+      <CatalogGrid entries={entries} className="mt-10" />
     </div>
   )
 }
