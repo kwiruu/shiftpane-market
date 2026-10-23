@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
 import { WidgetIcon } from '@/components/widgets/widget-icon'
+import { site } from '@/lib/site'
 
 import { DeviceShowcase } from './device-showcase'
 
@@ -72,14 +73,20 @@ function HeroCopy() {
           </Link>
 
           <Button asChild variant="secondary" className="h-11 px-5">
-            <Link href="/docs/install" data-cursor="No release yet, build from source">
-              Get started
+            <a href={site.releases} data-cursor="Installers for Windows, macOS and Linux">
+              Download
               <ArrowRight aria-hidden="true" strokeWidth={1.75} />
-            </Link>
+            </a>
           </Button>
         </div>
         <p className="mt-4 text-body-sm text-secondary">
-          Free and open source, for Windows, macOS and Linux.
+          Free and open source, for Windows, macOS and Linux.{' '}
+          <Link
+            href="/docs/install"
+            className="text-on-surface underline decoration-border underline-offset-4 hover:decoration-current"
+          >
+            Install guide
+          </Link>
         </p>
       </div>
     </div>
