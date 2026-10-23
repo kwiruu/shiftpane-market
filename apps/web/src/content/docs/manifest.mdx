@@ -60,6 +60,10 @@ Each has a `key` (camelCase), a `label`, an optional `help` and `required`, and 
 | `string` | `default` |
 | `number` | `default`, `min`, `max` |
 | `boolean` | `default` |
+| `location` | City search; saves JSON text containing `label`, `latitude`, `longitude`, `timezone` |
+| `datetime` | Date and optional time; saves an ISO timestamp with an explicit offset |
 | `select` | `options` (a list of `value` and `label`), `default` |
 
 Keys have to be unique within a widget.
+
+`location` and `datetime` require ShiftPane 0.6.0. Location search uses Open-Meteo and requires `geocoding-api.open-meteo.com` in `permissions.network`. The user must select a result. Date-only targets mean midnight at the start of that day in the PC timezone. The saved offset fixes the instant; timezone changes do not move it. Invalid local times are rejected; repeated times choose the earlier occurrence.

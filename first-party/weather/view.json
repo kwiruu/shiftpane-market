@@ -1,0 +1,122 @@
+{
+  "small": {
+    "type": "stack",
+    "gap": 1,
+    "align": "start",
+    "children": [
+      {
+        "type": "stack",
+        "gap": 2,
+        "align": "start",
+        "children": [
+          {
+            "type": "stack",
+            "gap": 0.5,
+            "align": "start",
+            "children": [
+              {
+                "type": "text",
+                "text": "{/city}",
+                "size": "md",
+                "muted": false
+              },
+              {
+                "type": "text",
+                "text": "{/condition}",
+                "size": "xs",
+                "muted": true
+              }
+            ]
+          },
+          {
+            "type": "value",
+            "bind": "/temperatureNumber",
+            "unit": "{/temperatureUnit}",
+            "size": "hero"
+          }
+        ]
+      }
+    ],
+    "surface": "blue"
+  },
+  "medium": {
+    "type": "stack",
+    "gap": 1,
+    "align": "start",
+    "children": [
+      {
+        "type": "stack",
+        "gap": 2,
+        "align": "start",
+        "children": [
+          {
+            "type": "stack",
+            "gap": 0.5,
+            "align": "start",
+            "children": [
+              {
+                "type": "text",
+                "text": "{/city}",
+                "size": "md",
+                "muted": false
+              },
+              {
+                "type": "text",
+                "text": "{/condition}",
+                "size": "xs",
+                "muted": true
+              }
+            ]
+          },
+          {
+            "type": "value",
+            "bind": "/temperatureNumber",
+            "unit": "{/temperatureUnit}",
+            "size": "hero"
+          }
+        ]
+      }
+    ],
+    "surface": "blue"
+  },
+  "large": {
+    "type": "stack",
+    "gap": 1,
+    "align": "start",
+    "children": [
+      {
+        "type": "stack",
+        "gap": 2,
+        "align": "start",
+        "children": [
+          {
+            "type": "stack",
+            "gap": 0.5,
+            "align": "start",
+            "children": [
+              {
+                "type": "text",
+                "text": "{/city}",
+                "size": "md",
+                "muted": false
+              },
+              {
+                "type": "text",
+                "text": "{/condition}",
+                "size": "xs",
+                "muted": true
+              }
+            ]
+          },
+          {
+            "type": "value",
+            "bind": "/temperatureNumber",
+            "unit": "{/temperatureUnit}",
+            "size": "hero"
+          }
+        ]
+      }
+    ],
+    "surface": "blue"
+  }
+}

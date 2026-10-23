@@ -28,5 +28,17 @@
     "tone": "dark",
     "featured": true,
     "notes": "First release: large contribution squares on small and medium, full-year detail on large."
+  },
+  "weather": {
+    "icon": "sun",
+    "tone": "dark",
+    "featured": true,
+    "notes": "First release. A large temperature with city and current conditions."
+  },
+  "countdown": {
+    "icon": "calendar",
+    "tone": "dark",
+    "featured": true,
+    "notes": "First release. One event, counted down to the minute."
   }
 }

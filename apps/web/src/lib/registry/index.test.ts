@@ -39,7 +39,7 @@ describe('countByCategory and newestWidgets', () => {
     const counts = countByCategory(widgets)
     expect(Object.keys(counts).sort()).toEqual([...categories].sort())
     expect(counts.system).toBeGreaterThan(0)
-    expect(counts.weather).toBe(0)
+    expect(counts.weather).toBe(1)
   })
 
   it('puts the most recently listed first', () => {
