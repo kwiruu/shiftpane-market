@@ -79,7 +79,7 @@ export const proseComponents = {
     )
   },
   table: (props) => (
-    <div data-lenis-prevent className="my-5 overflow-x-auto rounded-lg bg-muted">
+    <div data-lenis-prevent className="slim-scroll my-5 overflow-x-auto rounded-lg bg-muted">
       <table className="w-full border-collapse text-left text-body-sm" {...props} />
     </div>
   ),

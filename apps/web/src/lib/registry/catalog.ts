@@ -30,8 +30,27 @@ export const builtInEntries: CatalogEntry[] = (Object.keys(WIDGET_KINDS) as Buil
   }),
 )
 
+/** The widgets we want seen first, in this order; the rest keep their own order after them. */
+export const FEATURED_FIRST = [
+  'github-contributions',
+  'analog-clock',
+  'memory',
+  'laptop-battery',
+  'weather',
+  'gpu-ring',
+]
+
+function featuredFirst(entries: CatalogEntry[]): CatalogEntry[] {
+  const rank = (entry: CatalogEntry) => {
+    const index = FEATURED_FIRST.indexOf(entry.id)
+    return index === -1 ? FEATURED_FIRST.length : index
+  }
+  // Array.prototype.sort is stable, so everything unlisted stays where it was.
+  return [...entries].sort((a, b) => rank(a) - rank(b))
+}
+
 export function catalogEntries(widgets: Widget[]): CatalogEntry[] {
-  return [
+  return featuredFirst([
     ...builtInEntries,
     ...widgets.map(
       (widget): CatalogEntry => ({
@@ -43,7 +62,7 @@ export function catalogEntries(widgets: Widget[]): CatalogEntry[] {
         widget,
       }),
     ),
-  ]
+  ])
 }
 
 export function searchCatalog(
@@ -60,10 +79,10 @@ export function searchCatalog(
           .includes(word),
       ),
   )
-  return [
+  return featuredFirst([
     ...builtIns,
     ...catalogEntries(searchWidgets(widgets, options)).filter(
       (entry) => entry.type === 'marketplace',
     ),
-  ]
+  ])
 }

@@ -7,7 +7,7 @@ export default function DocsLayout({ children }: LayoutProps<'/docs'>) {
       <aside className="hidden md:block">
         <div
           data-lenis-prevent
-          className="sticky top-[calc(var(--spacing-header)+24px)] max-h-[calc(100dvh-var(--spacing-header)-48px)] overflow-y-auto pb-8"
+          className="sticky top-[calc(var(--spacing-header)+24px)] max-h-[calc(100dvh-var(--spacing-header)-48px)] slim-scroll overflow-y-auto pb-8"
         >
           <DocsSidebar />
         </div>

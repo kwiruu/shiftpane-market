@@ -1,6 +1,6 @@
 import { WIDGET_KINDS } from '@shiftpane/board/model'
 import { expect, it } from 'vitest'
-import { builtInEntries, catalogEntries, searchCatalog } from './catalog'
+import { builtInEntries, catalogEntries, FEATURED_FIRST, searchCatalog } from './catalog'
 import { countByCategory } from './index'
 import { widgets } from './seed'
 
@@ -21,4 +21,14 @@ it('counts built-in categories alongside the registry', () => {
   const counts = countByCategory(catalogEntries(widgets))
   expect(counts.system).toBe(countByCategory(widgets).system + 4)
   expect(counts.media).toBe(countByCategory(widgets).media + 1)
+})
+it('lists the featured widgets first, in order, and keeps the rest where they were', () => {
+  const ids = catalogEntries(widgets).map((entry) => entry.id)
+  expect(ids.slice(0, FEATURED_FIRST.length)).toEqual(FEATURED_FIRST)
+  const rest = ids.slice(FEATURED_FIRST.length)
+  expect(rest).toEqual(
+    [...builtInEntries.map((entry) => entry.id), ...widgets.map((widget) => widget.id)].filter(
+      (id) => !FEATURED_FIRST.includes(id),
+    ),
+  )
 })

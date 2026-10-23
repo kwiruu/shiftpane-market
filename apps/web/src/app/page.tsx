@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 }
 
-const splitWidgets = ['gpu-ring', 'pc-busy', 'hardware-temps', 'github-stars']
+const splitWidgets = ['gpu-ring', 'weather', 'hardware-temps', 'github-contributions']
   .map((id) => sampleWidget(id))
   .filter((widget): widget is Widget => widget !== undefined)
 
