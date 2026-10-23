@@ -2,6 +2,7 @@
 
 import { type PcData, SampleFeed, WIDGET_KINDS, WidgetCard } from '@shiftpane/board'
 import type { WidgetSize } from '@shiftpane/format'
+import Link from 'next/link'
 import { type CSSProperties, useEffect, useSyncExternalStore } from 'react'
 import type { BuiltInKind } from '@/lib/registry/catalog'
 import { cn } from '@/lib/utils'
@@ -74,12 +75,23 @@ export function BuiltInCard({
 export function BuiltInTile({ kind, className }: { kind: BuiltInKind; className?: string }) {
   const info = WIDGET_KINDS[kind]
   return (
-    <article className={cn('flex flex-col rounded-lg bg-surface p-2', className)}>
+    <Link
+      href={`/widgets/built-in/${kind}`}
+      data-cursor={`Open ${info.name}`}
+      className={cn(
+        'group/tile flex flex-col rounded-lg bg-surface p-2 transition-colors hover:bg-muted',
+        className,
+      )}
+    >
       <div
         className="board relative grid aspect-[16/10] place-items-center overflow-hidden rounded-md"
         style={{ '--fmin': 0 } as CSSProperties}
       >
-        <BuiltInCard kind={kind} size="small" className="w-[54%]" />
+        <BuiltInCard
+          kind={kind}
+          size="small"
+          className="w-[54%] transition-transform duration-300 ease-out-expo group-hover/tile:scale-[1.03] motion-reduce:transition-none"
+        />
       </div>
       <div className="flex flex-1 flex-col px-2 pt-3 pb-2">
         <h3 className="font-sans text-body-md">{info.name}</h3>
@@ -88,6 +100,6 @@ export function BuiltInTile({ kind, className }: { kind: BuiltInKind; className?
           ShiftPane · Built in{kind === 'time' ? ' · 0.7.0' : ''}
         </p>
       </div>
-    </article>
+    </Link>
   )
 }
