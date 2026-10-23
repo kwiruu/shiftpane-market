@@ -31,7 +31,7 @@ export function SourceViewer({ files }: { files: PackageFile[] }) {
             </div>
             <pre
               data-lenis-prevent
-              className="max-h-[520px] overflow-auto px-4 pt-2 pb-4 text-code whitespace-pre"
+              className="slim-scroll max-h-[520px] overflow-auto px-4 pt-2 pb-4 text-code whitespace-pre"
             >
               <code>{file.content}</code>
             </pre>

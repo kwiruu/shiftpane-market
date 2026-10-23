@@ -99,7 +99,7 @@ export default async function DocPage({ params }: PageProps<'/docs/[slug]'>) {
         <aside className="hidden xl:block">
           <div
             data-lenis-prevent
-            className="sticky top-[calc(var(--spacing-header)+24px)] max-h-[calc(100dvh-var(--spacing-header)-48px)] overflow-y-auto pt-1 pb-8"
+            className="sticky top-[calc(var(--spacing-header)+24px)] max-h-[calc(100dvh-var(--spacing-header)-48px)] slim-scroll overflow-y-auto pt-1 pb-8"
           >
             <TableOfContents items={headings} />
           </div>

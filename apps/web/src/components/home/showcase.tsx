@@ -1,10 +1,16 @@
+import { WIDGET_KINDS } from '@shiftpane/board/model'
 import { sampleSources } from '@shiftpane/format'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import { PreviewStage } from '@/components/widgets/preview-stage'
 import { sampleWidget } from '@/lib/registry'
 
-const featured = [
+type Featured = { cursor: string; caption: string } & (
+  | { id: string; builtIn?: never }
+  | { builtIn: keyof typeof WIDGET_KINDS; id?: never }
+)
+
+const featured: Featured[] = [
   {
     id: 'gpu-ring',
     cursor: 'Bindings only, no code',
@@ -12,15 +18,15 @@ const featured = [
       'GPU load as a ring, with the last minute beside it, bound straight to the GPU source. No code.',
   },
   {
-    id: 'pc-busy',
-    cursor: 'A setting, no code',
-    caption:
-      'One word from your CPU and memory, for the person at the door. Where busy starts is a setting.',
+    builtIn: 'calendar',
+    cursor: 'Comes with ShiftPane',
+    caption: 'Today, this week or the month, from the PC. It comes with the app, no setup.',
   },
   {
-    id: 'github-stars',
+    id: 'github-contributions',
     cursor: 'Can reach api.github.com, nothing else',
-    caption: 'Stars across your repositories. Its collector may call GitHub and no other host.',
+    caption:
+      'Big green squares for your commits, with a full year on large. Its collector may call GitHub and no other host.',
   },
 ]
 
@@ -29,21 +35,24 @@ export function Showcase() {
   return (
     <div className="mx-auto flex w-full max-w-[calc(var(--container-showcase)+2*var(--gutter))] flex-col gap-14 px-[max(var(--gutter),env(safe-area-inset-left))]">
       {featured.map((entry) => {
-        const widget = sampleWidget(entry.id)
-        if (!widget) return null
+        const widget = entry.id ? sampleWidget(entry.id) : undefined
+        if (entry.id && !widget) return null
+        const name = widget?.name ?? (entry.builtIn ? WIDGET_KINDS[entry.builtIn].name : '')
+        const href = entry.builtIn ? `/widgets/built-in/${entry.builtIn}` : `/widgets/${widget?.id}`
         return (
-          <div key={entry.id} data-cursor={entry.cursor}>
+          <div key={entry.id ?? entry.builtIn} data-cursor={entry.cursor}>
             <PreviewStage
               widget={widget}
+              builtIn={entry.builtIn}
               wallpaper
               caption={
                 <>
                   {entry.caption}{' '}
                   <Link
-                    href={`/widgets/${widget.id}`}
+                    href={href}
                     className="inline-flex items-center gap-0.5 whitespace-nowrap text-on-surface underline decoration-border underline-offset-4 hover:decoration-current"
                   >
-                    {widget.name}
+                    {name}
                     <ArrowRight aria-hidden="true" strokeWidth={1.75} className="size-3.5" />
                   </Link>
                 </>

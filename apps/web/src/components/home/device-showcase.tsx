@@ -126,7 +126,7 @@ function Phone() {
                 </span>
               </div>
               <div className="relative flex flex-1 items-center justify-center overflow-hidden bg-[linear-gradient(135deg,#668b9a,#274659_50%,#182c42)]">
-                <div className="absolute inset-[8%] rotate-[-8deg] rounded-[2cqw] border-[1cqw] border-[#101218] bg-[#20232b] shadow-xl" />
+                <div className="absolute inset-0 bg-[linear-gradient(160deg,#2b303b,#181b22)]" />
                 <div className="absolute inset-0 grid grid-cols-3 grid-rows-3 opacity-15">
                   {['tl', 'tc', 'tr', 'ml', 'mc', 'mr', 'bl', 'bc', 'br'].map((position) => (
                     <span key={position} className="border border-white/50" />

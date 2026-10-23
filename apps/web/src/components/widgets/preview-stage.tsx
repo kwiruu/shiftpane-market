@@ -1,6 +1,8 @@
 'use client'
 
+import { WIDGET_KINDS } from '@shiftpane/board/model'
 import type { Widget } from '@shiftpane/format'
+import { BuiltInCard, type BuiltInKind } from '@/components/market/built-in'
 import { cn } from '@/lib/utils'
 
 import { WidgetCard } from './widget-view'
@@ -10,12 +12,16 @@ import { WidgetCard } from './widget-view'
  */
 export function PreviewStage({
   widget,
+  builtIn,
   caption,
   className,
   stageClassName,
   wallpaper,
 }: {
-  widget: Widget
+  /** A gallery widget, or... */
+  widget?: Widget
+  /** ...one that comes with ShiftPane. */
+  builtIn?: BuiltInKind
   caption?: React.ReactNode
   className?: string
   stageClassName?: string
@@ -25,7 +31,7 @@ export function PreviewStage({
     <figure className={className}>
       <div
         role="img"
-        aria-label={`${widget.name}, shown at small size with sample data`}
+        aria-label={`${widget?.name ?? (builtIn ? WIDGET_KINDS[builtIn].name : 'Widget')}, shown at small size with sample data`}
         className={cn(
           'board relative grid h-[460px] place-items-center overflow-hidden rounded-xl p-5 dark:shadow-[inset_0_0_0_1px_rgb(255_255_255/0.08)]',
           wallpaper && 'wallpaper',
@@ -40,7 +46,11 @@ export function PreviewStage({
           />
         )}
         <div className={cn('relative', 'w-[min(56%,220px)]')}>
-          <WidgetCard widget={widget} size="small" />
+          {builtIn ? (
+            <BuiltInCard kind={builtIn} size="small" />
+          ) : (
+            widget && <WidgetCard widget={widget} size="small" />
+          )}
         </div>
       </div>
       <div className="mt-4 flex flex-col items-center gap-3">

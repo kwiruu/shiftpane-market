@@ -232,6 +232,23 @@
   padding-right: max(var(--gutter), env(safe-area-inset-right));
 }
 
+/* A thin, quiet scrollbar for panels that scroll inside the page (the docs sidebar, code blocks) */
+@utility slim-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 9999px;
+  }
+}
+
 /* A wider frame for the navigation, the docs and the marketplace */
 @utility frame {
   width: 100%;
