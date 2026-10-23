@@ -60,7 +60,7 @@ export function WidgetGrid({ widgets, className }: { widgets: Widget[]; classNam
   )
 }
 
-/** Built-ins are display-only; installable widgets retain their existing detail pages. */
+/** Every widget opens its detail page, including the ones that come with ShiftPane. */
 export function CatalogGrid({
   entries,
   className,
