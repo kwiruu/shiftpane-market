@@ -26,7 +26,10 @@ describe('searchWidgets', () => {
   })
 
   it('filters by category, with or without words', () => {
-    expect(ids(searchWidgets(widgets, { category: 'dev' }))).toEqual(['github-stars'])
+    expect(ids(searchWidgets(widgets, { category: 'dev' }))).toEqual([
+      'github-stars',
+      'github-contributions',
+    ])
     expect(searchWidgets(widgets, { query: 'gpu', category: 'dev' })).toEqual([])
   })
 })

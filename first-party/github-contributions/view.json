@@ -1,0 +1,31 @@
+{
+  "small": {
+    "type": "contribution-calendar",
+    "bind": "/calendar",
+    "weeks": 8,
+    "boxesOnly": true
+  },
+  "medium": {
+    "type": "contribution-calendar",
+    "bind": "/calendar",
+    "weeks": 12,
+    "boxesOnly": true
+  },
+  "large": {
+    "type": "stack",
+    "gap": 1.5,
+    "children": [
+      {
+        "type": "text",
+        "text": "@{/username}",
+        "size": "sm"
+      },
+      {
+        "type": "contribution-calendar",
+        "bind": "/calendar",
+        "weeks": 54,
+        "split": true
+      }
+    ]
+  }
+}

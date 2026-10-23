@@ -12,6 +12,7 @@ import {
   widgetIcons,
 } from '@shiftpane/widget-sdk'
 import type { CSSProperties } from 'react'
+import { ContributionCalendar } from './ContributionCalendar.tsx'
 import {
   Bar,
   Cover,
@@ -106,6 +107,7 @@ const GROWS = new Set<ViewNode['type']>([
   'text',
   'progress',
   'meter',
+  'contribution-calendar',
 ])
 
 interface Draw {
@@ -289,6 +291,16 @@ function Node({ node, draw, fill = false }: { node: ViewNode; draw: Draw; fill?:
             ]}
           />
         </div>
+      )
+    case 'contribution-calendar':
+      return (
+        <ContributionCalendar
+          data={resolveBinding(node.bind, context)}
+          weeks={node.weeks}
+          split={node.split}
+          monthOnly={node.monthOnly}
+          boxesOnly={node.boxesOnly}
+        />
       )
     case 'list':
       return <List items={resolveBinding(node.bind, context)} max={node.max} />

@@ -37,6 +37,7 @@ Every `@` binding has to name a source the manifest declares, and every `/` bind
 | `progress` | A thin bar, 0 to 100 |
 | `history-bars` | Recent values as thin bars around a middle line, newest on the right. `max` is what a full bar means; `count` keeps only the newest values |
 | `sparkline` | Recent values as a line |
+| `contribution-calendar` | Green activity squares. `weeks`: 1–54; `split` stacks two grids; `boxesOnly` hides all visible text. Requires ShiftPane 0.6.0 |
 | `list` | Rows of `title`, `subtitle` and `value` |
 | `icon` | An icon by `name`; optional `bind` selects a registered icon from collector output, falling back to `name` |
 | `button` | Fires one of the manifest's [actions](/docs/actions) |
@@ -51,11 +52,13 @@ There are no images from the web: an image URL would make the phone call out and
 
 ## Sizes
 
-### Board sizes
-
 A widget lists its sizes in the manifest, and gives each a tree: `small` is one cell of the board, `medium` two cells wide, `large` two by two. A size without its own tree uses the nearest one that has one.
 
 The previews on this site are drawn from `view.json` and `sample.json` in your browser, the way the phone draws them.
+
+## Contribution calendar data
+
+Bind to `{ startDate, endDate, days }`, using real ISO `YYYY-MM-DD` dates. Each day is `{ date, count, level }`, with a nonnegative integer count and level 0–4. Weeks run Sunday–Saturday. Missing and future dates stay blank; invalid entries are ignored. Input is capped at 378 entries and 54 weeks. `boxesOnly: true` fills the card with squares without labels or totals; dates and counts remain accessible.
 
 Bound icons require ShiftPane 0.6.0. Weather names include `sun`, `moon`, `cloud`, `cloud-sun`, `cloud-moon`, `rain`, `snow`, `fog`, and `storm`; `calendar` is also available. Unknown or missing bound names use the static fallback.
 
