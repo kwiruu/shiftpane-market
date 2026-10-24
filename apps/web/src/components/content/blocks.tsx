@@ -1,5 +1,7 @@
 import { actionNames, actions, checks, sourceNames, sources } from '@shiftpane/format'
 import { ChevronRight } from 'lucide-react'
+import Image from 'next/image'
+import { DocVideo as Player } from '@/components/content/doc-video'
 import { CodeBlock } from '@/components/site/code-block'
 import { DefinitionCard, DefinitionRow } from '@/components/site/list-group'
 import { repoFile, site } from '@/lib/site'
@@ -224,5 +226,55 @@ export function Planned({ children }: { children?: React.ReactNode }) {
           'This describes how it will work. It isn’t in the app yet, and details may change before it is.'}
       </p>
     </Callout>
+  )
+}
+
+/**
+ * A picture in a doc: a screenshot of the app or of Windows, with a caption. Served as is
+ * (`unoptimized`): they're static files already sized for the page, so no image service runs.
+ */
+export function Shot({
+  src,
+  alt,
+  width,
+  height,
+  children,
+}: {
+  src: string
+  alt: string
+  width: number
+  height: number
+  children?: React.ReactNode
+}) {
+  return (
+    <figure className="my-6 first:mt-0">
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        unoptimized
+        className="h-auto w-full rounded-md ring-1 ring-border"
+      />
+      {children && <figcaption className="mt-2 text-body-sm text-secondary">{children}</figcaption>}
+    </figure>
+  )
+}
+
+/** A video the site serves itself: it plays muted when scrolled into view (see doc-video.tsx). */
+export function DocVideo({
+  src,
+  poster,
+  children,
+}: {
+  src: string
+  poster: string
+  children?: React.ReactNode
+}) {
+  return (
+    <figure className="my-6 first:mt-0">
+      <Player src={src} poster={poster} label={typeof children === 'string' ? children : 'Video'} />
+      {children && <figcaption className="mt-2 text-body-sm text-secondary">{children}</figcaption>}
+    </figure>
   )
 }
