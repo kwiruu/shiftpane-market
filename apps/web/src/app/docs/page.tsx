@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import { DocVideo } from '@/components/content/blocks'
 import { DefinitionCard, ListRow, RowText } from '@/components/site/list-group'
 import { docGroups } from '@/lib/docs'
 import { slugify } from '@/lib/toc'
@@ -26,6 +27,12 @@ export default function DocsIndex() {
           Install ShiftPane.
         </p>
       </header>
+      <div className="mt-8">
+        <DocVideo src="/media/shiftpane-overview.mp4" poster="/media/shiftpane-overview-poster.jpg">
+          ShiftPane in a minute: the phone as a second screen or a widget board, and making your own
+          widgets.
+        </DocVideo>
+      </div>
       <div className="mt-10 flex flex-col gap-3">
         {docGroups.map((group) => (
           <DefinitionCard key={group.title} id={slugify(group.title)} label={group.title}>

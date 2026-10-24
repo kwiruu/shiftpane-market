@@ -1,9 +1,81 @@
 ## The phone can't connect
 
-- **Same Wi-Fi.** The phone and the PC have to be on the same network. Guest networks often keep devices apart.
-- **The right adapter.** With a VPN, WSL or VirtualBox, the QR code may name the wrong address. Pick your Wi-Fi or Ethernet adapter from the **Network** menu under the QR code.
-- **Windows Firewall.** If the firewall would block phones from reaching the PC, the Devices page says so. Allow ShiftPane on private networks, and make sure Windows counts your home network as private.
-- **The certificate.** The first time, the browser warns about the PC's certificate. That's expected: accept it once.
+Work down this list. Most connection problems are one of the first three, and the **Phone won't connect?** box on the Devices page can tell you whether the phone is reaching the PC at all.
+
+<Shot src="/images/docs/app-devices-wont-connect.png" alt="The Devices page with the Phone won't connect? box open, showing a test QR code" width={1280} height={800}>
+  Open **Phone won't connect?** under the QR code, then scan its test QR. It opens a tiny page without pairing, so if the page loads, the network is fine.
+</Shot>
+
+### 1. Same Wi-Fi
+
+The phone and the PC have to be on the same network. A guest network, or a router with "AP isolation" or "client isolation" turned on, keeps devices apart even when the Wi-Fi name matches. Join both to your main network, or turn your phone's hotspot on and connect the PC to it.
+
+### 2. Tell Windows it's a private network
+
+Windows Firewall keeps phones away from apps on networks it calls **Public**. Home Wi-Fi should be **Private**. On Windows 11:
+
+<Steps>
+<Step title="Open Settings, then Network & internet, then Wi-Fi">
+
+Press <Kbd>Win</Kbd> + <Kbd>I</Kbd>, choose **Network & internet**, then **Wi-Fi**. On a cable, choose **Ethernet** instead. Click the network you're connected to, the one marked **Connected, secured**.
+
+<Shot src="/images/docs/win11-wifi-network.png" alt="Windows 11 Settings, Network & internet, Wi-Fi, with the connected network listed under the Wi-Fi switch" width={740} height={202}>
+  Settings → Network & internet → Wi-Fi, then your network's **properties**.
+</Shot>
+
+</Step>
+<Step title="Choose Private network">
+
+Under **Network profile type**, pick **Private network**. The change applies at once.
+
+<Shot src="/images/docs/win11-network-profile.png" alt="Network profile type with Public network and Private network options, Private network selected" width={733} height={340}>
+  **Private network** is the one that lets your phone reach apps on this PC.
+</Shot>
+
+</Step>
+<Step title="Check again in ShiftPane">
+
+Back in the desktop app, press **Check again** if the Devices page shows a firewall notice, then scan the QR code again.
+
+</Step>
+</Steps>
+
+The notice on the Devices page has an **Open network settings** button that takes you straight to this page of Settings.
+
+### 3. Windows Firewall
+
+If the firewall would block phones from reaching the PC, the Devices page says so and offers **Allow through firewall**. Windows asks for permission once, and ShiftPane adds a rule for private networks. You can check the firewall yourself:
+
+<Steps>
+<Step title="Open Windows Security">
+
+Choose **Configure firewall and security settings** under the network profile above, or search the Start menu for **Windows Security** and open **Firewall & network protection**. The network you're on is marked **(active)**.
+
+<Shot src="/images/docs/win11-firewall.png" alt="Windows Security, Firewall and network protection, with the Private network marked active" width={1100} height={780}>
+  Windows Security → Firewall & network protection. The active network should be **Private network**.
+</Shot>
+
+</Step>
+<Step title="Open the active network and make sure incoming connections are allowed">
+
+Click the active network. **Blocks all incoming connections, including those in the list of allowed apps** has to be unticked, or no phone can reach the PC whatever rule ShiftPane adds.
+
+<Shot src="/images/docs/win11-firewall-private.png" alt="The Private network page in Windows Security with the Blocks all incoming connections box unticked" width={450} height={640}>
+  Leave **Blocks all incoming connections** unticked.
+</Shot>
+
+</Step>
+</Steps>
+
+On a work or school PC an administrator may manage the firewall. ShiftPane says so, and the fix is for them to allow incoming TCP on the port shown under the QR code.
+
+### 4. The right adapter
+
+With a VPN, WSL or VirtualBox, the QR code may name the wrong address. Pick your Wi-Fi or Ethernet adapter from the **Network** menu under the QR code, and scan again.
+
+### 5. The certificate
+
+The first time, the browser warns about the PC's certificate. That's expected: accept it once.
 
 ## The code is refused
 
